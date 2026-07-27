@@ -1,5 +1,13 @@
 # GDB-012
 
+> Version : 1.1
+> Statut : Officiel
+> Type : Série
+> Maturité : 1
+> Bibliothèque : GDB
+
+---
+
 > Les métiers, les savoir-faire et les activités professionnelles.
 
 ## Présentation
@@ -43,3 +51,26 @@ Répondre à la question :
 Version : 1.0
 
 Statut : Officiel
+
+---
+
+# Frontière avec GDB-005
+
+GDB-012A, GDB-012D et GDB-012F portent des titres identiques à GDB-005A, GDB-005D
+et GDB-005C --- doublons déjà recensés par GDB/CATALOG.md. La distinction retenue :
+GDB-005 [réf: GDB-005] fait autorité sur le mécanisme économique (flux de
+ressources, invariants de production, marché, valeur). GDB-012 fait autorité sur
+la dimension professionnelle et artisanale du même sujet --- spécialisation,
+qualité, innovation, transmission du savoir-faire [réf: GDB-004G, GDB-004H] ---
+qui n'a pas d'équivalent dans GDB-005. Aucun des deux ne redéfinit le mécanisme de
+l'autre.
+
+---
+
+# Historique
+
+## Version 1.1
+
+- ajout de la section « Frontière avec GDB-005 » ;
+- en-tête mis en conformité avec MASTER-004 ;
+- GDB-012A, GDB-012D, GDB-012F renvoient désormais explicitement vers leurs équivalents GDB-005.

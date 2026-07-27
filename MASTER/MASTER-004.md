@@ -1,6 +1,6 @@
 # MASTER-004 --- Conventions de Documentation
 
-> Version : 1.3
+> Version : 1.4
 > Statut : Officiel
 > Type : Convention
 > Maturité : 1
@@ -53,6 +53,16 @@ Les fichiers sont nommés d'après leur identifiant seul, sans le titre.
 Exemple : `GDB-001A.md`
 
 Le titre complet figure en première ligne du document.
+
+---
+
+# Casse des fichiers readme
+
+Le readme d'une bibliothèque de premier niveau (MASTER, CORE, GDB, ACT, TECH, QA, UX, LORE, PROD, ART, AUDIO, MKT) s'écrit en minuscule : `readme.md`.
+
+Le readme d'un sous-chapitre GDB (GDB-001, GDB-002, etc.) s'écrit avec une majuscule initiale : `Readme.md`.
+
+Cette distinction lève l'ambiguïté entre les deux niveaux. Elle ne dispense pas de la prudence sur les systèmes de fichiers insensibles à la casse (Windows, macOS par défaut), où deux fichiers ne différant que par la casse entrent en collision silencieuse.
 
 ---
 
@@ -167,6 +177,10 @@ Si la réponse est non, elle est abandonnée.
 ---
 
 # Historique
+
+## Version 1.4
+
+- ajout de la règle de casse des fichiers readme (minuscule pour les bibliothèques de premier niveau, majuscule pour les sous-chapitres GDB), pour clore GLOBAL-C01.
 
 ## Version 1.3
 

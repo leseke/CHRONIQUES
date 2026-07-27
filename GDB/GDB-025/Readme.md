@@ -1,5 +1,13 @@
 # GDB-025
 
+> Version : 1.1
+> Statut : Officiel
+> Type : Série
+> Maturité : 1
+> Bibliothèque : GDB
+
+---
+
 > Les déplacements des habitants, des ressources et des informations.
 
 ---
@@ -37,19 +45,42 @@ La série GDB-025 répond à la question :
 
 | Document | Sujet |
 |-----------|-------|
-| GDB-025A | Les Transports |
+| GDB-025A | Les Moyens de Transport |
 | GDB-025B | Les Véhicules |
-| GDB-025C | Les Routes |
-| GDB-025D | Les Voies Maritimes |
-| GDB-025E | Les Voies Aériennes |
-| GDB-025F | Les Réseaux de Transport |
-| GDB-025G | Les Infrastructures de Transport |
-| GDB-025H | La Logistique |
-| GDB-025I | La Mobilité |
+| GDB-025C | Les Infrastructures de Transport |
+| GDB-025D | Les Routes |
+| GDB-025E | Les Voies Ferrées |
+| GDB-025F | Les Ports |
+| GDB-025G | Les Aéroports |
+| GDB-025H | Les Réseaux de Transport |
+| GDB-025I | La Logistique |
 | GDB-025J | La Philosophie des Transports |
+
+Ce tableau ne correspondait à aucun des titres réels des documents C à I ---
+erreur corrigée en v1.1.
 
 ---
 
 Version : 1.0
 
 Statut : Officiel
+
+---
+
+# Frontière avec GDB-003G
+
+GDB-003G [réf: GDB-003G] fait autorité sur les réseaux de déplacement comme
+structure géographique (chemins, routes, rivières reliant des Zones). Cette
+série fait autorité sur les moyens et infrastructures de transport qui
+empruntent ces réseaux --- véhicules, ports, aéroports, logistique. GDB-025 ne
+redéfinit jamais la géographie des tracés, seulement ce qui y circule.
+
+---
+
+# Historique
+
+## Version 1.1
+
+- correction du tableau des documents, qui ne correspondait à aucun des titres réels des fichiers C à I ;
+- ajout de la section « Frontière avec GDB-003G » ;
+- en-tête mis en conformité avec MASTER-004.

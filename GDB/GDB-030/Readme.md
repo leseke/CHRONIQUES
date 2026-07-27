@@ -1,5 +1,13 @@
 # GDB-030
 
+> Version : 1.1
+> Statut : Officiel
+> Type : Série
+> Maturité : 1
+> Bibliothèque : GDB
+
+---
+
 > Les technologies, leurs infrastructures et leur évolution au service des habitants et des civilisations.
 
 ## Présentation
@@ -43,3 +51,12 @@ Répondre à la question :
 Version : 1.0
 
 Statut : Officiel
+
+---
+
+# Historique
+
+## Version 1.1
+
+- GDB-030A enrichi d'une frontière avec GDB-023 (déploiement durable vs invention).
+- en-tête mis en conformité avec MASTER-004.

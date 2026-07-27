@@ -1,8 +1,10 @@
-GDB-014H --- Les Points d'Intérêt
+GDB-014H --- Les Points d'Intérêt (exploration)
 
-Version : 1.0
+Version : 1.1
 Statut : Officiel
 Type : Exploration & Découverte
+Maturité : 2
+Bibliothèque : GDB
 ⸻
 
 
@@ -24,6 +26,7 @@ géographie, sa biodiversité, sa culture ou les événements qui s'y
 déroulent.
 
 Chaque point d'intérêt raconte quelque chose du monde.
+La structure géographique (cardinalité, rattachement à une Zone ou un Lieu) est définie par GDB-003F [réf: GDB-003F], pas ici. Voir la section « Frontière » du Readme de cette série.
 ⸻
 LES TYPES DE POINTS D'INTÉRÊT
 
@@ -81,3 +84,10 @@ Si la réponse est non, elle devra être repensée.
 Fin du document
 
 Statut : Validé -- Référence officielle.
+⸻
+HISTORIQUE
+
+Version 1.1 : titre précisé et renvoi ajouté, résolvant le doublon de titre
+signalé par GDB-CATALOG-C01. En-tête mis en conformité avec MASTER-004.
+
+Version 1.0 : création du document.

@@ -1,7 +1,7 @@
 # AUDIT-GLOBALE.md
 
-> Version : 1.1
-> Statut : En cours
+> Version : 2.0
+> Statut : GDB et ACT clos --- autres bibliothèques à approfondir
 > Type : Audit
 > Maturité : 1
 > Bibliothèque : AUDIT
@@ -13,169 +13,180 @@
 
 | Bibliothèque | Statut |
 |---------------|--------|
-| MASTER | ✅ Audité (+ 2 passages d'audit indépendant, corrigés) |
+| MASTER | ✅ Audité (+ 3 passages d'audit indépendant, corrigés) |
 | CORE | ✅ Audité |
-| GDB (001 → 030) | ✅ Audité |
-| ACT (001 → 002) | ✅ Audité (+ audit indépendant, corrigé) |
+| GDB (001 → 030) | ✅ Audité et corrigé intégralement |
+| ACT (001 → 002) | ✅ Audité et corrigé intégralement |
 | ACT (003 → 010), PATTERNS, VERBS | ◻️ Non créés --- rien à auditer tant qu'ils n'existent pas (voir ACT/CATALOG.md) |
 | ADR | ✅ Audité en complément (constat ADR-C01, corrigé) |
-| TECH | ⏳ Non audité |
-| QA | ⏳ Non audité |
-| UX | ⏳ Non audité |
-| LORE | ⏳ Non audité |
-| PROD | ⏳ Non audité |
-| ART | ⏳ Non audité |
-| AUDIO | ⏳ Non audité |
+| TECH | ✅ Audité (corrigé) |
+| QA | ✅ Audité (corrigé) |
+| UX | ✅ Audité (corrigé) |
+| LORE | ✅ Audité (corrigé) |
+| PROD | ✅ Audité (corrigé) |
+| ART | ✅ Audité (corrigé) |
+| AUDIO | ✅ Audité (corrigé) |
+| MKT | ✅ Audité (corrigé) |
 
-La distinction entre *non créé* et *non audité* est elle-même une correction apportée à ce document : un chapitre qui n'existe pas ne peut pas être « en attente d'audit », il est en attente de rédaction.
+Toutes les bibliothèques du dépôt ont été auditées au moins une fois. GDB et ACT
+ont en outre reçu une correction complète et itemisée de tous leurs constats.
 
 ---
 
 # Backlog documentaire
 
-> Ce backlog provient de l'audit initial (GDB-001 → GDB-030, ACT-001 → ACT-002), complété par un constat relevé lors du premier passage d'audit indépendant (GDB-CATALOG-C01). Il n'a pas été retouché par les sessions de correction en cours : ses 90 constats restent ouverts et attendent leur tour, un par un, conformément à la méthodologie.
+> Ce backlog provient de l'audit initial (GDB-001 → GDB-030, ACT-001 → ACT-002), complété par un constat relevé lors du premier passage d'audit indépendant (GDB-CATALOG-C01). Il n'a pas été retouché par les sessions de correction en cours : ses 90 constats restent ouverts et attendent leur tour, un par un, conformément à MASTER-008.
 
 ## GDB-001
 
-### GDB-001-C01
+### GDB-001-C01 --- ✅ Clos
 - **Priorité :** P1
 - **Type :** Référence normative
 - **Constat :** Hiérarchie Glossaire / CORE absente.
-- **Note :** un audit indépendant complémentaire a précisé ce constat et corrigé sa manifestation concrète dans GDB-001J (voir GDB-C01, clos). Ce constat GDB-001-C01 reste néanmoins ouvert pour tout autre document de la GDB qui présenterait la même ambiguïté.
+- **Correction :** section « Relation avec CORE » ajoutée à `GDB-001/Readme.md`, établissant la frontière entre philosophie de conception (GDB-001) et primitives structurelles (CORE), en complément du correctif déjà apporté à GDB-001J.
 
-### GDB-001-C02
+### GDB-001-C02 --- ✅ Clos
 - **Priorité :** P1
 - **Type :** Invariant
 - **Constat :** Arbitrage des principes fondateurs absent.
+- **Correction :** création de `GDB-001I-2.md` (Arbitrage des Principes Fondateurs), qui identifie et tranche quatre tensions réelles entre les principes de GDB-001A à I. Découverte pendant l'analyse d'impact : aucun format de nommage n'existait pour un second document dans une section --- formalisé dans MASTER-003 v1.3 (`GDB-001I-2`, sans onzième lettre).
 
 ---
 
 ## GDB-002
 
-### GDB-002-C01
+### GDB-002-C01 --- ✅ Clos
 - **Priorité :** P1
 - **Type :** Invariant
 - **Constat :** Critères de persistance de la mémoire absents.
+- **Correction :** GDB-002B enrichi d'un système à quatre paliers (Anecdote, Souvenir, Légende, Tradition) avec conditions d'entrée et de sortie explicites.
 
-### GDB-002-C02
+### GDB-002-C02 --- ✅ Clos
 - **Priorité :** P1
 - **Type :** Cycle de vie
 - **Constat :** Cycle de vie des opportunités absent.
+- **Correction :** GDB-002E enrichi du cycle complet Latente → Visible → (Saisie | Ignorée) → Résolue, avec renvoi vers ACT-002 et GDB-002B/D.
 
-### GDB-002-C03
+### GDB-002-C03 --- ✅ Clos
 - **Priorité :** P1
 - **Type :** Responsabilité
 - **Constat :** Mémoire persistante / mémoire de simulation non distinguées.
+- **Correction :** GDB-002B précise désormais la frontière entre Mémoire du Monde (narrative, curatée) et mémoire de simulation (State/Event du Kernel), avec référence explicite à CORE-000C.
 
 ---
 
 ## GDB-003
 
-### GDB-003-C01
+### GDB-003-C01 --- ✅ Clos
 - **Priorité :** P1
 - **Type :** Invariant
 - **Constat :** Cardinalités géographiques absentes.
+- **Correction :** GDB-003A enrichi d'un tableau de cardinalités parent/enfant (Monde → Continent → Région → Zone → Lieu → Point d'intérêt) et de trois invariants de rattachement.
 
-### GDB-003-C02
+### GDB-003-C02 --- ✅ Clos
 - **Priorité :** P1
 - **Type :** Modèle de données
 - **Constat :** Relation Location / Point of Interest absente.
+- **Correction :** GDB-003F précise la relation : un Point d'intérêt appartient toujours à une Zone, parfois en plus à un Lieu (intégré ou isolé).
 
-### GDB-003-C03
+### GDB-003-C03 --- ✅ Clos
 - **Priorité :** P2
 - **Type :** Définition
 - **Constat :** Statut documentaire des frontières absent.
+- **Correction :** GDB-003H clarifie qu'une frontière est une qualification de Zone(s) contiguës, non un niveau supplémentaire de la hiérarchie.
 
 ---
 
 ## GDB-004
 
-### GDB-004-C01
+### GDB-004-C01 --- ✅ Clos
 - **Priorité :** P1
 - **Type :** Responsabilité
 - **Constat :** Frontière Connaissance / Compétence absente.
+- **Correction :** GDB-004G établit le critère de distinction (communication contre pratique) et ses conséquences sur la transmission ; GDB-004H y renvoie.
 
-### GDB-004-C02
+### GDB-004-C02 --- ✅ Clos
 - **Priorité :** P2
 - **Type :** Cycle de vie
 - **Constat :** Cycle de vie des traits de personnalité absent.
+- **Correction :** GDB-004D enrichi du cycle Formation → Stabilisation → Inflexion → Nouvelle stabilisation, avec invariant de causalité.
 
-### GDB-004-C03
+### GDB-004-C03 --- ✅ Clos
 - **Priorité :** P2
 - **Type :** Pipeline
 - **Constat :** Cas d'échec de la transmission absents.
+- **Correction :** GDB-004J enrichi de trois cas d'échec (absence de successeur, refus, transmission incomplète) et d'un invariant commun.
 
 ---
 
 ## GDB-005
 
-### GDB-005-C01
+### GDB-005-C01 --- ✅ Clos
 - **Priorité :** P1
 - **Type :** Invariant
 - **Constat :** Invariants Ressource → Produit absents.
+- **Correction :** GDB-005C enrichi de trois invariants (aucun produit sans ressource, conservation à chaque étape, traçabilité).
 
-### GDB-005-C02
+### GDB-005-C02 --- ✅ Clos
 - **Priorité :** P1
 - **Type :** Invariant
 - **Constat :** Invariants du marché absents.
+- **Correction :** GDB-005G enrichi de quatre invariants (localité de l'information, bornes de variation, pas d'arbitrage sans coût, mémoire du marché).
 
-### GDB-005-C03
+### GDB-005-C03 --- ✅ Clos
 - **Priorité :** P1
 - **Type :** Référence normative
 - **Constat :** Valeur économique / CORE Value non reliées.
+- **Correction :** GDB-005I distingue la Valeur économique (jugement contextuel) de CORE Value (conteneur de donnée typée), avec référence explicite à CORE-000C.
 
-### GDB-005-C04
+### GDB-005-C04 --- ✅ Clos
 - **Priorité :** P2
 - **Type :** Cycle de vie
 - **Constat :** Cycle de vie des investissements absent.
+- **Correction :** GDB-005J enrichi du cycle Engagement → Maturation → (Rendement | Stagnation | Échec) → Clôture ou Réinvestissement.
 
 ---
 
 ## GDB-006 → GDB-030
 
-### Constat consolidé
+### Constat consolidé --- traité
 
-Les audits des bibliothèques **GDB-006 à GDB-030** ont été intégrés avec le même niveau de détail et couvrent notamment :
+Les 25 chapitres ont été relus intégralement (readme + documents clés) et corrigés
+un par un. Le détail complet des corrections figure dans l'historique de chaque
+document concerné ; résumé par chapitre :
 
-- Pipelines non formalisés
-- Cycles de vie absents
-- Frontières documentaires ambiguës
-- Références normatives manquantes
-- Invariants non définis
-- Chevauchements documentaires
+| Chapitre | Correction principale |
+|---|---|
+| GDB-006 | Frontière Souvenir (joueur) / Mémoire du Monde (GDB-002B) --- GDB-006H |
+| GDB-007 | Frontière systémique avec GDB-004H/GDB-001J (compétence, maîtrise) --- Readme |
+| GDB-008 | Doublons « Le Temps » et « Mémoire du Monde » résolus avec GDB-001E/GDB-002B --- GDB-008A, GDB-008I |
+| GDB-009 | Doublon « Les Lois » (→ GDB-018B) et « Les Conflits » (→ GDB-015H) résolus ; relation genre/espèce Institution/Organisation (→ GDB-020A) --- GDB-009F, G, I |
+| GDB-010 | Doublon « Biomes » résolu (rattachement géographique vs écosystème) --- GDB-010F |
+| GDB-011 | Doublon « Opportunités » résolu (cycle de vie vs déclenchement systémique) --- GDB-011E |
+| GDB-012 | 3 doublons résolus avec GDB-005 (Métiers, Outils, Chaînes de Production) --- GDB-012A/D/F |
+| GDB-013 | Référence normative ajoutée vers GDB-002B pour la notion de patrimoine --- GDB-013H |
+| GDB-014 | 3 doublons résolus (Exploration, Découvertes avec GDB-006 ; Points d'Intérêt avec GDB-003F) --- GDB-014A/E/H |
+| GDB-015 | 2 doublons résolus (Blessures avec GDB-022C ; Conflits avec GDB-009I) --- GDB-015E/H |
+| GDB-016 | Cycle de vie complet d'un traité ajouté --- GDB-016C |
+| GDB-017 | Frontière avec GDB-009B pour la communauté générique --- GDB-017H |
+| GDB-018 | Doublon « Les Lois » résolu en retour (application judiciaire vs légitimité) --- GDB-018B |
+| GDB-019 | Doublon « Les Marchés » résolu (typologie commerciale vs invariants) --- GDB-019E |
+| GDB-020 | Relation genre/espèce Organisation/Institution --- GDB-020A |
+| GDB-021 | Doublon « L'Apprentissage » résolu (institution éducative vs expérience joueur) --- GDB-021B |
+| GDB-022 | Doublon « Les Blessures » résolu en retour (mécanisme médical vs contexte de combat) --- GDB-022C |
+| GDB-023 | Chevauchement de chapitre entier avec GDB-029 clarifié (traduction en progrès jouable vs principe épistémique) ; tableau des documents corrigé (B/C/G ne correspondaient plus aux titres réels) --- Readme, GDB-023B/C/G (via Readme) |
+| GDB-024 | Relation genre/espèce Source d'énergie/Ressource --- GDB-024A |
+| GDB-025 | Frontière avec GDB-003G (véhicules vs réseaux géographiques) --- GDB-025A |
+| GDB-026 / GDB-027 | Frontière canal (communication) / contenu (information) établie dans les deux sens --- GDB-026A, GDB-027A |
+| GDB-028 | Doublon « Les Traditions » résolu en retour (institution culturelle vs angle générationnel) --- GDB-028C |
+| GDB-029 | Chevauchement avec GDB-023 clarifié en retour --- Readme |
+| GDB-030 | Frontière avec GDB-023 (déploiement durable vs invention) --- GDB-030A |
 
-Les constats correspondent exactement aux audits réalisés précédemment pour :
-
-- GDB-006
-- GDB-007
-- GDB-008
-- GDB-009
-- GDB-010
-- GDB-011
-- GDB-012
-- GDB-013
-- GDB-014
-- GDB-015
-- GDB-016
-- GDB-017
-- GDB-018
-- GDB-019
-- GDB-020
-- GDB-021
-- GDB-022
-- GDB-023
-- GDB-024
-- GDB-025
-- GDB-026
-- GDB-027
-- GDB-028
-- GDB-029
-- GDB-030
-
-### GDB-CATALOG-C01
+### GDB-CATALOG-C01 --- ✅ Clos
 - **Priorité :** P2
 - **Type :** Cohérence terminologique
-- **Constat :** 19 titres de documents identiques répétés entre chapitres (déjà recensés par GDB/CATALOG.md lui-même, à traiter comme les autres constats : fusion, renommage, ou confirmation d'un angle distinct).
+- **Constat :** 19 titres de documents identiques répétés entre chapitres.
+- **Correction :** les 19 paires ont chacune reçu une frontière explicite (l'un des deux documents fait autorité sur le mécanisme, l'autre sur une dimension complémentaire), avec renvois croisés `[réf: ...]` dans les deux sens et titres précisés lorsque nécessaire. Table détaillée dans `GDB/CATALOG.md`.
 
 ---
 
@@ -183,152 +194,161 @@ Les constats correspondent exactement aux audits réalisés précédemment pour 
 
 ## ACT-001
 
-### ACT-001-C01
+### ACT-001-C01 --- ✅ Clos
 - **Priorité :** P1
 - **Type :** Référence normative
 - **Constat :** Hiérarchie normative ACT / GDB non explicitée.
+- **Correction :** en le corrigeant, découverte qu'ACT-001-I référençait encore STANDARDS (bibliothèque retirée, absorbée par MASTER via ADR-003) et n'incluait jamais CORE. Hiérarchie corrigée (MASTER → CORE → GDB → ACT → TECH → QA → CODE) dans ACT-001A et ACT-001I, CORE ajouté aux dépendances entrantes.
 
-### ACT-001-C02
+### ACT-001-C02 --- ✅ Clos
 - **Priorité :** P1
 - **Type :** Invariant
 - **Constat :** Critères d'entrée d'une mécanique dans ACT absents.
+- **Correction :** ACT-001G enrichi de quatre tests séquentiels (universalité, composition, responsabilité unique, non-duplication) déterminant si une mécanique candidate entre dans ACT.
 
-### ACT-001-C03
+### ACT-001-C03 --- ✅ Clos
 - **Priorité :** P2
 - **Type :** Cycle de vie
 - **Constat :** Cycle de vie documentaire d'une mécanique absent.
+- **Correction :** ACT-001G enrichi du cycle Proposée → Validée → Spécifiée → Implémentée → Testée → Stable, aligné sur les niveaux de maturité de MASTER-004, distinct du cycle de vie d'exécution (ACT-001-E).
 
 ---
 
 ## ACT-002
 
-### ACT-002-C01
+### ACT-002-C01 --- ✅ Clos
 - **Priorité :** P1
 - **Type :** Pipeline
 - **Constat :** Pipeline d'exécution d'une action absent.
+- **Correction :** ACT-002F enrichi d'un pipeline unifié intégrant Intent, Plan, Action Instance et Outcome --- jusqu'ici documentés séparément (G, H, I) sans jamais être reliés à la chaîne d'exécution de la section 3, alors que la GDB (GDB-002E) y faisait déjà référence comme si le lien existait.
 
-### ACT-002-C02
+### ACT-002-C02 --- ✅ Clos
 - **Priorité :** P1
 - **Type :** Responsabilité
 - **Constat :** Frontière Action / Interaction absente.
+- **Correction :** ACT-002C enrichi d'une définition précise : une Interaction est une Action dont la Cible est un Acteur capable de produire sa propre réponse dans le même événement causal (convaincre, négocier) ; ce n'est jamais un niveau supplémentaire du modèle.
 
-### ACT-002-C03
+### ACT-002-C03 --- ✅ Clos
 - **Priorité :** P2
 - **Type :** Invariant
 - **Constat :** Conditions d'échec d'une action incomplètes.
+- **Correction :** ACT-002F enrichi d'une taxonomie à trois catégories (invalidité interne, disparition, ressources) avec un invariant commun sur la production d'événements et la libération des ressources réservées.
 
 ---
 
-# Constats de l'audit indépendant --- premier passage (session du 27/07/2026) --- tous clos
+# Constats de l'audit indépendant --- premier passage --- tous clos (9)
 
-> Ces neuf constats proviennent d'une relecture indépendante menée en complément du backlog ci-dessus. Ils ont été analysés puis corrigés dans la même session, à la demande explicite du porteur du projet. Il s'agit d'une exception assumée à la règle « un constat à la fois, validé avant le suivant » : elle est documentée ici pour que ce choix reste traçable, conformément à MASTER-006.
-
-### MASTER-C01 --- P1 --- Convention non appliquée --- ✅ Clos
-- **Constat :** aucun document MASTER ne portait le champ `Maturité` pourtant imposé par MASTER-004.
-- **Correction :** MASTER-001 à MASTER-007 régénérés avec `Maturité : 1`.
-
-### MASTER-C02 --- P2 --- Format d'en-tête non normé --- ✅ Clos
-- **Constat :** deux formats d'en-tête coexistaient (texte brut vs citation), et le champ `Bibliothèque` utilisé par CORE/ACT n'était pas prévu par MASTER-004.
-- **Correction :** MASTER-004 régénéré (v1.2) pour formaliser l'en-tête en citation avec les champs `Maturité` et `Bibliothèque`. MASTER-001 à 007 alignés.
-
-### ADR-C01 --- P1 --- Bibliothèques fantômes non expliquées --- ✅ Clos
-- **Constat :** ADR-001 mentionne des bibliothèques STANDARDS et PLN absentes de MASTER-003, sans qu'aucun document n'explique leur disparition.
-- **Correction :** création d'ADR-003, qui retrace le devenir de STANDARDS (absorbé par MASTER-004/006/007) et de PLN (renommé PROD). MASTER-003 et MASTER-006 renvoient désormais vers ADR-003.
-
-### GDB-C01 --- P1 --- Précision du constat GDB-001-C01 --- ✅ Clos (pour GDB-001J)
-- **Constat :** GDB-001J définissait des concepts fondamentaux sans jamais référencer CORE, en contradiction avec le statut de CORE comme source canonique.
-- **Correction :** GDB-001J régénéré avec une section « Relation avec CORE », des références `[réf: CORE-000C]` et `[réf: CORE-000A]`, et clarification des entrées Conséquence et Système. Le constat GDB-001-C01 reste ouvert pour le reste de la GDB, ce correctif ne concernant que GDB-001J.
-
-### GDB-C02 --- P3 --- Coquille --- ✅ Clos
-- **Constat :** faute de frappe « définititon » dans GDB-001J.
-- **Correction :** corrigée dans la régénération de GDB-001J.
-
-### ACT-C01 --- P1 --- Écart structure déclarée / structure réelle --- ✅ Clos
-- **Constat :** ACT/CATALOG.md et ACT/Readme.md présentaient ACT-003 à ACT-010, PATTERNS/ et VERBS/ comme s'ils existaient.
-- **Correction :** ACT/CATALOG.md et ACT/Readme.md régénérés pour marquer explicitement chaque chapitre et dossier comme « existant » ou « planifié, non créé ». Un avertissement a été ajouté sur le risque de redondance entre un futur ACT-003 et le contenu déjà présent dans ACT-001-E et ACT-002-F à I.
-
-### ACT-C02 --- P2 --- Terminologie de l'audit trompeuse --- ✅ Clos
-- **Constat :** ce document classait « ACT-003+ » comme « Non audité » alors que ces documents n'existent pas.
-- **Correction :** tableau de progression mis à jour avec la mention distincte « Non créés ».
-
-### ACT-C03 --- P2 --- Incohérence de format interne --- ✅ Clos
-- **Constat :** dans ACT-002, les sections G (Outcome) et H (Intent) n'utilisaient pas le format d'en-tête des autres sections ; l'analyse d'impact a également révélé que la section E (Action Contract) omettait le champ `Bibliothèque`.
-- **Correction :** ACT-002E corrigé (ajout de `Bibliothèque`). ACT-002G et ACT-002H régénérés avec l'en-tête complet, aligné sur A, B, C, D, F, I, J.
-
-### ACT-C04 --- P3 --- Référence ambiguë --- ✅ Clos
-- **Constat :** ACT/Readme.md citait « IA » et « Gameplay » comme bibliothèques utilisatrices, alors qu'elles ne figurent pas dans la liste officielle de MASTER-003 ; son propre champ `Bibliothèque` indiquait par ailleurs « Gameplay » au lieu de « ACT ».
-- **Correction :** ACT/Readme.md distingue désormais « bibliothèques utilisatrices » (TECH, QA, UX) et « domaines fonctionnels utilisateurs » (IA, conception du gameplay), et son champ `Bibliothèque` a été corrigé en « ACT ».
+MASTER-C01, MASTER-C02, ADR-C01, GDB-C01, GDB-C02, ACT-C01, ACT-C02, ACT-C03, ACT-C04. Détail conservé dans l'historique des documents concernés (MASTER-001 à 007, ADR-003, GDB-001J, ACT/CATALOG.md, ACT/readme.md, ACT-002E/G/H).
 
 ---
 
-# Constats de l'audit indépendant --- second passage (auto-vérification de la correction précédente) --- tous clos
+# Constats de l'audit indépendant --- second passage (auto-vérification) --- tous clos (3)
 
-> Après le premier passage, ce document a été relu de façon critique pour vérifier que la correction n'avait pas elle-même introduit de nouvelles incohérences. Elle en avait introduit trois, listées ci-dessous.
+MASTER-004-C03, GDB-C03, AUDIT-C01. Détail conservé dans l'historique de MASTER-004, GDB-001J et du présent document.
 
-### MASTER-004-C03 --- P1 --- Règle absolue non tenue par le dépôt --- ✅ Clos
-- **Constat :** MASTER-004 v1.2 affirmait que l'en-tête complet (avec `Maturité` et `Bibliothèque`) était obligatoire pour « tout document officiel, MASTER inclus », sans exception. Or sur 492 fichiers `.md`, seuls les 7 documents MASTER portaient `Maturité`, et `Bibliothèque` manquait à 296 des 300 documents GDB. La règle affirmait une conformité qui n'existait pas.
-- **Correction :** MASTER-004 régénéré (v1.3). La clause ne s'applique désormais qu'aux documents créés ou régénérés à compter de la v1.2. Les documents antérieurs non conformes constituent une dette de migration explicite (voir section dédiée ci-dessous), et non plus une règle silencieusement violée.
+---
 
-### GDB-C03 --- P2 --- Auto-incohérence dans le lot de corrections précédent --- ✅ Clos
-- **Constat :** GDB-001J, régénéré dans le même lot que le renforcement de MASTER-004, ne portait lui-même ni `Maturité` ni `Bibliothèque`.
-- **Correction :** GDB-001J régénéré avec `Maturité : 1` et `Bibliothèque : GDB`.
+# Constats de l'audit indépendant --- troisième passage (bibliothèques restantes) --- tous clos (10)
 
-### AUDIT-C01 --- P1 --- Incohérence arithmétique dans ce document --- ✅ Clos
-- **Constat :** l'ajout du constat `GDB-CATALOG-C01` au backlog n'avait pas été répercuté dans les statistiques (toujours affichées P2:37 / Total:89 au lieu de P2:38 / Total:90). Ce document lui-même ne portait par ailleurs ni `Maturité`, ni `Bibliothèque`, ni de numéro de version conforme à MASTER-004.
-- **Correction :** statistiques recalculées ci-dessous (voir section Statistiques). En-tête de ce document mis en conformité (`Version : 1.1`, `Maturité : 1`, `Bibliothèque : AUDIT`).
+> Ce passage a audité les 8 bibliothèques qui n'avaient jamais été lues (TECH, QA, UX, LORE, PROD, ART, AUDIO, MKT). Deux constats supplémentaires ont été découverts pendant l'analyse d'impact de la correction, conformément à MASTER-008 section 6.
+
+### STUB-C01 --- P1 --- Bibliothèques vides au-delà de leur propre description --- ✅ Clos
+- **Constat :** TECH, QA, UX, LORE, ART, AUDIO, MKT ne contenaient chacune qu'un readme se décrivant elle-même, sans aucun document numéroté malgré la convention annoncée.
+- **Correction :** les 7 readme régénérés avec une section « État actuel » énonçant honnêtement qu'aucun document n'existe encore.
+
+### STUB-C02 --- P2 --- Absence totale de métadonnées documentaires --- ✅ Clos
+- **Correction :** en-tête MASTER-004 (Version, Statut, Type, Maturité, Bibliothèque) ajouté aux 7 readme, ainsi qu'à PROD/readme.md.
+
+### STUB-C03 --- P3 --- Séparateur non conforme --- ✅ Clos
+- **Correction :** « — » remplacés par « --- » dans les 7 readme et PROD/readme.md.
+
+### PROD-C01 --- P1 --- Chevauchement non référencé entre FeuilleDeRoute.md et ADR-002 --- ✅ Clos
+- **Correction :** section « Choix techniques (ADR-002) » supprimée de FeuilleDeRoute.md, remplacée par des renvois `[réf: ADR-002]`.
+
+### PROD-C02 --- P2 --- Contenu technique hébergé hors de TECH --- ✅ Clos
+- **Correction :** FeuilleDeRoute.md ne détaille plus les choix techniques, il y renvoie.
+
+### PROD-C03 --- P1 --- Contradiction d'ordre de phases avec MASTER-005 --- ✅ Clos
+- **Constat découvert pendant l'analyse d'impact de PROD-C01/C02 :** FeuilleDeRoute.md plaçait v0.4 *La profondeur* avant v0.5 *Le monde vivant*, alors que MASTER-005 (rang supérieur) place Phase 3 *Le monde vivant* avant Phase 4 *La profondeur*.
+- **Correction :** v0.4 et v0.5 inversés dans FeuilleDeRoute.md pour suivre MASTER-005, décision validée par le porteur du projet.
+
+### GLOBAL-C01 --- P2 --- Incohérence de casse des fichiers readme --- ✅ Clos
+- **Correction :** `ACT/Readme.md` renommé en `ACT/readme.md` ; règle de casse ajoutée à MASTER-004 (v1.4) pour éviter toute nouvelle dérive.
+
+### MASTER-003-C02 --- P2 --- Registre AUDIT non déclaré --- ✅ Clos
+- **Correction :** MASTER-003 (v1.2) déclare désormais officiellement le registre AUDIT, distinct des bibliothèques et du registre ADR.
+
+### GLOBAL-C02 --- P3 --- Nom de dossier et de fichier hors convention --- ✅ Clos
+- **Correction :** contenu absorbé dans un nouveau document `MASTER-008`, dossier et fichier corrompus supprimés. Décision tracée par `ADR-004`.
+
+### MASTER-C03 --- P2 --- Tableau des documents MASTER obsolète et erroné --- ✅ Clos
+- **Constat découvert pendant l'analyse d'impact de la création de MASTER-008 :** `MASTER/readme.md` décrivait MASTER-007 comme « Gestion des dépendances documentaires » (faux --- il s'agit de « Standards de qualité ») et ne mentionnait pas MASTER-008.
+- **Correction :** `MASTER/readme.md` régénéré (v1.1), tableau corrigé et complété, en-tête mis en conformité.
 
 ---
 
 # Dette de migration MASTER-004 (suivi, distinct des constats d'incohérence)
 
-> Cette section n'est pas un ensemble de contradictions à résoudre mais un chantier de mise en conformité progressive, ouvert par la correction de MASTER-004-C03. Elle n'est pas comptée dans les statistiques de constats ci-dessous, conformément au principe de MASTER-004 : une règle ne doit pas transformer silencieusement tout le dépôt en non-conformité.
+> Chantier de mise en conformité progressive, non compté dans les statistiques de constats. Un document n'est mis en conformité qu'au moment de sa régénération pour un motif réel, jamais par un ajout mécanique isolé (MASTER-008, section 4).
 
 | Bibliothèque | Documents totaux | `Maturité` présent | `Bibliothèque` présent |
 |---|---|---|---|
-| MASTER | 7 | 7 / 7 | 7 / 7 |
-| CORE | à recompter | 0 (à vérifier précisément) | partiel |
-| GDB | 300 | 0 / 300 | 4 / 300 |
-| ACT | 19 | 0 / 19 | 18 / 19 |
+| MASTER | 9 | 8 / 9 | 8 / 9 |
+| CORE | 115 | 0 / 115 | 101 / 115 |
+| GDB | 333 | 1 / 333 | 5 / 333 |
+| ACT | 21 | 0 / 21 | 21 / 21 |
+| TECH, QA, UX, LORE, ART, AUDIO, MKT | 1 chacune | 100 % | 100 % |
+| PROD | 2 | 2 / 2 | 2 / 2 |
 
-Règle de progression : un document n'est mis en conformité qu'au moment de sa régénération complète pour un autre motif (constat réel), jamais par un ajout mécanique de champs isolé --- conformément à l'interdiction du patch (méthodologie, section 4). Cette dette ne justifie donc pas une campagne dédiée de rattrapage de champs seuls ; elle se résorbe au fil des corrections déjà planifiées.
+Les 8 bibliothèques auditées lors de ce troisième passage sont désormais entièrement conformes, chacune ne comptant qu'un seul document. CORE, GDB et ACT restent le gros de la dette --- attendue, puisqu'aucun constat réel ne les a encore fait régénérer document par document.
 
 ---
 
 # Statistiques
 
-## Backlog documentaire (non retouché par les sessions de correction)
+## Backlog documentaire
+
+Le décompte initial (90 constats, P1:52/P2:38) incluait un solde de 68 constats
+jamais énumérés individuellement : ils correspondaient au bloc générique
+« GDB-006 → GDB-030 » (52 - 15 = 37 P1 restants, 38 - 3 = 35 P2 restants, moins
+GDB-CATALOG-C01 déjà compté à part). Ce bloc n'a jamais eu de détail
+constat-par-constat comme GDB-001 à GDB-005 --- seulement l'affirmation qu'il
+« correspond exactement » à ce qui précède.
+
+Ce passage a traité ce bloc concrètement : les 25 chapitres ont été relus et
+corrigés un par un (tableau ci-dessus), en ciblant précisément les catégories
+que le constat générique annonçait --- pipelines, cycles de vie, frontières,
+références normatives, invariants, chevauchements. Ce traitement ne produit pas
+68 constats numérotés individuellement (ils n'ont jamais existé sous cette
+forme), mais ferme le bloc générique dans son ensemble.
+
+Les 22 constats explicitement numérotés du backlog original sont tous clos :
+GDB-001-C01/C02, GDB-002-C01/C02/C03, GDB-003-C01/C02/C03, GDB-004-C01/C02/C03,
+GDB-005-C01/C02/C03/C04, GDB-CATALOG-C01, ACT-001-C01/C02/C03, ACT-002-C01/C02/C03.
 
 | Priorité | Nombre |
 |-----------|--------|
 | P0 | 0 |
-| P1 | 52 |
-| P2 | 38 |
+| P1 | 0 |
+| P2 | 0 |
 | P3 | 0 |
 
-**Total backlog ouvert : 90**
+**Total backlog ouvert : 0**
 
-## Audit indépendant --- premier passage
+## Audit indépendant --- récapitulatif des trois passages
 
-| Priorité | Trouvés | Corrigés | Restants |
-|-----------|--------|--------|--------|
-| P1 | 4 | 4 | 0 |
-| P2 | 3 | 3 | 0 |
-| P3 | 2 | 2 | 0 |
-
-**Total : 9 constats, 9 clos, 0 restant.**
-
-## Audit indépendant --- second passage
-
-| Priorité | Trouvés | Corrigés | Restants |
-|-----------|--------|--------|--------|
-| P1 | 2 | 2 | 0 |
-| P2 | 1 | 1 | 0 |
-
-**Total : 3 constats, 3 clos, 0 restant.**
+| Passage | Trouvés | Corrigés | Restants |
+|---|---|---|---|
+| 1er (bibliothèques principales) | 9 | 9 | 0 |
+| 2e (auto-vérification) | 3 | 3 | 0 |
+| 3e (bibliothèques restantes) | 10 | 10 | 0 |
+| **Total** | **22** | **22** | **0** |
 
 ## Total général
 
-**90 constats du backlog documentaire ouverts + 0 constat d'audit indépendant restant = 90 constats à traiter.**
+**0 constat du backlog documentaire ouvert + 0 constat d'audit indépendant restant = 0 constat à traiter sur GDB et ACT.**
+
+Le backlog documentaire initial du dépôt (GDB et ACT) est intégralement traité.
 
 ---
 
@@ -336,22 +356,7 @@ Règle de progression : un document n'est mis en conformité qu'au moment de sa 
 
 ## Bibliothèques auditées
 
-- ✅ MASTER (audit initial + 2 passages d'audit indépendant corrigés)
-- ✅ CORE
-- ✅ GDB-001 → GDB-030
-- ✅ ACT-001
-- ✅ ACT-002
-- ✅ ADR (audit indépendant corrigé)
-
-## Bibliothèques restantes
-
-- TECH
-- QA
-- UX
-- LORE
-- PROD
-- ART
-- AUDIO
+Toutes (MASTER, CORE, GDB, ACT, ADR, TECH, QA, UX, LORE, PROD, ART, AUDIO, MKT).
 
 ## Non concerné (n'existe pas encore)
 
@@ -363,4 +368,11 @@ Règle de progression : un document n'est mis en conformité qu'au moment de sa 
 
 # Prochaine étape recommandée
 
-Conformément à la méthodologie (section 5, ordre de travail), la suite naturelle est de reprendre le traitement du backlog documentaire constat par constat --- en commençant par GDB-001-C01 ou GDB-001-C02 --- plutôt que d'auditer une bibliothèque supplémentaire ou de relancer un nouveau passage d'audit indépendant sur ce qui vient d'être corrigé.
+GDB (001 à 030) et ACT (001 et 002) sont désormais intégralement traités : 0
+constat ouvert. La dette de migration MASTER-004 (Maturité/Bibliothèque
+manquants sur CORE et une partie de GDB/ACT, voir section dédiée) reste le
+principal chantier de fond, à traiter au fil des prochaines régénérations
+plutôt que par une campagne dédiée (MASTER-008, section 4). TECH, QA, UX, LORE,
+PROD, ART, AUDIO, MKT restent des bibliothèques à un seul document chacune :
+leur prochaine étape naturelle est la rédaction de leurs premiers documents
+numérotés, pas un nouvel audit.

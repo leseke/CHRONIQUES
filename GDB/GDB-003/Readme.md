@@ -1,5 +1,13 @@
 # GDB-003
 
+> Version : 1.1
+> Statut : Officiel
+> Type : Série
+> Maturité : 1
+> Bibliothèque : GDB
+
+---
+
 > L'architecture géographique du monde de Chroniques.
 
 ---
@@ -102,3 +110,16 @@ Toute évolution devra préserver la cohérence de la hiérarchie géographique 
 Version : 1.0
 
 Statut : Officiel
+
+---
+
+# Historique
+
+## Version 1.1
+
+- en-tête mis en conformité avec MASTER-004 ;
+- GDB-003A (cardinalités), GDB-003F (relation Lieu/Point d'intérêt) et GDB-003H (statut documentaire des frontières) enrichis, suite à la clôture de GDB-003-C01, C02 et C03.
+
+## Version 1.0
+
+- Création du document.

@@ -1,10 +1,12 @@
 # ACT-001-I — Références et dépendances
 
-> Version : 1.0
+> Version : 1.1
 >
 > Statut : Fondation
 >
 > Type : Contrat d'architecture
+>
+> Maturité : 1
 >
 > Bibliothèque : ACT
 >
@@ -45,7 +47,7 @@ MASTER
 
 ↓
 
-STANDARDS
+CORE
 
 ↓
 
@@ -67,7 +69,12 @@ QA
 
 CODE
 
-Cette hiérarchie constitue l'architecture officielle du projet.
+Cette hiérarchie constitue l'architecture officielle du projet [réf: MASTER-003].
+
+Une version antérieure de ce document plaçait STANDARDS entre MASTER et GDB.
+STANDARDS a depuis été absorbé par MASTER (MASTER-004, MASTER-006, MASTER-007) ;
+CORE a été créé comme bibliothèque de primitives fondamentales, positionnée entre
+MASTER et GDB [réf: ADR-001, ADR-003].
 
 ---
 
@@ -81,18 +88,19 @@ Définit :
 
 - la vision ;
 - les objectifs ;
-- les principes directeurs.
+- les principes directeurs ;
+- les conventions documentaires (absorbant l'ancien rôle de STANDARDS).
 
 ---
 
-## STANDARDS
+## CORE
 
-Définit :
+Définit les primitives fondamentales du moteur --- Entity, Component, Value,
+State, Relation, Event, Time, Space, Lifecycle [réf: CORE-000C].
 
-- les conventions ;
-- la terminologie ;
-- les règles documentaires ;
-- les contrats communs.
+Toute action manipule ces primitives sans les redéfinir : un Acteur est une
+Entity, un Effet modifie un State, un Événement publié par ACT est un Event au
+sens de CORE. ACT ne redéfinit jamais ces concepts, il les emploie.
 
 ---
 
@@ -249,6 +257,12 @@ Le document est conforme si :
 ---
 
 # 12. Historique
+
+Version 1.1
+
+Correction de la hiérarchie documentaire : STANDARDS (absorbé par MASTER) retiré,
+CORE ajouté comme dépendance explicite. Corrige ACT-001-C01. En-tête mis en
+conformité avec MASTER-004.
 
 Version 1.0
 

@@ -1,8 +1,10 @@
-GDB-015E --- Les Blessures
+GDB-015E --- Les Blessures (contexte de combat)
 
-Version : 1.0
+Version : 1.1
 Statut : Officiel
 Type : Combat
+Maturité : 2
+Bibliothèque : GDB
 ⸻
 
 
@@ -20,6 +22,7 @@ Une blessure est une conséquence, jamais une simple pénalité.
 
 Sa nature, sa gravité et son évolution dépendent des circonstances, des 
 protections, des soins reçus et du temps.
+GDB-022C [réf: GDB-022C] fait autorité sur le mécanisme de blessure (types, guérison, soins), quelle qu'en soit l'origine. Ce document n'ajoute que le contexte spécifique du combat --- tactique, arme utilisée, gestion en pleine bataille.
 ⸻
 LES TYPES DE BLESSURES
 
@@ -77,3 +80,12 @@ Si la réponse est non, elle devra être repensée.
 Fin du document
 
 Statut : Validé -- Référence officielle.
+⸻
+HISTORIQUE
+
+Version 1.1 : titre précisé et renvoi ajouté vers GDB-022C, qui fait désormais
+autorité sur le mécanisme de blessure quelle qu'en soit l'origine. Résout le
+doublon de titre signalé par GDB-CATALOG-C01. En-tête mis en conformité avec
+MASTER-004.
+
+Version 1.0 : création du document.

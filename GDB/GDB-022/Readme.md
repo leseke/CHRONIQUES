@@ -1,5 +1,13 @@
 # GDB-022
 
+> Version : 1.1
+> Statut : Officiel
+> Type : Série
+> Maturité : 1
+> Bibliothèque : GDB
+
+---
+
 > La santé, les soins et le bien-être des habitants.
 
 ---
@@ -68,3 +76,12 @@ Cette série interagit avec les besoins des habitants, le vieillissement, l'éco
 Version : 1.0
 
 Statut : Officiel
+
+---
+
+# Historique
+
+## Version 1.1
+
+- GDB-022C fait désormais explicitement autorité sur le mécanisme de blessure quelle qu'en soit l'origine, en réponse au doublon avec GDB-015E ;
+- en-tête mis en conformité avec MASTER-004.

@@ -1,8 +1,10 @@
-GDB-014A --- L'Exploration
+GDB-014A --- L'Exploration (mécanisme)
 
-Version : 1.0
+Version : 1.1
 Statut : Officiel
 Type : Exploration & Découverte
+Maturité : 2
+Bibliothèque : GDB
 ⸻
 
 
@@ -21,6 +23,7 @@ Explorer consiste à aller au-delà du connu.
 Chaque voyage est l'occasion de découvrir de nouveaux lieux, ressources, 
 cultures, phénomènes ou savoirs. L'exploration récompense la curiosité 
 plutôt que la simple progression.
+L'expérience ressentie par le joueur --- curiosité, émerveillement --- est définie par GDB-006E [réf: GDB-006E], pas ici. Voir la section « Frontière » du Readme de cette série.
 ⸻
 LES FORMES D'EXPLORATION
 
@@ -78,3 +81,10 @@ Si la réponse est non, elle devra être repensée.
 Fin du document
 
 Statut : Validé -- Référence officielle.
+⸻
+HISTORIQUE
+
+Version 1.1 : titre précisé et renvoi ajouté, résolvant le doublon de titre
+signalé par GDB-CATALOG-C01. En-tête mis en conformité avec MASTER-004.
+
+Version 1.0 : création du document.

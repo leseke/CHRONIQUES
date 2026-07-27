@@ -1,5 +1,13 @@
 # GDB-024
 
+> Version : 1.1
+> Statut : Officiel
+> Type : Série
+> Maturité : 1
+> Bibliothèque : GDB
+
+---
+
 > Les sources d'énergie et leur utilisation.
 
 ---
@@ -53,3 +61,12 @@ La série GDB-024 répond à la question :
 Version : 1.0
 
 Statut : Officiel
+
+---
+
+# Historique
+
+## Version 1.1
+
+- GDB-024A enrichi d'une relation genre/espèce avec GDB-005B (Ressources).
+- en-tête mis en conformité avec MASTER-004.

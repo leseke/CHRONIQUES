@@ -1,5 +1,13 @@
 # GDB-013
 
+> Version : 1.1
+> Statut : Officiel
+> Type : Série
+> Maturité : 1
+> Bibliothèque : GDB
+
+---
+
 > Les constructions et l'aménagement du monde.
 
 ## Présentation
@@ -43,3 +51,12 @@ Répondre à la question :
 Version : 1.0
 
 Statut : Officiel
+
+---
+
+# Historique
+
+## Version 1.1
+
+- GDB-013H enrichi d'une référence normative vers GDB-002B (paliers de persistance).
+- en-tête mis en conformité avec MASTER-004.

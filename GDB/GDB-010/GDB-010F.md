@@ -1,8 +1,10 @@
 GDB-010F --- Les Biomes
 
-Version : 1.0
+Version : 1.1
 Statut : Officiel
 Type : Monde Vivant
+Maturité : 2
+Bibliothèque : GDB
 ⸻
 
 
@@ -20,6 +22,7 @@ Un biome est un environnement vivant façonné par le climat, le relief,
 les sols et les êtres vivants.
 
 Chaque biome évolue naturellement et participe à la diversité du monde.
+GDB-003J [réf: GDB-003J] fait autorité sur le biome comme entité géographique (rattachement à une Zone). Ce document fait autorité sur le biome comme système écologique vivant (climat, flore, faune, équilibres naturels).
 ⸻
 LES COMPOSANTES
 
@@ -77,3 +80,9 @@ Si la réponse est non, elle devra être repensée.
 Fin du document
 
 Statut : Validé -- Référence officielle.
+⸻
+HISTORIQUE
+
+Version 1.1 : précision de la frontière avec GDB-003J : ce document fait désormais autorité sur le biome comme système écologique, GDB-003J sur son rattachement géographique. Résout le doublon signalé par GDB-CATALOG-C01. En-tête mis en conformité avec MASTER-004.
+
+Version 1.0 : création du document.

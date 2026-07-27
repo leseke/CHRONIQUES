@@ -1,8 +1,10 @@
 GDB-013H --- Le Patrimoine
 
-Version : 1.0
+Version : 1.1
 Statut : Officiel
 Type : Construction & Habitat
+Maturité : 2
+Bibliothèque : GDB
 ⸻
 
 
@@ -20,6 +22,7 @@ Le patrimoine est une mémoire vivante.
 
 Chaque bâtiment, ouvrage ou lieu remarquable raconte une partie de 
 l'histoire d'une famille, d'une communauté ou d'une civilisation.
+Ce document ne redéfinit pas le mécanisme de mémoire : un élément de patrimoine qui « raconte une partie de l'histoire » a nécessairement atteint le palier Légende ou Tradition défini par GDB-002B [réf: GDB-002B]. Un bâtiment récent, même remarquable, n'est pas encore un patrimoine au sens de ce document tant qu'il n'a pas franchi ce seuil.
 ⸻
 LES FORMES DE PATRIMOINE
 
@@ -77,3 +80,11 @@ Si la réponse est non, elle devra être repensée.
 Fin du document
 
 Statut : Validé -- Référence officielle.
+⸻
+HISTORIQUE
+
+Version 1.1 : ajout d'une référence normative explicite à GDB-002B (paliers de
+persistance de la Mémoire du Monde), qui définit à partir de quand une
+construction devient patrimoine. En-tête mis en conformité avec MASTER-004.
+
+Version 1.0 : création du document.

@@ -1,8 +1,10 @@
 GDB-004H --- Les Compétences
 
-Version : 1.0
+Version : 1.1
 Statut : Officiel
 Type : Population du Monde
+Maturité : 2
+Bibliothèque : GDB
 ⸻
 
 
@@ -20,6 +22,15 @@ Les compétences ne sont jamais innées dans leur forme finale.
 
 Elles se développent progressivement par la pratique, l'observation, 
 l'enseignement et l'expérience.
+⸻
+FRONTIÈRE AVEC LES CONNAISSANCES
+
+Une Compétence se distingue d'une Connaissance [réf: GDB-004G] par un
+critère unique : elle exige la pratique, jamais la seule communication.
+Un mentor, un livre ou un récit peuvent transmettre une Connaissance en
+une seule interaction ; ils ne transmettent jamais directement une
+Compétence, qui reste à construire par la pratique de celui qui
+l'acquiert. Voir GDB-004G pour le détail complet de cette frontière.
 ⸻
 ACQUISITION
 
@@ -84,3 +95,11 @@ Si la réponse est non, elle devra être repensée.
 Fin du document
 
 Statut : Validé -- Référence officielle.
+⸻
+HISTORIQUE
+
+Version 1.1 : ajout d'un renvoi vers GDB-004G pour la frontière avec les
+Connaissances (corrige GDB-004-C01, en complément de GDB-004G). En-tête mis en
+conformité avec MASTER-004.
+
+Version 1.0 : création du document.

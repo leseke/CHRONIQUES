@@ -1,5 +1,13 @@
 # GDB-017
 
+> Version : 1.1
+> Statut : Officiel
+> Type : Série
+> Maturité : 1
+> Bibliothèque : GDB
+
+---
+
 > Les religions, croyances et spiritualités présentes dans Chroniques.
 
 ## Présentation
@@ -43,3 +51,12 @@ Répondre à la question :
 Version : 1.0
 
 Statut : Officiel
+
+---
+
+# Historique
+
+## Version 1.1
+
+- GDB-017H enrichi d'une référence normative vers GDB-009B (communauté générique).
+- en-tête mis en conformité avec MASTER-004.

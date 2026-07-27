@@ -1,8 +1,10 @@
-GDB-015H --- Les Conflits
+GDB-015H --- Les Conflits (escalade et résolution par la force)
 
-Version : 1.0
+Version : 1.1
 Statut : Officiel
 Type : Combat
+Maturité : 2
+Bibliothèque : GDB
 ⸻
 
 
@@ -21,6 +23,7 @@ Un conflit naît d'une divergence.
 Ses causes peuvent être économiques, politiques, culturelles, 
 territoriales, religieuses, idéologiques ou personnelles. Chaque conflit 
 suit sa propre évolution selon les décisions des acteurs concernés.
+GDB-009I [réf: GDB-009I] fait autorité sur le conflit comme phénomène social (causes, formes, résolution non-violente). Ce document ne décrit que le passage à la résolution par la force et ses mécaniques propres.
 ⸻
 LES FORMES DE CONFLITS
 
@@ -79,3 +82,11 @@ Si la réponse est non, elle devra être repensée.
 Fin du document
 
 Statut : Validé -- Référence officielle.
+⸻
+HISTORIQUE
+
+Version 1.1 : titre précisé et renvoi ajouté vers GDB-009I, qui fait désormais
+autorité sur le conflit comme phénomène social. Résout le doublon de titre
+signalé par GDB-CATALOG-C01. En-tête mis en conformité avec MASTER-004.
+
+Version 1.0 : création du document.

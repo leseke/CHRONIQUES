@@ -1,6 +1,6 @@
 # MASTER-003 --- Architecture Officielle
 
-> Version : 1.1
+> Version : 1.3
 > Statut : Officiel
 > Type : Architecture
 > Maturité : 1
@@ -73,6 +73,20 @@ Un ADR historique peut faire référence à une bibliothèque depuis retirée (p
 
 ---
 
+# Le registre d'audit
+
+Le dépôt contient un second registre, distinct des bibliothèques et du registre ADR, à la racine :
+
+AUDIT/
+
+Il porte le document canonique unique AUDIT-GLOBALE.md, qui recense les constats ouverts sur l'ensemble des bibliothèques, leur priorité et leur statut de correction.
+
+Ce registre est distinct des bibliothèques pour la même raison que le registre ADR : un constat d'audit ne relève pas d'un domaine unique, il peut concerner n'importe quelle bibliothèque. Il diffère du registre ADR par sa nature : l'ADR enregistre des décisions déjà prises, l'audit recense des écarts encore ouverts.
+
+La méthode selon laquelle ce registre est alimenté et corrigé est définie par MASTER-008 [réf: MASTER-008], et non par ce document.
+
+---
+
 # Hiérarchie d'autorité
 
 Les bibliothèques ne sont pas au même niveau.
@@ -136,6 +150,8 @@ Exemples :
 
 La numérotation est volontairement ouverte. De nouveaux chapitres peuvent être ajoutés sans remettre en cause la structure existante.
 
+Lorsqu'une section contient plusieurs documents, le second et les suivants portent un suffixe numérique après la lettre de section : `GDB-001I-2`, `GDB-001I-3`, etc. Ce format s'ajoute au document initial de la section (`GDB-001I`) sans le remplacer, et sans introduire de onzième lettre. Une section ne dépasse jamais la lettre J.
+
 ---
 
 # Correspondance entre spécification et code
@@ -167,6 +183,25 @@ Avant toute modification de l'architecture :
 Ce changement supprime-t-il une ambiguïté réelle, ou déplace-t-il simplement le problème ailleurs ?
 
 Si la réponse est la seconde, il doit être abandonné.
+
+---
+
+# Historique
+
+## Version 1.3
+
+- formalisation du format de nommage pour une section contenant plusieurs documents (`GDB-001I-2`, etc.), jusqu'ici prévu en principe mais jamais concrétisé, découvert lors de la correction de GDB-001-C02.
+
+## Version 1.2
+
+- déclaration officielle du registre AUDIT (AUDIT-GLOBALE.md), jusqu'ici non mentionné par ce document ;
+- référence à MASTER-008 pour la méthode d'alimentation de ce registre ;
+
+Corrige (en partie) MASTER-003-C02. Voir [réf: ADR-004].
+
+## Version 1.1
+
+- ajout de la note sur les bibliothèques retirées (STANDARDS, PLN) et référence à ADR-003.
 
 ---
 

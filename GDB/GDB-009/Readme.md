@@ -1,5 +1,13 @@
 # GDB-009
 
+> Version : 1.1
+> Statut : Officiel
+> Type : Série
+> Maturité : 1
+> Bibliothèque : GDB
+
+---
+
 > Les structures sociales et les civilisations.
 
 ---
@@ -52,10 +60,12 @@ La série GDB-009 répond à la question :
 | GDB-009C | Les Familles |
 | GDB-009D | Les Cultures |
 | GDB-009E | Les Valeurs |
-| GDB-009F | Les Lois |
+| GDB-009F | Les Lois (légitimité et civilisation) |
 | GDB-009G | Les Institutions |
 | GDB-009H | Les Gouvernances |
 | GDB-009I | Les Conflits |
+
+*(GDB-009I fait désormais explicitement autorité sur le conflit comme phénomène social ; voir sa Frontière avec GDB-015H.)*
 | GDB-009J | La Philosophie des Civilisations |
 
 ---
@@ -78,3 +88,12 @@ Cette série complète les séries consacrées aux habitants, au monde et au tem
 Version : 1.0
 
 Statut : Officiel
+
+---
+
+# Historique
+
+## Version 1.1
+
+- titre de GDB-009F précisé dans la table des documents ;
+- en-tête mis en conformité avec MASTER-004.

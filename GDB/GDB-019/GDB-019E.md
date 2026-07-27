@@ -1,8 +1,10 @@
 GDB-019E --- Les Marchés
 
-Version : 1.0
+Version : 1.1
 Statut : Officiel
 Type : Économie & Commerce
+Maturité : 2
+Bibliothèque : GDB
 ⸻
 
 
@@ -22,6 +24,7 @@ Un marché est un espace d'échange.
 Les prix, les disponibilités et les opportunités évoluent en fonction 
 des comportements des vendeurs, des acheteurs, des producteurs et des 
 événements qui affectent l'économie.
+GDB-005G [réf: GDB-005G] fait autorité sur les invariants du marché (localité de l'information, bornes de variation, absence d'arbitrage sans coût). Ce document décrit la typologie commerciale (marchés locaux, régionaux, saisonniers, etc.) sans redéfinir ces invariants.
 ⸻
 LES TYPES DE MARCHÉS
 
@@ -80,3 +83,9 @@ Si la réponse est non, elle devra être repensée.
 Fin du document
 
 Statut : Validé -- Référence officielle.
+⸻
+HISTORIQUE
+
+Version 1.1 : précision de la frontière avec GDB-005G, qui reste l'unique source des invariants du marché. Résout le doublon signalé par GDB-CATALOG-C01. En-tête mis en conformité avec MASTER-004.
+
+Version 1.0 : création du document.

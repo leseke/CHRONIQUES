@@ -1,8 +1,10 @@
 GDB-009G --- Les Institutions
 
-Version : 1.0
+Version : 1.1
 Statut : Officiel
 Type : Société & Civilisations
+Maturité : 2
+Bibliothèque : GDB
 ⸻
 
 
@@ -80,3 +82,11 @@ Si la réponse est non, elle devra être repensée.
 Fin du document
 
 Statut : Validé -- Référence officielle.
+⸻
+HISTORIQUE
+
+Version 1.1 : ce document est désormais explicitement rattaché à GDB-020A comme
+un cas particulier d'Organisation (reconnaissance publique, mission durable)
+[réf: GDB-020A]. En-tête mis en conformité avec MASTER-004.
+
+Version 1.0 : création du document.

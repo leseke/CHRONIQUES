@@ -1,10 +1,12 @@
 # ACT-001-G — Périmètre de la bibliothèque ACT
 
-> Version : 1.0
+> Version : 1.1
 >
 > Statut : Fondation
 >
 > Type : Contrat d'architecture
+>
+> Maturité : 1
 >
 > Bibliothèque : ACT
 >
@@ -210,7 +212,51 @@ Le périmètre est respecté si :
 
 ---
 
-# 13. Contrat TECH
+# 13. Critères d'entrée d'une mécanique dans ACT
+
+Une mécanique candidate n'entre dans ACT que si elle satisfait, dans l'ordre,
+les quatre tests suivants. Un échec à un test arrête l'examen : la mécanique
+n'entre pas dans ACT pour la raison indiquée.
+
+1. **Test d'universalité.** La mécanique reste-t-elle valide indépendamment
+   d'un métier, d'une civilisation, d'une époque ou d'une culture précise ?
+   Si non → elle appartient à GDB, pas à ACT.
+2. **Test de composition.** Le besoin peut-il être satisfait en combinant des
+   verbes ACT déjà documentés ? Si oui → aucune nouvelle mécanique n'est
+   créée ; la composition est documentée comme telle [réf: ACT-002].
+3. **Test de responsabilité unique.** La mécanique décrit-elle une
+   possibilité d'action, ou décrit-elle un objet, une implémentation ou un
+   contenu narratif ? Si ce n'est pas une possibilité d'action → elle
+   appartient à GDB, TECH ou LORE selon le cas (section 4 à 6).
+4. **Test de non-duplication.** ACT/CATALOG.md a-t-il été consulté, et
+   aucun pattern ou verbe existant ne couvre-t-il déjà ce besoin ? Si un
+   doublon existe → le document existant est étendu, aucun nouveau document
+   n'est créé.
+
+Une mécanique qui franchit les quatre tests peut être proposée comme nouveau
+verbe ou pattern.
+
+---
+
+# 14. Cycle de vie documentaire d'une mécanique
+
+Distinct du cycle de vie d'exécution d'une action [réf: ACT-001-E], toute
+mécanique suit un cycle de vie **documentaire** propre, aligné sur les
+niveaux de maturité de MASTER-004 :
+
+Proposée → Validée (critères de la section 13) → Spécifiée (Maturité 2,
+modèle complet selon ACT-001-D) → Implémentée (Maturité 3, correspondance
+TECH) → Testée (Maturité 4, scénarios QA) → Stable.
+
+Une mécanique ne peut jamais être implémentée par TECH avant d'être
+Spécifiée dans ACT --- c'est la règle fondamentale d'ACT (section 1). Une
+mécanique Stable qui doit changer ne revient jamais directement à
+Proposée : elle rouvre une nouvelle proposition, tracée comme une évolution
+distincte, jamais comme une modification silencieuse de l'existant.
+
+---
+
+# 15. Contrat TECH
 
 Les développeurs doivent considérer ACT comme la référence officielle du gameplay.
 
@@ -218,7 +264,7 @@ Toute implémentation qui introduit une mécanique absente d'ACT constitue un é
 
 ---
 
-# 14. Contrat Documentation
+# 16. Contrat Documentation
 
 Toute nouvelle documentation doit être classée dans la bibliothèque correspondant à sa responsabilité.
 
@@ -226,7 +272,13 @@ En cas de doute, le document doit être revu avant intégration.
 
 ---
 
-# 15. Historique
+# 17. Historique
+
+Version 1.1
+
+Ajout des critères d'entrée d'une mécanique dans ACT (section 13, corrige
+ACT-001-C02) et du cycle de vie documentaire d'une mécanique (section 14,
+corrige ACT-001-C03). En-tête mis en conformité avec MASTER-004.
 
 Version 1.0
 

@@ -77,3 +77,11 @@ Si la réponse est non, il devra être repensé.
 Fin du document
 
 Statut : Validé -- Référence officielle.
+⸻
+HISTORIQUE
+
+Version 1.1 : précision de la frontière avec GDB-010F : ce document fait
+autorité sur le rattachement géographique du biome, GDB-010F sur son
+fonctionnement écologique. Résout le doublon signalé par GDB-CATALOG-C01.
+
+Version 1.0 : création du document.

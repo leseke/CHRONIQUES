@@ -1,8 +1,10 @@
 GDB-017H --- Les Communautés Religieuses
 
-Version : 1.0
+Version : 1.1
 Statut : Officiel
 Type : Religion & Croyances
+Maturité : 2
+Bibliothèque : GDB
 ⸻
 
 
@@ -22,6 +24,7 @@ Une communauté religieuse est avant tout un groupe humain.
 
 Elle se construit autour de croyances communes, mais évolue selon son 
 histoire, sa culture, son environnement et les choix de ses membres.
+GDB-009B [réf: GDB-009B] fait autorité sur la communauté comme structure sociale générique. Ce document n'en décrit que la dimension religieuse et spirituelle propre --- croyances, rites, représentants --- sans redéfinir ce qui fait une communauté en général.
 ⸻
 LES COMPOSANTES
 
@@ -80,3 +83,11 @@ Si la réponse est non, elle devra être repensée.
 Fin du document
 
 Statut : Validé -- Référence officielle.
+⸻
+HISTORIQUE
+
+Version 1.1 : ajout d'une référence normative vers GDB-009B, qui fait autorité
+sur la communauté comme structure sociale générique. En-tête mis en conformité
+avec MASTER-004.
+
+Version 1.0 : création du document.

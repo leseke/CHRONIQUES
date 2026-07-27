@@ -1,8 +1,10 @@
-GDB-014E --- Les Découvertes
+GDB-014E --- Les Découvertes (mécanisme)
 
-Version : 1.0
+Version : 1.1
 Statut : Officiel
 Type : Exploration & Découverte
+Maturité : 2
+Bibliothèque : GDB
 ⸻
 
 
@@ -21,6 +23,7 @@ Une découverte est une révélation du monde.
 Elle peut être individuelle ou collective et conserve une valeur au-delà 
 du moment où elle est réalisée. Chaque découverte contribue à l'histoire 
 vivante de Chroniques.
+L'expérience ressentie par le joueur est définie par GDB-006D [réf: GDB-006D], pas ici. Voir la section « Frontière » du Readme de cette série.
 ⸻
 LES FORMES DE DÉCOUVERTE
 
@@ -78,3 +81,10 @@ Si la réponse est non, elle devra être repensée.
 Fin du document
 
 Statut : Validé -- Référence officielle.
+⸻
+HISTORIQUE
+
+Version 1.1 : titre précisé et renvoi ajouté, résolvant le doublon de titre
+signalé par GDB-CATALOG-C01. En-tête mis en conformité avec MASTER-004.
+
+Version 1.0 : création du document.

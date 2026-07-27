@@ -1,6 +1,10 @@
-GDB-018B --- Les Lois
+GDB-018B --- Les Lois (application judiciaire)
 
-Version : 1.0 Statut : Officiel Type : Justice & Droit
+Version : 1.1
+Statut : Officiel
+Type : Justice & Droit
+Maturité : 2
+Bibliothèque : GDB
 ⸻
 OBJECTIF
 
@@ -18,6 +22,8 @@ Une loi est une règle reconnue par une autorité.
 Son contenu reflète les valeurs, les besoins et l'histoire de la société 
 qui l'a adoptée. Les lois évoluent avec le temps et peuvent être créées, 
 modifiées, interprétées ou supprimées.
+⸻
+GDB-009F [réf: GDB-009F] fait autorité sur la légitimité d'une loi et sa place dans une civilisation. Ce document fait autorité sur son application : tribunaux, procédures, sanctions.
 ⸻
 LES CATÉGORIES DE LOIS
 
@@ -76,3 +82,11 @@ Si la réponse est non, elle devra être repensée.
 Fin du document
 
 Statut : Validé -- Référence officielle.
+⸻
+HISTORIQUE
+
+Version 1.1 : titre précisé et renvoi ajouté vers GDB-009F, qui fait désormais
+autorité sur la légitimité d'une loi. Résout le doublon de titre signalé par
+GDB-CATALOG-C01. En-tête mis en conformité avec MASTER-004.
+
+Version 1.0 : création du document.

@@ -1,8 +1,10 @@
 GDB-020A --- Les Organisations
 
-Version : 1.0
+Version : 1.1
 Statut : Officiel
 Type : Organisations
+Maturité : 2
+Bibliothèque : GDB
 ⸻
 
 
@@ -22,6 +24,7 @@ Une organisation est une entité collective.
 Elle possède une identité, une raison d'être, des règles de 
 fonctionnement et des ressources propres. Son influence dépend de ses 
 membres, de sa réputation et de sa capacité à atteindre ses objectifs.
+Ce document fait autorité sur l'Organisation comme concept générique. Une Institution [réf: GDB-009G] en est un cas particulier : une organisation reconnue publiquement par une société pour assurer une mission durable. Toute Institution est une Organisation ; l'inverse est faux (une guilde ou une compagnie n'a pas besoin de reconnaissance publique pour exister).
 ⸻
 LES COMPOSANTES
 
@@ -80,3 +83,9 @@ Si la réponse est non, elle devra être repensée.
 Fin du document
 
 Statut : Validé -- Référence officielle.
+⸻
+HISTORIQUE
+
+Version 1.1 : précision de la relation genre/espèce avec GDB-009G (Institutions), qui en est un cas particulier. En-tête mis en conformité avec MASTER-004.
+
+Version 1.0 : création du document.

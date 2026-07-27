@@ -1,8 +1,10 @@
 GDB-025A --- Les Moyens de Transport
 
-Version : 1.0
+Version : 1.1
 Statut : Officiel
 Type : Transports
+Maturité : 2
+Bibliothèque : GDB
 ⸻
 
 
@@ -24,6 +26,7 @@ des individus d'un point à un autre.
 Chaque moyen de transport possède des caractéristiques propres : 
 capacité, vitesse, coût d'utilisation, autonomie, fiabilité, sécurité et 
 contraintes d'exploitation.
+GDB-003G [réf: GDB-003G] fait autorité sur les réseaux de déplacement comme structure géographique du monde (chemins, routes, cols). Ce document fait autorité sur les véhicules et moyens qui empruntent ces réseaux --- capacité, vitesse, coût --- sans redéfinir la géographie elle-même.
 ⸻
 LES PRINCIPALES CATÉGORIES
 
@@ -82,3 +85,9 @@ Si la réponse est non, elle devra être repensée.
 Fin du document
 
 Statut : Validé -- Référence officielle.
+⸻
+HISTORIQUE
+
+Version 1.1 : précision de la frontière avec GDB-003G : ce document décrit les moyens de transport, GDB-003G les réseaux géographiques qu'ils empruntent. En-tête mis en conformité avec MASTER-004.
+
+Version 1.0 : création du document.

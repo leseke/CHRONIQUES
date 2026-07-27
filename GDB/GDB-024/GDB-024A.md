@@ -1,8 +1,10 @@
 GDB-024A --- Les Sources d'Énergie
 
-Version : 1.0
+Version : 1.1
 Statut : Officiel
 Type : Énergie
+Maturité : 2
+Bibliothèque : GDB
 ⸻
 
 
@@ -24,6 +26,7 @@ Chaque source possède des caractéristiques propres : disponibilité,
 rendement, stabilité, coût, impact environnemental et niveau 
 technologique requis. Les civilisations peuvent utiliser une ou 
 plusieurs sources simultanément.
+Une source d'énergie est un cas particulier de Ressource [réf: GDB-005B] : elle en respecte les mêmes invariants (origine crédible, cycle de vie, rareté variable). Ce document n'ajoute que ce qui est spécifique à l'énergie --- rendement, stockage, distribution --- sans redéfinir ce qu'est une ressource.
 ⸻
 LES PRINCIPALES SOURCES
 
@@ -85,3 +88,9 @@ Si la réponse est non, elle devra être repensée.
 Fin du document
 
 Statut : Validé -- Référence officielle.
+⸻
+HISTORIQUE
+
+Version 1.1 : précision de la relation genre/espèce avec GDB-005B : une source d'énergie est une Ressource spécialisée. En-tête mis en conformité avec MASTER-004.
+
+Version 1.0 : création du document.

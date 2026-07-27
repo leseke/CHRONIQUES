@@ -1,8 +1,10 @@
 GDB-005J --- Les Investissements
 
-Version : 1.0
+Version : 1.1
 Statut : Officiel
 Type : Économie & Progression
+Maturité : 2
+Bibliothèque : GDB
 ⸻
 
 
@@ -58,6 +60,35 @@ Ils créent des conséquences durables dans le monde.
 Un investissement peut prospérer, stagner, évoluer ou échouer selon les 
 décisions prises, les événements et l'évolution du monde.
 ⸻
+CYCLE DE VIE D'UN INVESTISSEMENT
+
+Un investissement traverse toujours les états suivants :
+
+Engagement → Maturation → (Rendement | Stagnation | Échec) → Clôture ou Réinvestissement
+
+- **Engagement.** Le joueur ou l'habitant consacre des ressources, du
+  temps ou des connaissances à un projet dont le résultat n'est pas
+  garanti. Cet état correspond au moment où le risque est accepté.
+- **Maturation.** L'investissement produit ses effets progressivement.
+  Sa durée dépend de sa nature (une formation mûrit différemment d'une
+  propriété). Aucun résultat n'est visible avant la fin de cette étape.
+- **Rendement.** L'investissement produit un bénéfice net, proportionné
+  au risque accepté à l'Engagement --- jamais garanti à l'avance
+  [réf: GDB-005I pour la façon dont ce bénéfice est perçu selon le
+  contexte].
+- **Stagnation.** L'investissement ne produit ni gain ni perte
+  significative. Ce n'est pas un échec : c'est une issue neutre, qui
+  peut se prolonger ou déboucher plus tard sur un Rendement ou un Échec
+  selon l'évolution du monde.
+- **Échec.** L'investissement produit une perte, partielle ou totale,
+  des ressources engagées à l'Engagement. L'échec doit toujours
+  découler d'une cause identifiable [réf: GDB-002C], jamais d'un tirage
+  arbitraire sans justification narrative.
+- **Clôture ou Réinvestissement.** Quelle que soit l'issue,
+  l'investissement se termine ou se prolonge sous la forme d'un nouvel
+  Engagement --- un investissement ne reste jamais indéfiniment dans un
+  état intermédiaire sans évolution.
+⸻
 RÈGLES DE CONCEPTION
 
 Toute mécanique d'investissement devra :
@@ -78,3 +109,11 @@ Si la réponse est non, elle devra être repensée.
 Fin du document
 
 Statut : Validé -- Référence officielle.
+⸻
+HISTORIQUE
+
+Version 1.1 : ajout du cycle de vie d'un investissement (Engagement → Maturation →
+Rendement/Stagnation/Échec → Clôture ou Réinvestissement). Corrige GDB-005-C04.
+En-tête mis en conformité avec MASTER-004.
+
+Version 1.0 : création du document.

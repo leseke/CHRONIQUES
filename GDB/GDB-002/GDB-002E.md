@@ -1,8 +1,10 @@
 GDB-002E --- Les Opportunités
 
-Version : 1.0
+Version : 1.1
 Statut : Officiel
 Type : Fondations du Gameplay
+Maturité : 2
+Bibliothèque : GDB
 ⸻
 
 
@@ -70,6 +72,40 @@ Les opportunités peuvent concerner :
 
 Le monde doit toujours offrir plusieurs directions possibles.
 ⸻
+CYCLE DE VIE D'UNE OPPORTUNITÉ
+
+Une opportunité traverse toujours les états suivants, dans cet ordre :
+
+Latente → Visible → (Saisie | Ignorée) → Résolue
+
+- **Latente.** Les conditions du monde permettent l'apparition de
+  l'opportunité, mais elle n'est pas encore portée à la connaissance du
+  joueur. Cet état n'a pas de durée fixe : il dépend entièrement du
+  contexte qui l'a rendu possible (un événement, une rencontre, une
+  rumeur, un besoin exprimé par le monde).
+- **Visible.** L'opportunité est perceptible par le joueur. Elle
+  possède une fenêtre de validité propre à sa nature --- une rumeur
+  s'éteint plus vite qu'une vacance de poste, une vacance de poste plus
+  vite qu'un droit d'héritage. Cette fenêtre n'est jamais instantanée :
+  le joueur dispose toujours d'un délai réel pour choisir.
+- **Saisie.** Le joueur agit sur l'opportunité avant l'expiration de sa
+  fenêtre de validité. Elle entre alors dans le moteur ACT (Intent →
+  Plan → Action → Outcome) [réf: ACT-002] comme origine d'une ou
+  plusieurs actions.
+- **Ignorée.** La fenêtre de validité expire sans action du joueur.
+  Ce n'est jamais un échec ni une sanction : c'est une issue neutre au
+  même titre que « Saisie ».
+- **Résolue.** L'opportunité quitte le cycle, saisie ou non. Sa
+  disparition peut, selon son ampleur, produire un nouvel événement
+  dynamique [réf: GDB-002D] ou un élément de la Mémoire du Monde
+  [réf: GDB-002B] --- jamais une pénalité au joueur qui ne l'a pas
+  saisie.
+
+Invariant : une opportunité ignorée ne réduit jamais le nombre
+d'opportunités futures. Le renouvellement permanent (voir plus haut)
+s'applique indépendamment du taux de saisie du joueur --- c'est ce qui
+distingue ce cycle d'une file d'attente à ressource limitée.
+⸻
 RÈGLES DE CONCEPTION
 
 Toute mécanique d'opportunité devra :
@@ -90,3 +126,12 @@ Si la réponse est non, elle devra être repensée.
 Fin du document
 
 Statut : Validé -- Référence officielle.
+⸻
+HISTORIQUE
+
+Version 1.1 : ajout du cycle de vie complet d'une opportunité (Latente → Visible →
+Saisie/Ignorée → Résolue), avec renvoi vers ACT-002 pour la saisie et vers
+GDB-002B/GDB-002D pour la résolution. Corrige GDB-002-C02. En-tête mis en
+conformité avec MASTER-004.
+
+Version 1.0 : création du document.

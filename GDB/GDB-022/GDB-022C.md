@@ -1,8 +1,10 @@
 GDB-022C --- Les Blessures
 
-Version : 1.0
+Version : 1.1
 Statut : Officiel
 Type : Santé & Médecine
+Maturité : 2
+Bibliothèque : GDB
 ⸻
 
 
@@ -81,3 +83,12 @@ Si la réponse est non, elle devra être repensée.
 Fin du document
 
 Statut : Validé -- Référence officielle.
+⸻
+HISTORIQUE
+
+Version 1.1 : ce document fait désormais explicitement autorité sur le mécanisme
+de blessure quelle qu'en soit l'origine ; GDB-015E (renommé) n'en décrit plus que
+le contexte de combat [réf: GDB-015E]. Résout le doublon de titre GDB-015E /
+GDB-022C signalé par GDB-CATALOG-C01. En-tête mis en conformité avec MASTER-004.
+
+Version 1.0 : création du document.

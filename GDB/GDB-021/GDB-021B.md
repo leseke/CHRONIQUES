@@ -1,8 +1,10 @@
 GDB-021B --- L'Apprentissage
 
-Version : 1.0
+Version : 1.1
 Statut : Officiel
 Type : Éducation & Connaissance
+Maturité : 2
+Bibliothèque : GDB
 ⸻
 
 
@@ -23,6 +25,7 @@ L'apprentissage résulte de l'expérience, de l'observation, de
 l'enseignement, de la pratique, de l'expérimentation et de la réflexion. 
 Chaque individu progresse selon son environnement, ses capacités et les 
 opportunités qui lui sont offertes.
+GDB-021B fait autorité sur l'apprentissage comme mécanisme civilisationnel (écoles, mentors, institutions [réf: GDB-021]). GDB-007C n'en décrit que l'expérience ressentie par le joueur [réf: GDB-007C] --- voir la Frontière du Readme de GDB-007.
 ⸻
 LES FORMES D'APPRENTISSAGE
 
@@ -82,3 +85,9 @@ Si la réponse est non, elle devra être repensée.
 Fin du document
 
 Statut : Validé -- Référence officielle.
+⸻
+HISTORIQUE
+
+Version 1.1 : précision de la frontière avec GDB-007C (expérience du joueur), qui fait désormais autorité sur GDB-021B pour le mécanisme éducatif. Résout le doublon signalé par GDB-CATALOG-C01. En-tête mis en conformité avec MASTER-004.
+
+Version 1.0 : création du document.

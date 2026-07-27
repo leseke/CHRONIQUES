@@ -1,8 +1,10 @@
-GDB-012F --- Les Chaînes de Production
+GDB-012F --- Les Chaînes de Production (dimension professionnelle)
 
-Version : 1.0
+Version : 1.1
 Statut : Officiel
 Type : Métiers & Activités
+Maturité : 2
+Bibliothèque : GDB
 ⸻
 
 
@@ -23,6 +25,7 @@ Chaque bien résulte d'une succession d'étapes impliquant différents
 savoir-faire, ressources et acteurs.
 
 La coopération est encouragée sans être imposée.
+GDB-005C [réf: GDB-005C] fait autorité sur les invariants Ressource → Produit de la chaîne. Ce document n'en décrit que la coopération entre métiers --- voir la section « Frontière avec GDB-005 » du Readme de cette série.
 ⸻
 COMPOSANTES
 
@@ -80,3 +83,11 @@ Si la réponse est non, elle devra être repensée.
 Fin du document
 
 Statut : Validé -- Référence officielle.
+⸻
+HISTORIQUE
+
+Version 1.1 : titre précisé et renvoi ajouté vers l'équivalent GDB-005, pour
+résoudre le doublon de titre signalé par GDB-CATALOG-C01. En-tête mis en
+conformité avec MASTER-004.
+
+Version 1.0 : création du document.

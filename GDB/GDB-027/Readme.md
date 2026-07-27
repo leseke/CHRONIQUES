@@ -1,5 +1,13 @@
 # GDB-027
 
+> Version : 1.1
+> Statut : Officiel
+> Type : Série
+> Maturité : 1
+> Bibliothèque : GDB
+
+---
+
 > Les mécanismes de collecte, de traitement, de conservation et de diffusion de l'information.
 
 ## Présentation
@@ -43,3 +51,12 @@ Répondre à la question :
 Version : 1.0
 
 Statut : Officiel
+
+---
+
+# Historique
+
+## Version 1.1
+
+- GDB-027A enrichi d'une frontière avec GDB-026 (contenu vs canal de communication).
+- en-tête mis en conformité avec MASTER-004.

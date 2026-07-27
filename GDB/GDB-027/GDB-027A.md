@@ -1,8 +1,10 @@
 GDB-027A --- Les Fondements de l'Information
 
-Version : 1.0
+Version : 1.1
 Statut : Officiel
 Type : Information
+Maturité : 2
+Bibliothèque : GDB
 ⸻
 
 
@@ -14,6 +16,7 @@ L'information représente l'ensemble des connaissances, données et
 observations permettant aux individus, aux organisations et aux 
 civilisations de comprendre leur environnement, de prendre des décisions 
 et de transmettre leur savoir.
+GDB-026 [réf: GDB-026A] fait autorité sur le canal de transmission. Ce document fait autorité sur le contenu transporté --- sa source, son exactitude, sa valeur --- jamais sur le moyen utilisé pour le faire circuler.
 ⸻
 PRINCIPE
 
@@ -79,3 +82,9 @@ Si la réponse est non, elle devra être repensée.
 Fin du document
 
 Statut : Validé -- Référence officielle.
+⸻
+HISTORIQUE
+
+Version 1.1 : précision de la frontière avec GDB-026 : ce document décrit le contenu informationnel, GDB-026 le canal qui le transporte. En-tête mis en conformité avec MASTER-004.
+
+Version 1.0 : création du document.

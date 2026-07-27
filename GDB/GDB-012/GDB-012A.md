@@ -1,8 +1,10 @@
-GDB-012A --- Les Métiers
+GDB-012A --- Les Métiers (dimension professionnelle)
 
-Version : 1.0
+Version : 1.1
 Statut : Officiel
 Type : Métiers & Activités
+Maturité : 2
+Bibliothèque : GDB
 ⸻
 
 
@@ -21,6 +23,7 @@ connaissances et de l'expérience.
 
 Il ne constitue jamais une classe imposée mais un choix libre pouvant 
 évoluer au fil de la vie.
+GDB-005 [réf: GDB-005A] fait autorité sur le métier comme activité économique. Ce document n'en décrit que la dimension professionnelle et identitaire --- voir la section « Frontière avec GDB-005 » du Readme de cette série.
 ⸻
 LES MÉTIERS
 
@@ -76,3 +79,11 @@ Si la réponse est non, elle devra être repensée.
 Fin du document
 
 Statut : Validé -- Référence officielle.
+⸻
+HISTORIQUE
+
+Version 1.1 : titre précisé et renvoi ajouté vers l'équivalent GDB-005, pour
+résoudre le doublon de titre signalé par GDB-CATALOG-C01. En-tête mis en
+conformité avec MASTER-004.
+
+Version 1.0 : création du document.

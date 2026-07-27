@@ -1,8 +1,10 @@
 GDB-030A --- Les Fondements de la Technologie
 
-Version : 1.0
+Version : 1.1
 Statut : Officiel
 Type : Technologie
+Maturité : 2
+Bibliothèque : GDB
 ⸻
 
 
@@ -22,6 +24,8 @@ La technologie est l'application concrète des connaissances.
 Elle évolue en permanence grâce aux découvertes scientifiques, à 
 l'ingénierie, aux besoins des populations et aux innovations 
 successives.
+⸻
+GDB-023 [réf: GDB-023] fait autorité sur le passage de la découverte scientifique à l'invention et à l'innovation. Ce document fait autorité sur ce que devient cette innovation une fois déployée à l'échelle d'une civilisation --- infrastructures, réseaux, normes. GDB-023 s'arrête à l'innovation ; GDB-030 commence à son adoption durable.
 ⸻
 LES COMPOSANTES
 
@@ -76,3 +80,12 @@ Si la réponse est non, elle devra être repensée.
 Fin du document
 
 Statut : Validé -- Référence officielle.
+⸻
+HISTORIQUE
+
+Version 1.1 : ajout de la frontière avec GDB-023 : ce document fait désormais
+autorité sur le déploiement durable d'une technologie (infrastructures, réseaux,
+normes), GDB-023 sur le passage de la découverte à l'invention. En-tête mis en
+conformité avec MASTER-004.
+
+Version 1.0 : création du document.

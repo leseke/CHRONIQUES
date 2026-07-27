@@ -1,6 +1,10 @@
 GDB-003A --- La Structure du Monde
 
-Version : 1.0 Statut : Officiel Type : Architecture du Monde
+Version : 1.1
+Statut : Officiel
+Type : Architecture du Monde
+Maturité : 2
+Bibliothèque : GDB
 ⸻
 OBJECTIF
 
@@ -25,6 +29,35 @@ Le monde est composé de :
 
 Chaque niveau possède sa propre identité et influence les niveaux 
 inférieurs.
+⸻
+CARDINALITÉS
+
+Chaque niveau de la hiérarchie appartient à exactement un niveau
+parent, jamais zéro, jamais plusieurs --- à l'exception des Frontières
+et des Biomes, qui ne sont pas des niveaux de la hiérarchie mais des
+qualifications transversales [réf: GDB-003H, GDB-003J].
+
+| Niveau | Appartient à | Cardinalité du parent | Contient | Cardinalité de l'enfant |
+|---|---|---|---|---|
+| Continent | Monde | exactement 1 | Régions | 1 ou plus |
+| Région | Continent | exactement 1 | Zones | 0 ou plus |
+| Zone | Région | exactement 1 | Lieux | 0 ou plus |
+| Lieu | Zone | exactement 1 | Points d'intérêt | 0 ou plus |
+| Point d'intérêt | Zone | exactement 1 | Lieu (optionnel) | 0 ou 1 |
+
+Trois invariants découlent de ce tableau :
+
+- **Aucun rattachement double.** Une Région n'appartient jamais à deux
+  Continents ; une Zone n'appartient jamais à deux Régions ; ainsi de
+  suite à chaque niveau. Un déplacement d'un élément d'un parent à un
+  autre est un événement de conception explicite, jamais un état
+  transitoire du monde.
+- **Le vide est autorisé sous Continent.** Une Région peut ne contenir
+  aucune Zone détaillée (terres non explorées ou non encore générées).
+  Un Continent, en revanche, ne peut jamais exister sans au moins une
+  Région : c'est ce qui lui donne une identité au sens de GDB-003B.
+- **Un Point d'intérêt appartient toujours à une Zone, parfois à un
+  Lieu.** Voir GDB-003F pour le détail de cette relation [réf: GDB-003F].
 ⸻
 IDENTITÉ
 
@@ -71,3 +104,11 @@ Si la réponse est non, elle devra être repensée.
 Fin du document
 
 Statut : Validé -- Référence officielle.
+⸻
+HISTORIQUE
+
+Version 1.1 : ajout des cardinalités géographiques (tableau des relations
+parent/enfant et trois invariants de rattachement). Corrige GDB-003-C01. En-tête
+mis en conformité avec MASTER-004.
+
+Version 1.0 : création du document.

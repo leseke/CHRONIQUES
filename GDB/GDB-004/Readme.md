@@ -1,5 +1,13 @@
 # GDB-004
 
+> Version : 1.1
+> Statut : Officiel
+> Type : Série
+> Maturité : 1
+> Bibliothèque : GDB
+
+---
+
 > Les habitants qui donnent vie au monde de Chroniques.
 
 ---
@@ -87,3 +95,16 @@ Les habitants doivent être :
 Version : 1.0
 
 Statut : Officiel
+
+---
+
+# Historique
+
+## Version 1.1
+
+- en-tête mis en conformité avec MASTER-004 ;
+- GDB-004G/H (frontière Connaissance/Compétence), GDB-004D (cycle de vie des traits) et GDB-004J (cas d'échec de la transmission) enrichis, suite à la clôture de GDB-004-C01, C02 et C03.
+
+## Version 1.0
+
+- Création du document.

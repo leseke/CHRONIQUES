@@ -1,8 +1,10 @@
 GDB-011E --- Les Opportunités
 
-Version : 1.0
+Version : 1.1
 Statut : Officiel
 Type : Interactions & Gameplay
+Maturité : 2
+Bibliothèque : GDB
 ⸻
 
 
@@ -22,6 +24,7 @@ Elle résulte des événements, des relations, des découvertes, du temps ou
 des conséquences des décisions.
 
 Aucune opportunité n'est garantie.
+GDB-002E [réf: GDB-002E] fait autorité sur le cycle de vie complet d'une opportunité (Latente → Visible → Saisie/Ignorée → Résolue). Ce document décrit uniquement comment l'interaction entre plusieurs systèmes déclenche l'apparition d'une opportunité, sans redéfinir son cycle.
 ⸻
 LES SOURCES D'OPPORTUNITÉS
 
@@ -75,3 +78,9 @@ Si la réponse est non, elle devra être repensée.
 Fin du document
 
 Statut : Validé -- Référence officielle.
+⸻
+HISTORIQUE
+
+Version 1.1 : précision de la frontière avec GDB-002E, qui reste l'unique source du cycle de vie d'une opportunité. Résout le doublon signalé par GDB-CATALOG-C01. En-tête mis en conformité avec MASTER-004.
+
+Version 1.0 : création du document.

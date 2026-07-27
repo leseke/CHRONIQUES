@@ -1,8 +1,10 @@
 GDB-009I --- Les Conflits
 
-Version : 1.0
+Version : 1.1
 Statut : Officiel
 Type : Société & Civilisations
+Maturité : 2
+Bibliothèque : GDB
 ⸻
 
 
@@ -80,3 +82,12 @@ Si la réponse est non, elle devra être repensée.
 Fin du document
 
 Statut : Validé -- Référence officielle.
+⸻
+HISTORIQUE
+
+Version 1.1 : ce document fait désormais explicitement autorité sur le conflit
+comme phénomène social ; GDB-015H (renommé) ne couvre plus que l'escalade vers la
+résolution par la force [réf: GDB-015H]. Résout le doublon de titre GDB-009I /
+GDB-015H signalé par GDB-CATALOG-C01. En-tête mis en conformité avec MASTER-004.
+
+Version 1.0 : création du document.

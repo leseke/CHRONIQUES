@@ -1,8 +1,10 @@
-GDB-012D --- Les Outils
+GDB-012D --- Les Outils (dimension professionnelle)
 
-Version : 1.0
+Version : 1.1
 Statut : Officiel
 Type : Métiers & Activités
+Maturité : 2
+Bibliothèque : GDB
 ⸻
 
 
@@ -20,6 +22,7 @@ Un outil n'est pas une simple amélioration numérique.
 
 Il modifie les possibilités d'action, la précision, la qualité ou 
 l'efficacité d'une activité, tout en restant cohérent avec le monde.
+GDB-005D [réf: GDB-005D] fait autorité sur l'outil comme composant de la chaîne de production. Ce document n'en décrit que l'usage professionnel quotidien --- voir la section « Frontière avec GDB-005 » du Readme de cette série.
 ⸻
 DIVERSITÉ
 
@@ -77,3 +80,11 @@ Si la réponse est non, elle devra être repensée.
 Fin du document
 
 Statut : Validé -- Référence officielle.
+⸻
+HISTORIQUE
+
+Version 1.1 : titre précisé et renvoi ajouté vers l'équivalent GDB-005, pour
+résoudre le doublon de titre signalé par GDB-CATALOG-C01. En-tête mis en
+conformité avec MASTER-004.
+
+Version 1.0 : création du document.

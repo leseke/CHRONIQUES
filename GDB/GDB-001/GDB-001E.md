@@ -71,3 +71,12 @@ Si la réponse est non, elle devra être repensée.
 Fin du document
 
 Statut : Validé -- Référence officielle.
+⸻
+HISTORIQUE
+
+Version 1.1 : précision de la frontière avec GDB-008A : ce document fait
+autorité sur la philosophie du temps, GDB-008A sur son fonctionnement concret
+(saisons, générations, vieillissement). Résout le doublon signalé par
+GDB-CATALOG-C01.
+
+Version 1.0 : création du document.

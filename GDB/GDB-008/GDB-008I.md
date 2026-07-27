@@ -1,8 +1,10 @@
-GDB-008I --- La Mémoire du Monde
+GDB-008I --- La Mémoire du Monde à travers les Générations
 
-Version : 1.0
+Version : 1.1
 Statut : Officiel
 Type : Temps & Générations
+Maturité : 2
+Bibliothèque : GDB
 ⸻
 
 
@@ -48,6 +50,21 @@ Certains événements sont oubliés.
 D'autres sont déformés, redécouverts ou réinterprétés par les 
 générations suivantes.
 ⸻
+RENVOI VERS GDB-002B
+
+Ce document et GDB-002B (La Mémoire du Monde) portaient jusqu'ici le
+même titre et décrivaient le même mécanisme sans se référencer --- un
+doublon déjà signalé par GDB/CATALOG.md. GDB-002B reste l'unique
+source canonique du mécanisme : les quatre paliers de persistance
+(Anecdote, Souvenir, Légende, Tradition) et leurs conditions d'entrée
+et de sortie [réf: GDB-002B] s'appliquent ici sans modification.
+
+Ce document (GDB-008I) n'ajoute qu'un seul élément propre à la série
+GDB-008 : la façon dont ce mécanisme s'observe *à l'échelle des
+générations*, c'est-à-dire comment un Souvenir ou une Légende
+traverse spécifiquement une transmission de lignée [réf: GDB-004J].
+Il ne redéfinit jamais les paliers eux-mêmes.
+⸻
 IMPACT
 
 La mémoire influence :
@@ -80,3 +97,12 @@ Si la réponse est non, elle devra être repensée.
 Fin du document
 
 Statut : Validé -- Référence officielle.
+⸻
+HISTORIQUE
+
+Version 1.1 : renommage du titre (« La Mémoire du Monde » → « La Mémoire du Monde
+à travers les Générations ») et ajout d'un renvoi vers GDB-002B, qui reste l'unique
+source canonique du mécanisme de persistance. Résout le doublon de titre GDB-002B
+/ GDB-008I signalé par GDB-CATALOG-C01. En-tête mis en conformité avec MASTER-004.
+
+Version 1.0 : création du document.

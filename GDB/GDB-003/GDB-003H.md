@@ -1,8 +1,10 @@
 GDB-003H --- Les Frontières Naturelles
 
-Version : 1.0
+Version : 1.1
 Statut : Officiel
 Type : Architecture du Monde
+Maturité : 2
+Bibliothèque : GDB
 ⸻
 
 
@@ -46,6 +48,31 @@ Les frontières :
 Certaines frontières évoluent avec le temps (cours d'eau, forêts, zones 
 côtières), tandis que d'autres restent relativement stables.
 ⸻
+STATUT DOCUMENTAIRE
+
+Une frontière n'est pas un niveau supplémentaire de la hiérarchie
+géographique [réf: GDB-003A]. Elle ne possède aucune existence
+indépendante d'une Zone.
+
+Une frontière est une **qualification** apposée à une ou plusieurs
+Zones contiguës qui séparent deux Régions ou deux Continents. Une forêt
+profonde qui sert de frontière reste, structurellement, une Zone comme
+une autre : elle possède son propre biome [réf: GDB-003J], ses propres
+Lieux et Points d'intérêt éventuels, exactement comme le prévoit
+GDB-003D.
+
+Ce que la qualification de frontière ajoute, ce n'est donc pas une
+structure de données supplémentaire, mais deux propriétés :
+
+- elle relie exactement deux Régions (ou deux Continents) adjacents,
+  jamais un nombre différent ;
+- elle influence, à ce titre, les échanges, les cultures et les
+  déplacements entre ces deux territoires précis --- ce que ne fait
+  pas une Zone ordinaire.
+
+Une Zone peut donc être une frontière ou non ; elle ne cesse jamais
+d'être une Zone à part entière pour autant.
+⸻
 RÈGLES DE CONCEPTION
 
 Toute frontière devra :
@@ -66,3 +93,11 @@ Si la réponse est non, elle devra être repensée.
 Fin du document
 
 Statut : Validé -- Référence officielle.
+⸻
+HISTORIQUE
+
+Version 1.1 : ajout de la section « Statut documentaire », clarifiant qu'une
+frontière est une qualification de Zone(s) et non un niveau supplémentaire de la
+hiérarchie. Corrige GDB-003-C03. En-tête mis en conformité avec MASTER-004.
+
+Version 1.0 : création du document.

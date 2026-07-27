@@ -1,7 +1,10 @@
 GDB-005I --- La Valeur
 
-Version : 1.0 Statut : Officiel Type : Économie & 
-Progression
+Version : 1.1
+Statut : Officiel
+Type : Économie & Progression
+Maturité : 2
+Bibliothèque : GDB
 ⸻
 OBJECTIF
 
@@ -34,6 +37,30 @@ La valeur peut provenir notamment :
 	⁃	de la valeur sentimentale.
 
 Aucune source de valeur n'est universellement dominante.
+⸻
+RELATION AVEC CORE VALUE
+
+La Valeur économique décrite ici est un jugement contextuel et
+subjectif porté par un individu ou une communauté --- elle n'a pas de
+nombre unique et absolu.
+
+Le Kernel définit par ailleurs une primitive nommée Value [réf:
+CORE-000C], qui est un simple conteneur de donnée typée attaché à un
+State. Les deux ne se confondent pas :
+
+- CORE Value est la structure technique qui *porte* un nombre, un
+  texte ou toute autre donnée dans la simulation.
+- La Valeur économique de ce document est *ce que signifie* ce nombre
+  pour un habitant donné, à un instant donné, dans un contexte donné.
+
+Concrètement, un même prix stocké comme CORE Value (par exemple un
+entier) peut correspondre à des Valeurs économiques différentes selon
+l'habitant qui l'observe --- puisque la rareté, la confiance ou la
+valeur sentimentale ne sont pas encodées dans ce nombre lui-même, mais
+dans la relation entre l'habitant et le bien. La Valeur économique ne
+redéfinit donc jamais CORE Value : elle en est une interprétation
+contextuelle, jamais une seconde source de vérité pour la donnée
+elle-même.
 ⸻
 ÉVOLUTION
 
@@ -75,3 +102,11 @@ Si la réponse est non, elle devra être repensée.
 Fin du document
 
 Statut : Validé -- Référence officielle.
+⸻
+HISTORIQUE
+
+Version 1.1 : ajout de la section « Relation avec CORE Value », distinguant la
+Valeur économique (jugement contextuel) de CORE Value (conteneur de donnée typée).
+Corrige GDB-005-C03. En-tête mis en conformité avec MASTER-004.
+
+Version 1.0 : création du document.

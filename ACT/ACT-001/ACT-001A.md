@@ -1,8 +1,10 @@
 # ACT-001-A — Mission
 
-> Version : 1.0
+> Version : 1.1
 >
 > Statut : Fondation
+>
+> Maturité : 1
 >
 > Bibliothèque : ACT
 >
@@ -61,6 +63,10 @@ ou
 # 4. Position dans l'architecture
 
 MASTER
+
+↓
+
+CORE
 
 ↓
 
@@ -183,3 +189,12 @@ La mission d'ACT est considérée comme respectée si :
 Toute extension de la bibliothèque ACT doit respecter cette mission.
 
 Aucune nouvelle mécanique ne peut être ajoutée si elle contrevient aux principes définis dans ce document.
+
+---
+
+# 13. Historique
+
+Version 1.1 : ajout de CORE dans la position architecturale (section 4), absente
+jusqu'ici. Corrige ACT-001-C01. En-tête mis en conformité avec MASTER-004.
+
+Version 1.0 : création du document.

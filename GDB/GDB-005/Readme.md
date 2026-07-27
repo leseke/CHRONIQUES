@@ -1,5 +1,13 @@
 # GDB-005
 
+> Version : 1.1
+> Statut : Officiel
+> Type : Série
+> Maturité : 1
+> Bibliothèque : GDB
+
+---
+
 > Les activités économiques et la création de valeur dans Chroniques.
 
 ---
@@ -86,3 +94,16 @@ Les systèmes économiques doivent être :
 Version : 1.0
 
 Statut : Officiel
+
+---
+
+# Historique
+
+## Version 1.1
+
+- en-tête mis en conformité avec MASTER-004 ;
+- GDB-005C (invariants Ressource → Produit), GDB-005G (invariants du marché), GDB-005I (relation avec CORE Value) et GDB-005J (cycle de vie des investissements) enrichis, suite à la clôture de GDB-005-C01 à C04.
+
+## Version 1.0
+
+- Création du document.

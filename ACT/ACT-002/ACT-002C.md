@@ -1,10 +1,12 @@
 # ACT-002-C — Relations entre les niveaux
 
-> Version : 1.0
+> Version : 1.1
 >
 > Statut : Fondation
 >
 > Type : Contrat d'architecture
+>
+> Maturité : 2
 >
 > Bibliothèque : ACT
 
@@ -103,6 +105,27 @@ Chaque sous-action reste autonome tout en participant à l'objectif global.
 
 ---
 
+# 6bis. Frontière entre Action et Interaction
+
+Une Action possède un Acteur et une ou plusieurs Cibles [réf: ACT-001-B]. Une
+Cible peut être passive (un objet, une ressource, un lieu) ou active (un
+autre Acteur).
+
+Une **Interaction** est le cas particulier où une Action cible un Acteur
+capable de produire, en retour et dans le même événement causal, sa propre
+Action en réponse. « Convaincre », « négocier » ou « attaquer » sont des
+Interactions : leur Outcome [réf: ACT-002-G] dépend d'une résolution qui
+prend en compte la réaction de la Cible, jamais seulement l'intention de
+l'Acteur initial. « Cueillir » ou « construire » ne sont jamais des
+Interactions : leur Cible ne produit aucune réponse.
+
+Une Interaction n'est donc pas un niveau supplémentaire du modèle --- elle
+reste une Action au sens de ce document, avec une seule particularité : sa
+résolution [réf: ACT-002-G] intègre la réaction de la Cible comme une entrée
+du calcul de l'Outcome, en plus du Contexte et des Conditions.
+
+---
+
 # 7. Référence
 
 Une Action peut référencer :
@@ -170,6 +193,9 @@ Le document est conforme si :
 ---
 
 # 12. Historique
+
+Version 1.1 : ajout de la frontière entre Action et Interaction (section 6bis).
+Corrige ACT-002-C02. En-tête mis en conformité avec MASTER-004.
 
 Version 1.0
 

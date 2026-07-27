@@ -1,5 +1,13 @@
 # GDB-020
 
+> Version : 1.1
+> Statut : Officiel
+> Type : Série
+> Maturité : 1
+> Bibliothèque : GDB
+
+---
+
 > Les organisations structurées du monde de Chroniques.
 
 ## Présentation
@@ -43,3 +51,12 @@ Répondre à la question :
 Version : 1.0
 
 Statut : Officiel
+
+---
+
+# Historique
+
+## Version 1.1
+
+- GDB-020A enrichi d'une relation genre/espèce avec GDB-009G (Institutions).
+- en-tête mis en conformité avec MASTER-004.

@@ -1,5 +1,13 @@
 # GDB-026
 
+> Version : 1.1
+> Statut : Officiel
+> Type : Série
+> Maturité : 1
+> Bibliothèque : GDB
+
+---
+
 > Les systèmes permettant aux individus, aux organisations et aux civilisations d'échanger des informations.
 
 ## Présentation
@@ -43,3 +51,12 @@ Répondre à la question :
 Version : 1.0
 
 Statut : Officiel
+
+---
+
+# Historique
+
+## Version 1.1
+
+- GDB-026A enrichi d'une frontière avec GDB-027 (canal vs contenu de l'information).
+- en-tête mis en conformité avec MASTER-004.

@@ -1,8 +1,10 @@
-GDB-009F --- Les Lois
+GDB-009F --- Les Lois (légitimité et civilisation)
 
-Version : 1.0
+Version : 1.1
 Statut : Officiel
 Type : Société & Civilisations
+Maturité : 2
+Bibliothèque : GDB
 ⸻
 
 
@@ -46,6 +48,17 @@ apparaître ;
 Elles évoluent avec les générations, les événements et les changements 
 de société.
 ⸻
+FRONTIÈRE AVEC GDB-018
+
+Ce document porte le même titre que GDB-018B, ce qui est un doublon déjà
+recensé par GDB/CATALOG.md. La distinction retenue : GDB-009F décrit
+pourquoi les lois existent et comment une société se dote de règles
+--- une question de civilisation. GDB-018 (Le système judiciaire) décrit
+comment ces lois sont appliquées, jugées et sanctionnées --- une
+question de procédure [réf: GDB-018]. GDB-009F ne définit aucune
+procédure judiciaire ; GDB-018 ne redéfinit aucun principe de
+légitimité d'une loi.
+⸻
 IMPACT
 
 Les lois influencent :
@@ -77,3 +90,11 @@ Si la réponse est non, elle devra être repensée.
 Fin du document
 
 Statut : Validé -- Référence officielle.
+⸻
+HISTORIQUE
+
+Version 1.1 : titre précisé et frontière établie avec GDB-018B (même titre avant
+correction). Résout le doublon GDB-009F / GDB-018B signalé par GDB-CATALOG-C01.
+En-tête mis en conformité avec MASTER-004.
+
+Version 1.0 : création du document.

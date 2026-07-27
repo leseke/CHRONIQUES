@@ -1,5 +1,13 @@
 # GDB-002
 
+> Version : 1.1
+> Statut : Officiel
+> Type : Série
+> Maturité : 1
+> Bibliothèque : GDB
+
+---
+
 > Les dynamiques de vie qui façonnent l'expérience du joueur.
 
 ---
@@ -102,3 +110,16 @@ Toute nouvelle mécanique devra renforcer la capacité du monde à produire des 
 Version : 1.0
 
 Statut : Officiel
+
+---
+
+# Historique
+
+## Version 1.1
+
+- en-tête mis en conformité avec MASTER-004 ;
+- GDB-002B enrichi (distinction mémoire du monde / simulation, critères de persistance) et GDB-002E enrichi (cycle de vie des opportunités), suite à la clôture de GDB-002-C01, C02 et C03.
+
+## Version 1.0
+
+- Création du document.

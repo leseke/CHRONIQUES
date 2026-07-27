@@ -1,5 +1,13 @@
 # GDB-029
 
+> Version : 1.1
+> Statut : Officiel
+> Type : Série
+> Maturité : 1
+> Bibliothèque : GDB
+
+---
+
 > Les principes, disciplines et mécanismes scientifiques qui permettent aux civilisations de comprendre, d'expliquer et de faire progresser le monde.
 
 ## Présentation
@@ -43,3 +51,22 @@ Répondre à la question :
 Version : 1.0
 
 Statut : Officiel
+
+---
+
+# Frontière avec GDB-023
+
+GDB-029 fait autorité sur le principe scientifique (discipline, méthode,
+découverte comme démarche épistémique, éthique, institutions) [réf: GDB-023].
+GDB-023 fait autorité sur la traduction de ces découvertes en progrès technique
+jouable (inventions, innovations, diffusion). Voir la section « Frontière avec
+GDB-029 » du Readme de GDB-023 pour le détail.
+
+---
+
+# Historique
+
+## Version 1.1
+
+- ajout de la section « Frontière avec GDB-023 » ;
+- en-tête mis en conformité avec MASTER-004.

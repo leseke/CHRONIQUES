@@ -77,6 +77,7 @@ Un chapitre ne doit jamais empiéter sur le domaine d'un autre.
 | `GDB-001G` | La Civilisation |
 | `GDB-001H` | Les Systèmes |
 | `GDB-001I` | Les Valeurs du Studio |
+| `GDB-001I-2` | Arbitrage des Principes Fondateurs |
 | `GDB-001J` | Glossaire Officiel |
 
 ## GDB-002 — Les dynamiques de vie qui façonnent l'expérience du joueur
@@ -516,39 +517,44 @@ Un chapitre ne doit jamais empiéter sur le domaine d'un autre.
 
 ---
 
-# Titres présents dans plusieurs chapitres
+# Titres présents dans plusieurs chapitres --- RÉSOLU
 
-Les documents suivants portent un titre identique. Chacun doit être
-soit fusionné, soit renommé, soit confirmé comme traitant un angle distinct.
+Les 19 doublons suivants ont été résolus (constat GDB-CATALOG-C01, clos) : pour
+chaque paire, une frontière explicite a été établie entre les deux documents
+--- l'un fait désormais autorité sur le mécanisme ou le principe, l'autre sur
+une dimension complémentaire (expérience du joueur, application concrète,
+angle générationnel, etc.), avec renvoi croisé `[réf: ...]` dans les deux sens.
+Les titres identiques ont été précisés lorsque nécessaire pour lever
+l'ambiguïté en un coup d'œil.
 
-| Titre | Documents |
-|---|---|
-| L'Apprentissage | `GDB-007C` · `GDB-021B` |
-| L'Exploration | `GDB-006E` · `GDB-014A` |
-| La Mémoire du Monde | `GDB-002B` · `GDB-008I` |
-| Le Temps | `GDB-001E` · `GDB-008A` |
-| Les Biomes | `GDB-003J` · `GDB-010F` |
-| Les Blessures | `GDB-015E` · `GDB-022C` |
-| Les Chaînes de Production | `GDB-005C` · `GDB-012F` |
-| Les Conflits | `GDB-009I` · `GDB-015H` |
-| Les Disciplines Scientifiques | `GDB-023B` · `GDB-029B` |
-| Les Découvertes | `GDB-006D` · `GDB-014E` |
-| Les Découvertes Scientifiques | `GDB-023G` · `GDB-029E` |
-| Les Lois | `GDB-009F` · `GDB-018B` |
-| Les Marchés | `GDB-005G` · `GDB-019E` |
-| Les Méthodes Scientifiques | `GDB-023C` · `GDB-029D` |
-| Les Métiers | `GDB-005A` · `GDB-012A` |
-| Les Opportunités | `GDB-002E` · `GDB-011E` |
-| Les Outils | `GDB-005D` · `GDB-012D` |
-| Les Points d'Intérêt | `GDB-003F` · `GDB-014H` |
-| Les Traditions | `GDB-008H` · `GDB-028C` |
+| Titre | Documents | Frontière retenue |
+|---|---|---|
+| L'Apprentissage | `GDB-007C` · `GDB-021B` | GDB-021B = mécanisme éducatif ; GDB-007C = expérience ressentie |
+| L'Exploration | `GDB-006E` · `GDB-014A` | GDB-014A = mécanisme ; GDB-006E = expérience ressentie |
+| La Mémoire du Monde | `GDB-002B` · `GDB-008I` | GDB-002B = mécanisme de persistance ; GDB-008I = angle générationnel |
+| Le Temps | `GDB-001E` · `GDB-008A` | GDB-001E = philosophie ; GDB-008A = mécanisme concret |
+| Les Biomes | `GDB-003J` · `GDB-010F` | GDB-003J = rattachement géographique ; GDB-010F = système écologique |
+| Les Blessures | `GDB-015E` · `GDB-022C` | GDB-022C = mécanisme médical ; GDB-015E = contexte de combat |
+| Les Chaînes de Production | `GDB-005C` · `GDB-012F` | GDB-005C = invariants économiques ; GDB-012F = coopération entre métiers |
+| Les Conflits | `GDB-009I` · `GDB-015H` | GDB-009I = phénomène social ; GDB-015H = escalade vers la force |
+| Les Disciplines Scientifiques | `GDB-023B` · `GDB-029B` | GDB-029B = principe épistémique ; GDB-023B = traduction en progrès jouable |
+| Les Découvertes | `GDB-006D` · `GDB-014E` | GDB-014E = mécanisme ; GDB-006D = expérience ressentie |
+| Les Découvertes Scientifiques | `GDB-023G` · `GDB-029E` | GDB-029E = principe épistémique ; GDB-023G = traduction en progrès jouable |
+| Les Lois | `GDB-009F` · `GDB-018B` | GDB-009F = légitimité et civilisation ; GDB-018B = application judiciaire |
+| Les Marchés | `GDB-005G` · `GDB-019E` | GDB-005G = invariants du marché ; GDB-019E = typologie commerciale |
+| Les Méthodes Scientifiques | `GDB-023C` · `GDB-029D` | GDB-029D = principe épistémique ; GDB-023C = traduction en progrès jouable |
+| Les Métiers | `GDB-005A` · `GDB-012A` | GDB-005A = activité économique ; GDB-012A = dimension professionnelle |
+| Les Opportunités | `GDB-002E` · `GDB-011E` | GDB-002E = cycle de vie complet ; GDB-011E = déclenchement systémique |
+| Les Outils | `GDB-005D` · `GDB-012D` | GDB-005D = composant de la chaîne de production ; GDB-012D = usage professionnel |
+| Les Points d'Intérêt | `GDB-003F` · `GDB-014H` | GDB-003F = structure géographique ; GDB-014H = expérience d'exploration |
+| Les Traditions | `GDB-008H` · `GDB-028C` | GDB-028C = institution culturelle ; GDB-008H = angle générationnel |
 
-**19 titres concernés.**
+**0 titre concerné restant.**
 
 ---
 
-Chapitres : **30** · Documents : **300**
+Chapitres : **30** · Documents : **301** (GDB-001I-2 ajouté lors de la correction de GDB-001-C02, premier usage du format multi-documents formalisé par MASTER-003 v1.3)
 
-Version : générée automatiquement
+Version : générée automatiquement, puis corrigée manuellement pour ce point --- une régénération complète reste à prévoir.
 
 Statut : Officiel

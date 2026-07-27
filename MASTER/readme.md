@@ -1,8 +1,10 @@
 # MASTER
 
-> Les MASTER définissent les règles du projet.
->
-> Ils constituent la gouvernance documentaire officielle de Chroniques.
+> Version : 1.1
+> Statut : Officiel
+> Type : Bibliothèque
+> Maturité : 1
+> Bibliothèque : MASTER
 
 ---
 
@@ -28,7 +30,7 @@ Les MASTER garantissent :
 - des conventions de travail ;
 - une gouvernance stable.
 
-Ils permettent à tous les contributeurs — humains comme IA — de travailler selon les mêmes règles.
+Ils permettent à tous les contributeurs --- humains comme IA --- de travailler selon les mêmes règles.
 
 ---
 
@@ -109,11 +111,14 @@ Aucun niveau inférieur ne peut contredire un MASTER.
 |----------|-------|
 | MASTER-001 | Vision du projet |
 | MASTER-002 | Principes fondamentaux |
-| MASTER-003 | Architecture documentaire |
-| MASTER-004 | Standards documentaires |
+| MASTER-003 | Architecture officielle |
+| MASTER-004 | Conventions de documentation |
 | MASTER-005 | Roadmap |
 | MASTER-006 | Gouvernance des décisions |
-| MASTER-007 | Gestion des dépendances documentaires |
+| MASTER-007 | Standards de qualité |
+| MASTER-008 | Méthodologie d'audit et de correction documentaire |
+
+Ce tableau est maintenu à la main, contrairement à GDB/CATALOG.md. Toute création ou suppression d'un document MASTER doit mettre à jour cette table dans le même lot de correction, jamais après coup.
 
 ---
 
@@ -132,8 +137,16 @@ Chaque information officielle ne possède qu'une seule source de vérité.
 
 ---
 
-# Version
+# Historique
 
-Version : 1.0
+## Version 1.1
 
-Statut : Officiel
+- en-tête mis en conformité avec MASTER-004 (Version, Statut, Type, Maturité, Bibliothèque) ;
+- correction de la description de MASTER-007 (indiquée à tort comme « Gestion des dépendances documentaires », alors qu'il s'agit de « Standards de qualité ») ;
+- ajout de MASTER-008, absent du tableau.
+
+Constat découvert lors de l'analyse d'impact de la création de MASTER-008 (ADR-004) ; corrige MASTER-C03.
+
+## Version 1.0
+
+- Création du document.

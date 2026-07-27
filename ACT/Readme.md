@@ -1,6 +1,6 @@
 # ACT — Action Library
 
-> **Version :** 1.1
+> **Version :** 1.2
 >
 > **Statut :** Foundation
 >
@@ -253,6 +253,10 @@ Toute nouvelle mécanique doit être documentée dans ACT avant son implémentat
 ---
 
 # Historique
+
+## Version 1.2
+
+- fichier renommé `Readme.md` → `readme.md` pour aligner la casse sur les autres bibliothèques de premier niveau (TECH, QA, UX, LORE, PROD, ART, AUDIO, MKT, GDB). Corrige GLOBAL-C01.
 
 ## Version 1.1
 

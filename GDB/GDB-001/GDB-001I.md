@@ -1,100 +1,171 @@
-GDB-001I --- Les Valeurs du Studio
+GDB-001I-2 --- Arbitrage des Principes Fondateurs
 
-Version : 1.0
+Version : 1.1
 Statut : Officiel
 Type : Principe Fondateur
+Maturité : 1
+Bibliothèque : GDB
 ⸻
-
 
 OBJECTIF
 
-Définir les valeurs qui guideront chaque décision du Studio Chroniques.
+Les documents GDB-001A à GDB-001I énoncent chacun un principe fondateur légitime.
+Pris isolément, chacun est cohérent. Pris ensemble, certains entrent en tension
+réelle dans des cas concrets de conception.
 
-Ces valeurs ne sont pas des fonctionnalités.
-
-Elles constituent les critères de jugement utilisés lors de toute 
-conception.
+Ce document ne redéfinit aucun principe existant. Il établit l'ordre d'arbitrage à
+appliquer lorsque deux principes s'opposent sur un même cas concret, afin qu'un tel
+conflit ne soit jamais tranché au hasard, deux fois différemment, par deux
+concepteurs différents.
 ⸻
-IMMERSION
+POURQUOI CE DOCUMENT EXISTE
 
-Chaque décision doit renforcer le sentiment de vivre dans un monde 
-crédible.
-
-L'immersion prime sur l'effet spectaculaire lorsqu'un choix est 
-nécessaire.
+MASTER-002 énonce dix principes sans préciser leur ordre relatif. GDB-001A à I
+détaillent chacun un principe sans jamais se référer aux autres lorsqu'ils se
+recoupent. Un système de jeu réel touche presque toujours plusieurs principes à la
+fois --- l'absence d'arbitrage explicite est donc un risque documentaire réel, pas
+théorique.
 ⸻
-COHÉRENCE
+TENSION 1 --- LIBERTÉ CONTRE CRÉDIBILITÉ
 
-Les systèmes doivent fonctionner ensemble.
+GDB-001D affirme que « le monde ne dit jamais non » et que les conséquences
+remplacent toujours les interdictions.
 
-Une excellente mécanique isolée reste une mauvaise décision si elle 
-fragilise l'ensemble du projet.
+GDB-001B affirme que le monde doit rester crédible, et MASTER-002 (Principe 5)
+affirme que les événements extraordinaires doivent rester rares.
+
+Cas de tension : une action du joueur est libre, mais toute conséquence crédible
+disponible serait soit disproportionnée, soit banale au point de vider l'action de
+sens.
+
+Arbitrage : la liberté porte sur le choix de l'action, jamais sur la garantie d'un
+résultat spectaculaire. Une conséquence crédible peut être discrète, lente ou
+indirecte. Le monde ne doit jamais interdire l'action pour préserver la crédibilité
+--- il doit trouver la conséquence crédible la plus proche du résultat souhaité par
+le joueur, quitte à ce qu'elle soit modeste. La restriction reste le dernier
+recours, jamais la première réponse.
 ⸻
-LIBERTÉ
+TENSION 2 --- LIBERTÉ CONTRE BUDGET DE COMPLEXITÉ
 
-Le joueur choisit sa manière de vivre.
+GDB-001C et GDB-001D exigent que plusieurs stratégies restent viables. GDB-001H
+plafonne la complexité de chaque système par un budget.
 
-Le studio propose des possibilités.
+Cas de tension : ouvrir une nouvelle stratégie viable demande une nouvelle règle ou
+un nouveau système, ce qui consomme le budget de complexité.
 
-Il n'impose pas une façon de jouer.
+Arbitrage : le budget de complexité s'évalue à la profondeur de choix produite, pas
+au nombre de règles écrites. Une stratégie supplémentaire obtenue par la
+recombinaison de règles existantes ne consomme aucun budget. Une stratégie qui
+exige une règle entièrement nouvelle doit démontrer qu'aucune recombinaison
+existante ne peut produire un choix équivalent avant de consommer ce budget.
 ⸻
-RESPONSABILITÉ
+TENSION 3 --- PROFONDEUR PROGRESSIVE CONTRE REFUS DU FOMO
 
-La liberté implique des conséquences.
+GDB-001H attend qu'un vétéran puisse continuer à progresser pendant des centaines
+d'heures. GDB-001E et GDB-001C interdisent toute mécanique qui crée une obligation
+de temps ou une peur de manquer quelque chose.
 
-Le monde réagit.
+Cas de tension : un système de maîtrise profonde peut, par construction, avantager
+qui joue plus longtemps ou plus régulièrement --- ce qui ressemble à une pression
+temporelle si mal conçu.
 
-Le studio évite les jugements moraux.
+Arbitrage : la profondeur doit venir de la qualité de la pratique [réf: GDB-001J,
+entrée Maîtrise], jamais de la fréquence de connexion. Un système de progression
+est conforme si un joueur contemplatif, absent plusieurs semaines, retrouve son
+niveau de maîtrise intact et peut continuer à progresser au même rythme qualitatif
+qu'un joueur assidu. Il est non conforme si l'absence fait perdre une progression
+déjà acquise, ou si la vitesse de progression dépend du nombre de connexions
+plutôt que de la qualité des actions entreprises.
 ⸻
-RESPECT DU TEMPS
+TENSION 4 --- NEUTRALITÉ MORALE CONTRE RÉPUTATION SOCIALE
 
-Le temps investi par le joueur possède une valeur.
+GDB-001D affirme que le monde ne juge pas moralement une action. GDB-001F et
+GDB-004I (Réputation) prévoient pourtant que la réputation d'un personnage évolue
+selon ses actes.
 
-Aucune mécanique ne doit créer artificiellement une dépendance ou une 
-culpabilité.
+Arbitrage : ce n'est pas une contradiction si la distinction suivante est
+respectée. Le monde, en tant que système, ne porte aucun jugement moral objectif
+--- il n'existe pas de score de « bien » ou de « mal » global. La réputation est
+un jugement porté par des habitants ou des groupes précis, situés, avec leurs
+propres valeurs, qui peuvent diverger d'un groupe à l'autre pour la même action. La
+neutralité s'applique au système ; la subjectivité s'applique aux habitants.
 ⸻
-TRANSMISSION
+TENSION 5 --- PROFONDEUR DU MONDE CONTRE INTERFACE MOBILE
 
-Le savoir, l'héritage et les histoires doivent pouvoir traverser les 
-générations.
+MASTER-001 cite à la fois BitLife (choix simples, une vie à la fois) et
+Football Manager / Crusader Kings III (gestion approfondie de systèmes
+entiers) comme inspirations. GDB-009, GDB-016 et GDB-019 décrivent des
+phénomènes à l'échelle civilisationnelle (États, marchés mondiaux,
+diplomatie entre nations). MASTER-009 impose une interface tactile, en
+mode portrait, compréhensible sans manuel.
 
-Le jeu récompense la continuité sans supprimer la liberté.
+Cas de tension : une simulation suffisamment riche pour produire les
+phénomènes décrits par ces chapitres semble, en apparence, exiger les
+tableaux de bord denses d'un jeu de gestion --- exactement ce que
+l'interface mobile ne peut pas accueillir.
+
+Arbitrage : le monde simule à l'échelle civilisationnelle ; le joueur
+n'interagit jamais qu'à l'échelle personnelle. Une civilisation entière
+peut vivre une crise économique ou un conflit diplomatique --- le joueur
+n'en gère jamais le tableau de bord global. Il en perçoit les
+conséquences et les opportunités qui atteignent sa propre vie : un
+marché local qui se tend, une guerre qui ferme une route commerciale
+qu'il empruntait, une alliance qui lui ouvre un poste. La profondeur du
+monde se révèle par les conséquences [réf: GDB-002C] et les opportunités
+[réf: GDB-002E] qui remontent jusqu'au joueur, jamais par une interface
+de gestion à l'échelle du système qu'elle représente.
+
+Ceci tranche la tension entre les deux inspirations de MASTER-001 :
+BitLife fournit le modèle d'interface (une vie, des choix simples) ;
+Football Manager et Crusader Kings III fournissent le modèle de
+profondeur simulée en arrière-plan, jamais le modèle d'interface. Toute
+future bibliothèque UX doit se conformer à cet arbitrage : un système
+mondial profond ne justifie jamais, à lui seul, un écran de gestion
+dédié destiné au joueur.
 ⸻
-ÉMERGENCE
+RÈGLE GÉNÉRALE D'ARBITRAGE
 
-Les meilleures histoires sont celles que les joueurs créent eux-mêmes.
+Lorsqu'une tension nouvelle apparaît, non couverte par les cinq cas ci-dessus,
+l'ordre de résolution par défaut est :
 
-Les systèmes doivent favoriser leur apparition plutôt que les écrire à 
-leur place.
+1. La cohérence du monde (GDB-001B) ne se sacrifie jamais.
+2. La liberté du joueur (GDB-001C, GDB-001D) se limite par des conséquences,
+   jamais par des interdictions, sauf si la cohérence du monde l'exige.
+3. Le budget de complexité (GDB-001H) et le respect du temps (GDB-001E) arbitrent
+   entre eux au cas par cas, en confrontant chaque système à son critère de
+   validation propre.
+4. La profondeur simulée du monde ne se traduit jamais directement en profondeur
+   d'interface joueur (Tension 5) : elle se traduit par des conséquences et des
+   opportunités à l'échelle personnelle.
+
+Ce classement n'annule aucun principe : un principe placé plus bas reste
+obligatoire, il cède seulement le pas lorsqu'un principe placé plus haut est
+directement en jeu sur le même cas.
 ⸻
-SIMPLICITÉ MAÎTRISÉE
+CE QUE CE DOCUMENT NE FAIT PAS
 
-Chaque ajout augmente la complexité.
-
-Le studio privilégie les solutions les plus simples capables d'atteindre 
-l'objectif recherché.
-⸻
-ÉVOLUTIVITÉ
-
-Chaque système est conçu pour pouvoir évoluer pendant plusieurs années 
-sans remettre en cause les fondations du projet.
-⸻
-RÈGLES DE CONCEPTION
-
-Avant toute validation, le Studio devra vérifier que la proposition :
-
-	1.	respecte les valeurs du projet ;
-	2.	améliore l'expérience globale ;
-	3.	reste cohérente avec les autres documents de la Game Design Bible ;
-	4.	pourra être maintenue sur le long terme.
+Il ne crée aucun nouveau principe. Il ne modifie aucun document GDB-001A à J. Toute
+nouvelle tension découverte lors de la conception d'un système doit être ajoutée
+ici plutôt que résolue silencieusement ailleurs.
 ⸻
 CRITÈRE DE VALIDATION
 
-Cette décision représente-t-elle fidèlement les valeurs que le Studio 
-souhaite défendre à travers Chroniques ?
+Avant de valider un système qui touche plusieurs principes fondateurs à la fois :
 
-Si la réponse est non, elle devra être repensée.
+Le conflit entre ces principes a-t-il été identifié explicitement, et l'arbitrage
+retenu est-il traçable dans ce document ou dans un document qu'il référence ?
+
+Si la réponse est non, la validation est prématurée.
 ⸻
 Fin du document
 
-Statut : Validé -- Référence officielle.
+Statut : Validé --- Référence officielle.
+⸻
+HISTORIQUE
+
+Version 1.1 : ajout de la Tension 5 (profondeur du monde contre interface
+mobile), arbitrant BitLife contre Football Manager/Crusader Kings III à la
+lumière de MASTER-009. Corrige un point resté implicite depuis la version
+1.0. Mise à jour de la Règle générale d'arbitrage (point 4 ajouté).
+
+Version 1.0 : création du document. Corrige le constat GDB-001-C02. Renommé GDB-001K → GDB-001I-2 pour respecter la règle des dix sections A à J (MASTER-003).

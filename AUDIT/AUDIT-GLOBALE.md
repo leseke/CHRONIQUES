@@ -1,7 +1,7 @@
 # AUDIT-GLOBALE.md
 
-> Version : 2.0
-> Statut : GDB et ACT clos --- autres bibliothèques à approfondir
+> Version : 2.2
+> Statut : GDB et ACT (001-002) clos --- ACT-003 retiré, ACT-004 et ACT-005 créés en Proposition --- autres bibliothèques à approfondir
 > Type : Audit
 > Maturité : 1
 > Bibliothèque : AUDIT
@@ -17,7 +17,10 @@
 | CORE | ✅ Audité |
 | GDB (001 → 030) | ✅ Audité et corrigé intégralement |
 | ACT (001 → 002) | ✅ Audité et corrigé intégralement |
-| ACT (003 → 010), PATTERNS, VERBS | ◻️ Non créés --- rien à auditer tant qu'ils n'existent pas (voir ACT/CATALOG.md) |
+| ACT-003 | ⛔ Retiré de la structure cible (redondant avec ACT-001-E et ACT-002-F à I, constaté et tracé dans ACT/CATALOG.md v1.2) --- rien à auditer, l'identifiant ne sera pas réattribué |
+| ACT-004 | 🟡 Créé (Statut : Proposition) --- rédigé mais non encore audité ni validé par l'équipe (cycle documentaire ACT-001-G, section 14) |
+| ACT-005 | 🟡 Créé (Statut : Proposition) --- rédigé mais non encore audité ni validé par l'équipe (cycle documentaire ACT-001-G, section 14) |
+| ACT (006 → 010), PATTERNS, VERBS | ◻️ Non créés --- rien à auditer tant qu'ils n'existent pas (voir ACT/CATALOG.md) |
 | ADR | ✅ Audité en complément (constat ADR-C01, corrigé) |
 | TECH | ✅ Audité (corrigé) |
 | QA | ✅ Audité (corrigé) |
@@ -358,9 +361,18 @@ Le backlog documentaire initial du dépôt (GDB et ACT) est intégralement trait
 
 Toutes (MASTER, CORE, GDB, ACT, ADR, TECH, QA, UX, LORE, PROD, ART, AUDIO, MKT).
 
+## Retiré (n'existera jamais sous cet identifiant)
+
+- ACT-003 --- redondant avec ACT-001-E et ACT-002-F à I (voir ACT/CATALOG.md v1.2, section « Chapitre retiré »)
+
+## Créé, non encore audité
+
+- ACT-004 (Statut : Proposition)
+- ACT-005 (Statut : Proposition)
+
 ## Non concerné (n'existe pas encore)
 
-- ACT-003 → ACT-010
+- ACT-006 → ACT-010
 - ACT/PATTERNS
 - ACT/VERBS
 

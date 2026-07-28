@@ -1,10 +1,11 @@
 # MASTER-008 --- Méthodologie d'Audit et de Correction Documentaire
 
-> Version : 1.1
+> Version : 1.2
 > Statut : Officiel
 > Type : Méthodologie
 > Maturité : 1
 > Bibliothèque : MASTER
+> Introduit la relecture interne et l'audit formel systématiques avant livraison
 
 ---
 
@@ -40,13 +41,28 @@ Pour chaque bibliothèque :
 4. Classement par priorité.
 5. Ajout à AUDIT-GLOBALE.md.
 
+Pour chaque document généré ou régénéré :
+
+1. Relecture interne rapide : cohérence des renvois croisés, vérification
+   de chaque citation à l'endroit exact cité.
+2. Audit formel : lecture complète, conformité à l'en-tête MASTER-004,
+   vérification systématique de chaque citation contre le contenu réel
+   du document cité, constats numérotés et priorisés.
+
 Aucun correctif pendant la phase d'audit.
 
 ---
 
 # 3. Workflow de correction
 
-Pour chaque constat :
+Pour chaque document généré ou régénéré :
+
+1. Relecture interne rapide : les éventuels constats trouvés donnent lieu
+   à un correctif immédiat, hors workflow de correction.
+2. Audit formel : les constats priorisés (P0, P1, P2) entrent dans le
+   workflow de correction ci-dessous.
+
+Pour chaque constat issu de l'audit formel :
 
 1. Sélection d'un unique constat.
 2. Analyse de son impact sur l'ensemble du dépôt.
@@ -157,6 +173,17 @@ Si la réponse est la seconde, elle est abandonnée.
 ---
 
 # Historique
+
+## Version 1.2
+
+- ajout de deux nouvelles pratiques systématiques, en amont de l'audit
+  et du workflow de correction : relecture interne rapide (cohérence
+  des renvois, vérification exacte de chaque citation), puis audit
+  formel au sens MASTER-008, pour tout document généré ou régénéré
+  avant livraison. Objectif : réduire les allers-retours de correction
+  en détectant le maximum d'erreurs avant envoi, sans remplacer la
+  validation d'équipe, qui reste une étape distincte, requise
+  séparément.
 
 ## Version 1.1
 

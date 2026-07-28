@@ -1,10 +1,12 @@
 # ACT-004-A — Acteurs
 
-> Version : 1.1
+> Version : 1.2
 >
 > Statut : Proposition
 >
 > Type : Contrat d'architecture
+>
+> Maturité : 2
 >
 > Bibliothèque : ACT
 >
@@ -211,6 +213,17 @@ entre plusieurs Acteurs.
 ---
 
 # 13. Historique
+
+## Version 1.2
+
+- audit formel (méthodologie MASTER-008) : ajout du champ obligatoire
+  `Maturité` à l'en-tête, absent depuis la création du document ---
+  non-conformité à MASTER-004 (§ En-tête, obligatoire pour tout document
+  créé après sa v1.2). Valeur retenue : 2 (Spécification), le contenu
+  --- sections Contrat/Contrat TECH/Contrat QA --- étant suffisamment
+  précis pour être implémenté sans interprétation (MASTER-007, échelle
+  des niveaux de maturité), cohérent avec la valeur déjà utilisée par les
+  sous-documents d'ACT-002 de même nature.
 
 ## Version 1.1
 

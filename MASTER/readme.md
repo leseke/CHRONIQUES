@@ -1,6 +1,6 @@
 # MASTER
 
-> Version : 1.1
+> Version : 1.2
 > Statut : Officiel
 > Type : Bibliothèque
 > Maturité : 1
@@ -117,6 +117,7 @@ Aucun niveau inférieur ne peut contredire un MASTER.
 | MASTER-006 | Gouvernance des décisions |
 | MASTER-007 | Standards de qualité |
 | MASTER-008 | Méthodologie d'audit et de correction documentaire |
+| MASTER-009 | Contraintes du projet (plateforme, technique, commerciale, légale) |
 
 Ce tableau est maintenu à la main, contrairement à GDB/CATALOG.md. Toute création ou suppression d'un document MASTER doit mettre à jour cette table dans le même lot de correction, jamais après coup.
 
@@ -138,6 +139,10 @@ Chaque information officielle ne possède qu'une seule source de vérité.
 ---
 
 # Historique
+
+## Version 1.2
+
+- ajout de MASTER-009 (Contraintes du projet) au tableau, dans le même lot que sa création. Voir [réf: ADR-005].
 
 ## Version 1.1
 

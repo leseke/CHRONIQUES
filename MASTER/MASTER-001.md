@@ -1,6 +1,6 @@
 # MASTER-001 --- Vision du Projet
 
-> Version : 2.0
+> Version : 2.1
 > Statut : Officiel
 > Type : Vision
 > Maturité : 1
@@ -133,6 +133,31 @@ Public adulte.
 
 ---
 
+# Plateforme cible
+
+Chroniques est conçu pour smartphone (iOS, Android), en mode portrait,
+pour une utilisation tactile.
+
+Les inspirations citées ci-dessus (Football Manager, Crusader Kings III,
+Red Dead Redemption 2, GTA V) décrivent la **profondeur de simulation**
+recherchée, pas le format de diffusion : Chroniques vise cette même
+richesse systémique, transposée à une interface et une session de jeu
+pensées pour le mobile, pas portée telle quelle depuis un jeu PC ou
+console.
+
+Le détail des contraintes de plateforme, de performance et de publication
+qui en découlent est défini par MASTER-009 [réf: MASTER-009].
+
+---
+
 # Devise
 
 Chaque vie raconte une Chronique.
+
+---
+
+# Historique
+
+## Version 2.1
+
+- ajout de la section « Plateforme cible » (mobile, portrait, tactile), absente jusqu'ici de tout document MASTER alors qu'elle constitue une contrainte réelle et confirmée du projet ; renvoi vers MASTER-009. Voir [réf: ADR-005].

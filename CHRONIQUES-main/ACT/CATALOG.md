@@ -33,7 +33,7 @@ ACT
 ├── Cycle de vie              (retiré --- voir section « Chapitre retiré »)
 ├── Acteurs                   (créé --- ACT-004, Statut : Proposition)
 ├── Cibles                    (créé --- ACT-005, Statut : Proposition)
-├── Conditions                (planifié, non créé --- ACT-006, périmètre restreint --- voir note)
+├── Conditions                (créé --- ACT-006-A, v1.1 audité --- voir note sur le périmètre restreint)
 ├── Conséquences              (planifié, non créé --- ACT-007, périmètre restreint --- voir note)
 ├── Taxonomie                 (planifié, non créé --- ACT-008)
 ├── Composition                (planifié, non créé --- ACT-009)

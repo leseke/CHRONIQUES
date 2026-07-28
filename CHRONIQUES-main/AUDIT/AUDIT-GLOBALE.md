@@ -1,7 +1,7 @@
 # AUDIT-GLOBALE.md
 
-> Version : 2.2
-> Statut : GDB et ACT (001-002) clos --- ACT-003 retiré, ACT-004 et ACT-005 créés en Proposition --- autres bibliothèques à approfondir
+> Version : 2.6
+> Statut : GDB et ACT (001-002) clos --- ACT-003 retiré, ACT-004/005/006 audités et en attente de validation d'équipe --- bibliothèque ENGINE créée et auditée --- autres bibliothèques à approfondir
 > Type : Audit
 > Maturité : 1
 > Bibliothèque : AUDIT
@@ -18,9 +18,17 @@
 | GDB (001 → 030) | ✅ Audité et corrigé intégralement |
 | ACT (001 → 002) | ✅ Audité et corrigé intégralement |
 | ACT-003 | ⛔ Retiré de la structure cible (redondant avec ACT-001-E et ACT-002-F à I, constaté et tracé dans ACT/CATALOG.md v1.2) --- rien à auditer, l'identifiant ne sera pas réattribué |
-| ACT-004 | 🟡 Créé (Statut : Proposition) --- rédigé mais non encore audité ni validé par l'équipe (cycle documentaire ACT-001-G, section 14) |
-| ACT-005 | 🟡 Créé (Statut : Proposition) --- rédigé mais non encore audité ni validé par l'équipe (cycle documentaire ACT-001-G, section 14) |
-| ACT (006 → 010), PATTERNS, VERBS | ◻️ Non créés --- rien à auditer tant qu'ils n'existent pas (voir ACT/CATALOG.md) |
+| ACT-004 | ✅ Audité (v1.2, 1 constat P1 trouvé et corrigé --- Maturité manquant) --- non encore validé par l'équipe (cycle documentaire ACT-001-G, section 14 : Validée reste une étape distincte de l'audit) |
+| ACT-005 | ✅ Audité (v1.2, 3 constats trouvés et corrigés --- 1 P1 citation erronée, 1 P1 Maturité manquant, 1 précision de citation) --- non encore validé par l'équipe (cycle documentaire ACT-001-G, section 14) |
+| ACT (007 → 010), PATTERNS, VERBS | ◻️ Non créés --- rien à auditer tant qu'ils n'existent pas (voir ACT/CATALOG.md) |
+| ACT-006 | ✅ Audité (v1.1 ; taxonomie, périmètre restreint aux catégories stables et règles de composition) --- non encore validé par l'équipe (cycle documentaire ACT-001-G, section 14) |
+| ENGINE-000 (Principes) | ✅ Audité (v1.1, 1 constat P1 trouvé et corrigé --- Bibliothèque/Maturité manquants, non-conformité MASTER-004) |
+| ENGINE-001 (Journal d'événements) | ✅ Audité (v2.0, révision complète : divergence constatée entre la spécification Subscribe/Handler jamais construite et le mécanisme réel implémenté --- document réécrit pour refléter le code) |
+| ENGINE-002 (Kernel) | ✅ Audité (v1.0, rédigé rétroactivement --- implémenté depuis la v0.1 du moteur, avant la création de la bibliothèque ENGINE) |
+| ENGINE-003 (Scheduler) | ✅ Audité (v1.0, rédigé rétroactivement --- implémenté depuis la v0.2) |
+| ENGINE-004 (Systems) | ✅ Audité (v1.0, rédigé rétroactivement, 1 constat corrigé en cours de rédaction --- affirmation erronée sur l'absence de tests NeedsDecaySystem, tests bien existants) |
+| ENGINE-005 (Persistence) | ✅ Audité (v1.0, rédigé rétroactivement) |
+| ENGINE-006 → ENGINE-007 | ◻️ Non créés --- Action Pipeline et Resource Manager, aucun code existant (voir ENGINE/CATALOG.md) |
 | ADR | ✅ Audité en complément (constat ADR-C01, corrigé) |
 | TECH | ✅ Audité (corrigé) |
 | QA | ✅ Audité (corrigé) |
@@ -359,20 +367,117 @@ Le backlog documentaire initial du dépôt (GDB et ACT) est intégralement trait
 
 ## Bibliothèques auditées
 
-Toutes (MASTER, CORE, GDB, ACT, ADR, TECH, QA, UX, LORE, PROD, ART, AUDIO, MKT).
+Toutes (MASTER, CORE, GDB, ACT, ENGINE, ADR, TECH, QA, UX, LORE, PROD, ART, AUDIO, MKT).
 
 ## Retiré (n'existera jamais sous cet identifiant)
 
 - ACT-003 --- redondant avec ACT-001-E et ACT-002-F à I (voir ACT/CATALOG.md v1.2, section « Chapitre retiré »)
 
-## Créé, non encore audité
+## Audités, non encore validés par l'équipe
 
-- ACT-004 (Statut : Proposition)
-- ACT-005 (Statut : Proposition)
+- ACT-004 (v1.2)
+- ACT-005 (v1.2)
+- ACT-006-A (v1.1 ; taxonomie, périmètre restreint)
+- ENGINE-000 (v1.1), ENGINE-001 (v2.0), ENGINE-002 à ENGINE-005 (v1.0),
+  CATALOG.md (v1.0) --- bibliothèque ENGINE, introduite par PROD-005
+  (Feuille de Route v2.2) et documentée rétroactivement pour ses
+  composants déjà codés (voir section dédiée ci-dessous)
+
+---
+
+# Relecture interne et audit formel systématiques (nouvelle pratique)
+
+À partir de cette session, tout document généré ou régénéré fait l'objet,
+avant d'être livré :
+
+1. d'une **relecture interne rapide** --- cohérence des renvois croisés,
+   citations vérifiées à l'endroit exact cité ;
+2. puis d'un **audit formel** au sens de MASTER-008 --- lecture complète,
+   conformité à l'en-tête MASTER-004, vérification systématique de
+   chaque citation contre le contenu réel du document cité, constats
+   numérotés et priorisés.
+
+Objectif : réduire les allers-retours de correction. Cette pratique ne
+remplace pas la validation d'équipe (cycle documentaire ACT-001-G,
+section 14), qui reste une étape distincte, requise séparément, et que
+ni la relecture ni l'audit ne peuvent accorder eux-mêmes.
+
+## Constats trouvés sur ACT-004 et ACT-005 (relecture + audit formel)
+
+- **ACT-005-C01 (P1, corrigé en v1.1)** --- section 6 (Rôle d'une Cible)
+  attribuait à tort la désignation de la Cible principale à l'Intent
+  d'origine, en citant ACT-002-H à l'appui d'une affirmation que cette
+  section ne soutient pas explicitement. Corrigé : la Cible principale
+  est désignée par l'Action Definition, pas par l'Intent.
+- **ACT-004-C01 (P3, corrigé en v1.1)** --- renvoi générique vers « le
+  futur ACT-005 » (section 8, Auto-ciblage), devenu imprécis depuis la
+  création effective d'ACT-005. Précisé vers ACT-005 section 9.
+- **ACT-004-C02 / ACT-005-C02 (P1, corrigés en v1.2)** --- champ
+  obligatoire `Maturité` absent de l'en-tête des deux documents depuis
+  leur création, en non-conformité avec MASTER-004 (obligatoire pour
+  tout document créé après sa v1.2 ; les deux documents sont trop
+  récents pour relever de la dette de migration qui couvre CORE et une
+  partie de GDB/ACT). Valeur retenue : 2 (Spécification, MASTER-007),
+  cohérente avec les sous-documents d'ACT-002 de même nature.
+- **ACT-005-C03 (P2, corrigé en v1.2)** --- la citation ajoutée par la
+  correction d'ACT-005-C01 (ci-dessus) était elle-même imprécise : elle
+  attribuait à ACT-002-H, section Indépendance, le fait explicite qu'un
+  Intent ne connaît pas de Cible, alors que cette section dit
+  littéralement qu'un Intent ne connaît pas les *Actions*. La chaîne
+  logique complète (Intent ignore les Actions --- une Cible est une
+  propriété d'une Action --- donc un Intent ne peut pas porter de Cible)
+  est désormais explicite plutôt que raccourcie.
+
+Aucun des quatre constats n'a nécessité de revoir la structure ou les
+invariants des documents --- uniquement des précisions de citation et
+un ajout de champ d'en-tête obligatoire.
+
+## Constats trouvés sur ENGINE (documentation rétroactive + audit formel)
+
+Contexte : PROD-005 (Feuille de Route v2.2) introduit la bibliothèque
+ENGINE et la règle « toute évolution importante du moteur doit d'abord
+être décrite dans ENGINE avant d'être implémentée » (ENGINE-000,
+section 3). Décision explicite du porteur de projet : cette règle
+s'applique aussi rétroactivement aux composants déjà codés sans
+spécification ENGINE préalable (Kernel, Scheduler, Systems,
+Persistence).
+
+- **ENGINE-C01 (P0, corrigé en v2.0)** --- divergence de fond entre
+  ENGINE-001 (Statut : Proposition, décrivait une architecture
+  Subscribe/Handler avec abonnement par type d'événement) et le code
+  réellement implémenté (`World.Publish`/`World.Events`, une simple
+  liste accumulée, sans abonnement ni distribution, utilisée par
+  `AgingSystem` depuis la v0.2). Décision du porteur de projet : réviser
+  ENGINE-001 pour refléter le mécanisme réel plutôt que de construire le
+  Subscribe/Handler jamais requis par aucun besoin réel (MASTER-006).
+  Document renommé « Journal d'événements du World », passé de Maturité
+  2 à Maturité 3.
+- **ENGINE-C02 (P1, corrigé)** --- ENGINE-000 (Principes) et le Readme
+  de la bibliothèque utilisaient un champ d'en-tête `Famille` qui
+  n'existe pas dans le format prescrit par MASTER-004 (le champ
+  obligatoire s'appelle `Bibliothèque`), et n'avaient pas le champ
+  obligatoire `Maturité`. Non-conformité pré-existante, propagée sans
+  le vouloir dans les nouveaux documents ENGINE-002 à 005 avant d'être
+  repérée et corrigée partout.
+- **ENGINE-C03 (P2, corrigé en cours de rédaction)** --- une première
+  version d'ENGINE-004 (Systems) affirmait qu'aucun test dédié
+  n'existait pour `NeedsDecaySystem`. Vérification faite avant
+  livraison : `NeedsDecaySystemTests.cs` existe et couvre 6 cas.
+  Affirmation corrigée avant tout envoi.
+- **ENGINE-C04 (P2, corrigé en cours de rédaction)** --- une première
+  version d'ENGINE-003 (Scheduler) affirmait qu'aucun test n'exerçait
+  directement `Scheduler.Register`/`Scheduler.Tick`. Vérification faite
+  avant livraison : `SchedulerTests.cs` existe et couvre les trois
+  invariants du document. Affirmation corrigée avant tout envoi.
+
+ENGINE-C03 et ENGINE-C04 n'ont jamais atteint l'utilisateur : trouvés et
+corrigés pendant la phase d'audit formel elle-même, avant la première
+livraison des documents --- exactement l'objectif de la pratique
+décrite ci-dessus.
 
 ## Non concerné (n'existe pas encore)
 
-- ACT-006 → ACT-010
+- ACT-007 → ACT-010
 - ACT/PATTERNS
 - ACT/VERBS
 

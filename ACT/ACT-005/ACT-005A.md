@@ -1,10 +1,12 @@
 # ACT-005-A — Cibles
 
-> Version : 1.1
+> Version : 1.2
 >
 > Statut : Proposition
 >
 > Type : Contrat d'architecture
+>
+> Maturité : 2
 >
 > Bibliothèque : ACT
 >
@@ -99,10 +101,12 @@ chacune y occupe l'un des rôles suivants.
 
 - **Cible principale.** L'entité que l'Action a explicitement pour objet
   d'affecter, désignée par l'Action Definition elle-même --- non par
-  l'Intent d'origine, qui ne connaît jamais de cible (ACT-002-H, section
-  Indépendance : un Intent décrit uniquement le résultat recherché, ses
-  exemples ne portent aucune cible avant qu'un Plan ne les instancie en
-  Actions). Une Action possède toujours exactement une Cible principale.
+  l'Intent d'origine. ACT-002-H, section Indépendance, est explicite :
+  un Intent ne connaît pas les Actions. Or une Cible est par définition
+  une propriété d'une Action (ACT-001-H : « entité concernée par une
+  action »), jamais d'un Intent : un Intent ne peut donc pas désigner de
+  Cible, seul un Plan qui l'instancie en Actions le peut. Une Action
+  possède toujours exactement une Cible principale.
 - **Cible secondaire.** Une entité affectée par voie de conséquence de
   l'Action, sans être l'objet de l'Intent (ex. : les personnes présentes
   lors d'une action publique). Une Action peut posséder zéro, une ou
@@ -240,6 +244,21 @@ concrets par catégorie de Cible.
 ---
 
 # 14. Historique
+
+## Version 1.2
+
+- audit formel (méthodologie MASTER-008), deux constats :
+  1. Ajout du champ obligatoire `Maturité` à l'en-tête, absent depuis la
+     création --- non-conformité à MASTER-004. Valeur retenue : 2
+     (Spécification), même justification que ACT-004-A v1.2.
+  2. Resserrement de la citation section 6 (Rôle d'une Cible) : la
+     correction v1.1 citait ACT-002-H (section Indépendance) comme
+     support direct de « un Intent ne connaît jamais de cible », alors
+     que cette section dit littéralement que l'Intent ne connaît pas les
+     *Actions*, pas explicitement pas les Cibles. La chaîne logique
+     complète est désormais explicite : Intent ne connaît pas les
+     Actions (ACT-002-H) --- une Cible est une propriété d'une Action
+     (ACT-001-H) --- donc un Intent ne peut pas porter de Cible.
 
 ## Version 1.1
 

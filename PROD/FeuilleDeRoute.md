@@ -1,6 +1,6 @@
-# Chroniques --- Feuille de Route V2
+# Chroniques — Feuille de Route V2.2
 
-> Version : 2.1
+> Version : 2.2
 > Statut : Officiel
 > Type : Roadmap
 > Maturité : 2
@@ -16,49 +16,157 @@ Chroniques est un moteur de simulation narratif sur lequel un jeu est construit.
 
 Le jeu n'est que la première utilisation de ce moteur.
 
----
-
-# Ce qui change par rapport à la V1
-
-La V1 était juste sur l'architecture, mais laissait deux points implicites, désormais
-tranchés par ADR-002 [réf: ADR-002] :
-
-1. La couche de rendu et l'ordre de développement des systèmes de profondeur.
-2. L'alignement de l'ordre de développement sur MASTER-005 : produire d'abord une vie
-   entière jouable, avant d'ajouter la profondeur.
-
-Le détail de ces choix techniques vit exclusivement dans ADR-002 --- il n'est pas
-répété ici, pour éviter que deux documents fassent autorité sur la même décision.
-
-Le reste de la V1 (principes, architecture en couches, data-driven, déterminisme) est
-conservé.
+Le développement du moteur suit une approche **Documentation First**, où chaque composant est spécifié avant d'être implémenté.
 
 ---
 
-# Les quatre principes
+# Ce qui change par rapport à la V2.1
+
+La V2.2 formalise l'organisation documentaire désormais adoptée par le projet.
+
+Les principales évolutions sont :
+
+- création officielle de la bibliothèque **ENGINE** ;
+- intégration du processus **Documentation → Implémentation → Tests → TECH** ;
+- distinction explicite entre les spécifications d'architecture (ENGINE) et la documentation technique (TECH) ;
+- ajout d'une phase d'infrastructure moteur avant le développement des systèmes de gameplay.
+
+Aucun objectif fonctionnel des versions précédentes n'est modifié.
+
+---
+
+# Les cinq principes
 
 ## 1. Le code suit les spécifications
 
-Aucun module n'est développé sans être relié à une spécification existante.
+Aucune fonctionnalité n'est développée sans être reliée à une spécification existante.
 
-CORE → ACT → Implémentation → Tests → Documentation TECH
+Le développement suit la hiérarchie documentaire suivante :
+
+```
+MASTER
+    ↓
+CORE
+    ↓
+ACT
+    ↓
+ENGINE
+    ↓
+Implémentation
+    ↓
+Tests
+    ↓
+TECH
+```
+
+Chaque niveau dépend uniquement des niveaux précédents.
+
+---
 
 ## 2. Documentation vivante
 
-Une fonctionnalité est terminée uniquement lorsqu'elle est spécifiée, implémentée,
-testée et documentée.
+Une fonctionnalité est terminée uniquement lorsqu'elle est :
+
+- spécifiée ;
+- implémentée ;
+- testée ;
+- documentée dans TECH.
+
+---
 
 ## 3. Data-driven
 
-Le moteur ne contient aucune donnée métier. Objets, PNJ, métiers, compétences, événements,
-villes, bâtiments : tout est défini par des données externes. Le moteur ne connaît que
-leur structure.
+Le moteur ne contient aucune donnée métier.
+
+Objets, personnages, métiers, bâtiments, événements, villes, compétences, religions ou dialogues sont entièrement définis par des données externes.
+
+Le moteur ne connaît que leur structure.
+
+---
 
 ## 4. Déterminisme
 
-À état identique et mêmes entrées, résultat identique.
+À état identique et entrées identiques, la simulation produit toujours exactement le même résultat.
 
-Cela garantit sauvegardes fiables, replays, débogage, tests et futur multijoueur.
+Cette propriété garantit :
+
+- des sauvegardes fiables ;
+- les replays ;
+- les tests reproductibles ;
+- le futur multijoueur déterministe.
+
+---
+
+## 5. Séparation des responsabilités
+
+Chaque bibliothèque possède un rôle clairement défini.
+
+- **MASTER** : vision et architecture globale.
+- **CORE** : concepts fondamentaux.
+- **ACT** : comportements et moteur d'actions.
+- **ENGINE** : architecture interne du moteur.
+- **TECH** : documentation générée à partir du code réellement implémenté.
+
+Aucune bibliothèque ne duplique la responsabilité d'une autre.
+
+---
+
+# Architecture documentaire
+
+Le projet est organisé autour des bibliothèques suivantes.
+
+```
+MASTER
+│
+├── Vision
+├── Architecture
+└── Principes
+
+        │
+        ▼
+
+CORE
+│
+├── Monde
+├── Entités
+├── États
+├── Valeurs
+└── Relations
+
+        │
+        ▼
+
+ACT
+│
+├── Intent
+├── Plan
+├── Action
+└── Outcome
+
+        │
+        ▼
+
+ENGINE
+│
+├── EventBus
+├── Scheduler
+├── Simulation Loop
+├── Systems
+├── Persistence
+└── Infrastructure
+
+        │
+        ▼
+
+CHRONIQUES-ENGINE
+(Code)
+
+        │
+        ▼
+
+TECH
+(Documenté à partir du code)
+```
 
 ---
 
@@ -67,161 +175,328 @@ Cela garantit sauvegardes fiables, replays, débogage, tests et futur multijoueu
 ```
 Chroniques
 │
-├── Simulation   (C# pur --- tout le gameplay, aucune dépendance graphique)
-├── Content      (données externes --- aucune donnée codée en dur)
-├── Rendering    (adaptateur Godot/C# --- lit l'état, l'affiche)
-├── Tools        (éditeur, débogueur)
+├── Simulation
+│      Gameplay intégral
+│
+├── Content
+│      Données externes
+│
+├── Rendering
+│      Adaptateur Godot
+│
+├── Tools
+│      Outils de développement
+│
 ├── Documentation
+│
 └── Tests
 ```
 
-La règle d'or : **la simulation ignore comment elle est affichée.**
+La simulation ignore totalement la manière dont elle est affichée.
 
-Le détail de ces choix (langage, moteur de rendu, tests, sauvegarde, intégration
-continue) est défini une seule fois, dans ADR-002 [réf: ADR-002]. Cette section ne
-fait que rappeler la structure qui en découle, pour la lecture de la feuille de route.
+Le moteur de rendu ne fait que représenter l'état courant du monde.
 
 ---
 
-# Couche simulation
+# Architecture moteur
 
-Toute la logique de jeu vit ici, en C# pur.
+Le moteur est développé progressivement autour des composants suivants.
 
-Elle implémente directement les spécifications CORE, GDB et ACT.
+```
+World
+│
+├── Kernel
+├── Scheduler
+├── EventBus
+├── Simulation Loop
+├── Systems
+├── Action Pipeline
+├── Persistence
+├── Serialization
+└── Resource Management
+```
 
-Elle est organisée en systèmes, ajoutés progressivement selon l'ordre ci-dessous --- et
-non tous en même temps.
+Chaque composant possède une spécification dédiée dans la bibliothèque ENGINE avant son implémentation.
+
+---
+
+# Couche Simulation
+
+Toute la logique métier est développée en C# pur.
+
+La couche Simulation implémente directement les spécifications :
+
+- CORE
+- ACT
+- ENGINE
+
+Elle reste indépendante :
+
+- du moteur graphique ;
+- de l'interface utilisateur ;
+- des outils.
 
 ---
 
 # Feuille de route par versions
 
-L'objectif directeur est le critère de sortie de la Phase 1 de MASTER-005 :
-**une vie entière jouable, du premier choix au dernier.**
+L'objectif directeur reste le critère de sortie de la Phase 1 de MASTER-005 :
 
-Les versions y mènent d'abord, puis ajoutent la profondeur.
+> Une vie entière jouable, du premier choix au dernier.
 
-L'ordre des versions ci-dessous suit celui des phases de MASTER-005 : Phase 3 (le
-monde vivant) précède Phase 4 (la profondeur). Une version précédente de ce document
-inversait cet ordre (v0.4 *La profondeur* avant v0.5 *Le monde vivant*), en
-contradiction avec MASTER-005, document de rang supérieur selon MASTER-003. L'ordre
-ci-dessous corrige cet écart.
-
-## v0.1 --- Le noyau
-
-Le Kernel technique, sans aucune règle de jeu.
-
-- Entity, Component, State, Value
-- Relation, Event
-- Time, Space, Lifecycle
-- World (conteneur)
-- RNG déterministe à graine
-- Sérialisation JSON
-- Un test par loi du Kernel
-
-Critère de sortie : le noyau tourne, tous les tests de lois passent, un World vide se
-sauvegarde et se recharge à l'identique.
-
-## v0.2 --- Un être vivant
-
-Le strict nécessaire pour qu'un personnage existe et traverse le temps.
-
-- Personnage (Entity + Components)
-- Besoins (faim, fatigue, santé, moral)
-- Cycle de vie : naître → grandir → vieillir → mourir
-- Scheduler et tick temporel
-- Systèmes de besoins qui évoluent avec le temps
-
-Critère de sortie : un personnage naît, vit ses besoins année après année, et meurt.
-Tout est observable sans aucun rendu.
-
-## v0.3 --- Une vie entière
-
-La boucle de vie complète et jouable. **Atteint le critère de Phase 1 de MASTER-005.**
-
-- Actions (moteur ACT : Intent → Plan → Action → Outcome → Effects → Events)
-- Relations sociales et mémoire relationnelle
-- Compétences et apprentissage
-- Première transmission de lignée (héritage minimal à la mort)
-- Interface de rendu minimale sous Godot pour jouer réellement
-
-Critère de sortie : un joueur peut vivre une vie entière, du premier choix au dernier,
-et poursuivre avec un héritier.
-
-## v0.4 --- Le monde vivant
-
-Le monde évolue indépendamment du joueur. **Correspond à la Phase 3 de MASTER-005.**
-
-- PNJ autonomes qui vivent leur propre vie
-- Économie qui bouge seule
-- Événements du monde
-- Mémoire du monde
-
-Critère de sortie : le monde évolue de façon crédible sur plusieurs générations sans
-intervention du joueur.
-
-## v0.5 --- La profondeur
-
-Seulement maintenant, les grands systèmes de la couche Simulation. **Correspond à la
-Phase 4 de MASTER-005.**
-
-- Économie et métiers
-- Santé et médecine approfondies
-- Crime et justice
-- Combat
-- Politique, religion
-
-Critère de sortie : trois vies radicalement différentes produisent trois histoires
-également riches.
-
-## v0.6 --- Les outils
-
-- Éditeur de contenu (objets, métiers, événements, dialogues) sans toucher au code
-- Débogueur de simulation
-- Visualisation de l'état du monde
-
-## v1.0 --- Première alpha jouable
-
-- Boucle complète
-- Sauvegarde stable et versionnée
-- Équilibrage initial
-- Direction artistique et interface abouties
+Les versions suivantes y conduisent progressivement.
 
 ---
 
-# Workflow par fonctionnalité
+# v0.1 — Le noyau
+
+Construction des fondations du moteur.
+
+## Infrastructure
+
+- Entity
+- Component
+- State
+- Value
+- Relation
+- World
+- Tick
+- Time
+- Lifecycle
+- RNG déterministe
+- Sérialisation JSON
+
+## Documentation
+
+- MASTER
+- CORE
+
+## Validation
+
+- tests unitaires du Kernel
+- sauvegarde/restauration déterministe
+- World vide entièrement reproductible
+
+---
+
+# v0.2 — Infrastructure de simulation
+
+Construction de l'infrastructure permettant au monde de vivre.
+
+## ENGINE
+
+- EventBus
+- Scheduler
+- Simulation Loop
+- Systems
+- Persistence
+- Serialization
+- World Lifecycle
+
+## Simulation
+
+- premier personnage
+- besoins
+- vieillissement
+- cycle de vie
+- évolution temporelle
+
+## Validation
+
+Un personnage peut :
+
+- naître ;
+- vivre ;
+- voir évoluer ses besoins ;
+- vieillir ;
+- mourir ;
+
+sans aucun moteur graphique.
+
+Toute la simulation reste déterministe.
+
+---
+
+# v0.3 — Une vie entière
+
+Atteint le critère de sortie de la Phase 1 de MASTER-005.
+
+## ACT
+
+- Intent
+- Plan
+- Action
+- Outcome
+- Effects
+- Events
+
+## Simulation
+
+- relations
+- mémoire
+- compétences
+- héritage minimal
+
+## Rendering
+
+Première interface Godot jouable.
+
+## Validation
+
+Le joueur peut :
+
+- vivre une vie complète ;
+- mourir ;
+- poursuivre avec son héritier.
+
+---
+
+# v0.4 — Le monde vivant
+
+Correspond à la Phase 3 de MASTER-005.
+
+Ajout :
+
+- PNJ autonomes
+- économie autonome
+- mémoire du monde
+- événements dynamiques
+
+Validation :
+
+Le monde continue d'évoluer sur plusieurs générations sans intervention du joueur.
+
+---
+
+# v0.5 — La profondeur
+
+Correspond à la Phase 4 de MASTER-005.
+
+Ajout :
+
+- économie avancée
+- métiers
+- médecine
+- justice
+- crime
+- politique
+- religion
+- combat
+
+Validation :
+
+Trois vies différentes produisent trois histoires profondément différentes.
+
+---
+
+# v0.6 — Les outils
+
+Ajout :
+
+- éditeur de contenu
+- debugger de simulation
+- inspection du monde
+- outils de production
+
+---
+
+# v1.0 — Première alpha
+
+Le moteur est considéré comme stable.
+
+Objectifs :
+
+- boucle complète
+- sauvegarde versionnée
+- équilibrage
+- interface aboutie
+- direction artistique
+- stabilité
+
+---
+
+# Workflow de développement
+
+Toute fonctionnalité suit obligatoirement le cycle suivant.
 
 ```
-Spécification → Implémentation → Tests → Documentation TECH → Validation → Intégration
+MASTER
+
+↓
+
+CORE
+
+↓
+
+ACT
+
+↓
+
+ENGINE
+
+↓
+
+Implémentation
+
+↓
+
+Tests
+
+↓
+
+TECH
+
+↓
+
+Validation
+
+↓
+
+Intégration
 ```
 
 Aucun document TECH ne décrit une fonctionnalité inexistante.
+
+Aucun code n'est développé sans spécification validée.
 
 ---
 
 # Objectif long terme
 
-Un moteur de simulation capable de faire vivre un monde dynamique où chaque personnage
-agit selon ses besoins, où l'économie évolue, où les relations changent, où les
-événements et les actions du joueur modifient durablement le monde.
+Construire un moteur de simulation capable de faire vivre un monde autonome où :
+
+- chaque personnage poursuit ses propres objectifs ;
+- les relations évoluent naturellement ;
+- l'économie fonctionne indépendamment du joueur ;
+- les générations se succèdent ;
+- les événements émergent de la simulation.
 
 Le jeu n'est que la première utilisation de ce moteur.
+
+L'objectif ultime est de disposer d'un moteur suffisamment générique pour supporter plusieurs expériences interactives reposant sur la même architecture de simulation.
 
 ---
 
 # Historique
 
+## Version 2.2
+
+- création officielle de la bibliothèque ENGINE ;
+- intégration de l'architecture documentaire complète ;
+- formalisation du workflow MASTER → CORE → ACT → ENGINE → Code → Tests → TECH ;
+- ajout de l'architecture moteur (EventBus, Scheduler, Simulation Loop, Systems, Persistence, Serialization, World Lifecycle) ;
+- clarification du rôle de chaque bibliothèque documentaire ;
+- restructuration de la v0.2 autour de l'infrastructure moteur avant les systèmes de gameplay ;
+- maintien des objectifs fonctionnels des versions précédentes.
+
 ## Version 2.1
 
-- suppression de la section « Choix techniques (ADR-002) », qui reproduisait
-  intégralement des décisions déjà actées dans ADR-002 sans y référer --- remplacée par
-  des renvois `[réf: ADR-002]` (corrige PROD-C01, PROD-C02) ;
-- inversion de v0.4 (*La profondeur*) et v0.5 (*Le monde vivant*) pour corriger une
-  contradiction avec l'ordre des phases de MASTER-005, document de rang supérieur
-  (corrige PROD-C03) ;
+- suppression de la section « Choix techniques (ADR-002) » au profit de références vers ADR-002 ;
+- inversion des versions v0.4 et v0.5 afin de respecter MASTER-005 ;
 - ajout de l'en-tête conforme à MASTER-004.
 
-## Version 2.0 (post ADR-002)
+## Version 2.0
 
-- Remplace la V1. Intègre le choix de plateforme et l'ordre aligné sur MASTER-005
-  (non détaillé rétroactivement).
+- remplace la V1 ;
+- intégration des décisions d'ADR-002 ;
+- alignement de la feuille de route sur MASTER-005.

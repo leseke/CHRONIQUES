@@ -1,339 +1,185 @@
-# ENGINE-001 — EventBus
+# ENGINE-001 — Journal d'événements du World
 
-> Version : 1.0
-> Statut : Proposition
-> Famille : ENGINE
+> Version : 2.0
+> Statut : Stable
+> Maturité : 3
+> Bibliothèque : ENGINE
 
 ⸻
 
 # 1. Objectif
 
-Définir le système de communication interne du moteur Chroniques.
+Définir le mécanisme par lequel le moteur Chroniques enregistre les faits
+significatifs survenus dans la simulation, sous forme d'événements
+immuables (GameEvent, implémentant la primitive Event de CORE-007).
 
-L'EventBus permet aux composants du moteur d'échanger des informations sous forme d'événements sans créer de dépendances directes entre eux.
-
-Il constitue l'un des mécanismes fondamentaux de l'infrastructure du moteur.
+Ce document décrit le mécanisme réellement implémenté dans
+`CHRONIQUES-ENGINE` --- pas une architecture Subscribe/Handler envisagée
+puis jamais construite (voir section 9, Historique, pour cette révision).
 
 ---
 
 # 2. Principe
 
-Le moteur repose sur une architecture orientée événements.
+Chaque `World` maintient un journal d'événements : une liste ordonnée,
+dans laquelle tout System peut ajouter un `GameEvent` à tout moment via
+`World.Publish(...)`.
 
-Lorsqu'un système produit un fait significatif, il publie un événement sur l'EventBus.
+Il n'existe aucun mécanisme d'abonnement. Aucun System ne « reçoit » un
+événement au moment où il est publié --- un événement est simplement
+ajouté au journal, lisible par quiconque a accès au World (tests,
+outils d'inspection, TECH, un futur Rendering).
 
-Tous les systèmes abonnés à ce type d'événement sont automatiquement notifiés.
-
-Le système émetteur ne connaît jamais les destinataires.
-
-Cette séparation garantit un faible couplage entre les composants du moteur.
+Un System qui doit réagir à un fait précédent ne le fait jamais en
+observant `World.Events` --- il le fait en observant l'état du monde
+lui-même (un Component, un Lifecycle) au Tick suivant. Le journal
+d'événements sert à l'observabilité, pas à la communication entre
+Systems.
 
 ---
 
 # 3. Responsabilités
 
-L'EventBus est responsable de :
+Le journal d'événements est responsable de :
 
-- enregistrer les abonnements ;
-- supprimer les abonnements ;
-- publier les événements ;
-- distribuer chaque événement aux handlers concernés.
+- accepter tout `GameEvent` publié, sans condition ni validation de
+  contenu ;
+- préserver l'ordre de publication ;
+- rester lisible en lecture seule depuis l'extérieur du World.
 
 Il n'est jamais responsable :
 
-- de la logique métier ;
-- de modifier directement le monde ;
-- d'exécuter les Actions ;
-- de prendre des décisions.
-
-Il agit uniquement comme intermédiaire de communication.
+- de distribuer un événement à un destinataire précis ;
+- de déclencher une réaction chez un System ;
+- de filtrer, transformer ou supprimer un événement publié.
 
 ---
 
 # 4. Composants
 
-## Event
+## GameEvent
 
-Un Event représente un fait survenu dans le moteur.
+Un `GameEvent` (`Kernel/GameEvent.cs`) représente un fait survenu dans le
+moteur. Implémenté comme `record` --- immuable par construction, aucune
+mutation possible après création (CORE-000-G : « les Events sont
+immuables »).
 
-Un événement est :
+Champs : `Id` (Guid), `OccurredAt` (Tick), `Kind` (string), `Source`
+(EntityId?), `Target` (EntityId?).
 
-- immuable ;
-- autonome ;
-- sans comportement.
+Nommé `GameEvent` plutôt que `Event` pour éviter toute confusion avec le
+mot-clé C# `event` --- le mapping conceptuel avec CORE-007 reste
+explicite dans la documentation XML du code.
 
-Il transporte uniquement les informations nécessaires à sa compréhension.
+Exemples de `Kind` déjà en usage : `vie.etape.enfance`,
+`vie.etape.adolescence`, `vie.etape.age_adulte`, `vie.etape.maturite`,
+`vie.etape.vieillesse`, `vie.mort` (voir `Systems/AgingSystem.cs`).
 
-Exemples :
+## World (journal)
 
-- TickAdvancedEvent
-- NeedChangedEvent
-- EntityCreatedEvent
-- ActionCompletedEvent
-- CalendarDayChangedEvent
+Le `World` (`Kernel/World.cs`) maintient la liste `_events`, exposée en
+lecture seule via `Events` (`IReadOnlyList<GameEvent>`).
 
----
-
-## EventHandler
-
-Un EventHandler traite un type précis d'événement.
-
-Il peut :
-
-- mettre à jour un composant ;
-- publier un nouvel événement ;
-- déclencher une action interne.
-
-Un handler ne connaît jamais l'origine de l'événement.
-
----
-
-## EventBus
-
-Le EventBus est le point central de distribution des événements.
-
-Il maintient la liste des handlers abonnés.
-
-Lorsqu'un événement est publié, il le distribue à tous les handlers compatibles.
+`Publish(GameEvent)` ajoute l'événement en fin de liste. `ReplayEvents`
+(interne, réservé à `Persistence.WorldRepository`) réinjecte une liste
+d'événements lors d'un rechargement, sans passer par `Publish`.
 
 ---
 
 # 5. Cycle de vie
 
-Le cycle complet d'un événement est le suivant.
-
 ```mermaid
 flowchart LR
 
-A[Système]
-    --> B[Publication]
-
-B --> C[EventBus]
-
-C --> D[Handler A]
-
-C --> E[Handler B]
-
-C --> F[Handler C]
+A[System] --> B[GameEvent.Create]
+B --> C[World.Publish]
+C --> D[World._events]
+D --> E[World.Events, lecture seule]
 ```
 
-Le système producteur ne dépend jamais des handlers.
-
-Les handlers ne connaissent jamais le producteur.
+Il n'existe pas de distribution : le cycle s'arrête à l'ajout dans la
+liste. Ce qui consulte `World.Events` ensuite (un test, TECH, un futur
+outil d'inspection) le fait activement, à son propre rythme --- jamais
+par notification.
 
 ---
 
 # 6. Flux
 
-1. Un système détecte un fait significatif.
-
-2. Il crée un Event.
-
-3. L'Event est publié sur le EventBus.
-
-4. Le EventBus identifie les handlers abonnés.
-
-5. Chaque handler reçoit exactement une notification.
-
-6. Les handlers exécutent leur propre traitement.
-
-7. Le cycle est terminé.
+1. Un System détecte un fait significatif pendant `Update`.
+2. Il construit un `GameEvent` via `GameEvent.Create(tick, kind, source,
+   target)`.
+3. Il appelle `world.Publish(event)`.
+4. L'événement est ajouté à `world.Events`, dans l'ordre.
+5. Le cycle est terminé --- aucune notification n'est déclenchée.
 
 ---
 
 # 7. Contrat
 
-Le EventBus garantit les invariants suivants.
+Le journal d'événements garantit les invariants suivants.
 
 ## Publication
 
-Tout événement peut être publié.
+Tout `GameEvent` peut être publié, sans condition.
 
-La publication ne dépend pas de la présence d'abonnés.
+## Ordre
 
----
+`World.Events` reflète toujours l'ordre exact de publication.
 
-## Distribution
+## Immutabilité
 
-Chaque handler compatible reçoit exactement une notification.
+Un `GameEvent` déjà publié ne peut jamais être modifié ni retiré du
+journal (hors rechargement complet du World).
 
-Un handler incompatible n'est jamais invoqué.
+## Absence de distribution
 
----
-
-## Abonnement
-
-Un handler peut s'abonner à un type précis d'événement.
-
-L'abonnement prend effet immédiatement.
+Publier un événement ne déclenche jamais l'exécution d'un autre System.
+Aucun System n'est notifié.
 
 ---
 
-## Désabonnement
+# 8. Contraintes
 
-Un handler désabonné ne reçoit plus aucun événement de ce type.
+Le journal d'événements doit rester :
 
----
-
-## Isolation
-
-Les handlers sont indépendants.
-
-Le traitement d'un handler ne doit pas empêcher les autres handlers de recevoir leur notification.
-
----
-
-# 8. Invariants
-
-Le moteur garantit que :
-
-- un Event possède toujours un type unique ;
-- un EventBus existe au plus une fois par World ;
-- un handler appartient à zéro ou plusieurs types d'événements ;
-- un événement est distribué uniquement aux handlers de son type ;
-- la publication d'un événement sans handler n'est jamais une erreur.
-
-Toute violation constitue une erreur du moteur.
-
----
-
-# 9. Contraintes
-
-Le EventBus doit rester :
-
-- déterministe ;
+- déterministe (l'ordre de publication ne dépend que de l'ordre
+  d'exécution des Systems, lui-même déterministe --- voir
+  ENGINE-003, Scheduler) ;
 - indépendant du gameplay ;
-- indépendant du Scheduler ;
-- indépendant de l'IA ;
-- indépendant de la persistance.
-
-Il constitue une infrastructure du moteur.
+- indépendant de la persistance --- `WorldRepository` le lit et le
+  réinjecte, il ne le gère pas.
 
 ---
 
-# 10. Performances
+# 9. Historique
 
-Le coût d'une publication dépend uniquement du nombre de handlers abonnés au type publié.
+## Version 2.0
 
-La recherche d'un type d'événement doit rester en temps constant.
-
-L'EventBus ne conserve jamais l'historique des événements.
-
----
-
-# 11. Cas particuliers
-
-## Aucun handler
-
-La publication est ignorée.
-
-Aucune exception n'est levée.
-
----
-
-## Plusieurs handlers
-
-Tous les handlers sont exécutés.
-
-L'ordre d'exécution n'est pas garanti par cette spécification.
-
----
-
-## Publication récursive
-
-Un handler peut publier un nouvel événement.
-
-Le moteur reste responsable de préserver sa stabilité.
-
-La stratégie exacte d'exécution est laissée à l'implémentation.
-
----
-
-# 12. Validation
-
-Le composant est considéré valide si les comportements suivants sont observés.
-
-## Publish
-
-Un événement peut être publié sans erreur.
-
----
-
-## Subscribe
-
-Un handler reçoit les événements auxquels il est abonné.
-
----
-
-## Unsubscribe
-
-Un handler désabonné ne reçoit plus les événements.
-
----
-
-## Distribution
-
-Tous les handlers compatibles sont invoqués.
-
-Aucun handler incompatible n'est invoqué.
-
----
-
-## Robustesse
-
-La publication d'un événement sans handler ne provoque jamais d'exception.
-
----
-
-# 13. Tests
-
-Les tests minimum sont :
-
-- Publish_Should_Call_Handler
-- Publish_Should_Call_All_Handlers
-- Publish_Should_Not_Call_Unsubscribed_Handler
-- Publish_Should_Ignore_Other_Event_Types
-- Publish_With_No_Handler_Should_Not_Throw
-
-Des tests complémentaires pourront être ajoutés selon les besoins de l'implémentation.
-
----
-
-# 14. Relation avec les autres composants
-
-Le EventBus est utilisé par :
-
-- Scheduler
-- Systems
-- Action Pipeline
-- Persistence
-- World
-
-Il reste totalement indépendant de leur implémentation.
-
----
-
-# 15. Évolutions
-
-Les évolutions suivantes sont envisagées :
-
-- file d'événements (Event Queue) ;
-- priorités de traitement ;
-- exécution différée ;
-- événements distribués ;
-- instrumentation ;
-- diagnostic.
-
-Aucune de ces fonctionnalités n'est requise pour la version 1.0.
-
----
-
-# Historique
+- Révision complète suite à une divergence constatée avec le code
+  réellement implémenté. La version 1.0 décrivait une architecture
+  Subscribe/Handler (abonnement par type d'événement, distribution
+  individuelle aux handlers) qui n'a jamais été construite --- le code
+  existant (`World.Publish` / `World.Events`, utilisé par
+  `AgingSystem` depuis la v0.2 du moteur) est une simple liste
+  accumulée, sans abonnement ni distribution. Ce document décrit
+  désormais ce mécanisme réel plutôt que l'architecture envisagée.
+  Décision : conserver le mécanisme simple plutôt que construire le
+  Subscribe/Handler de la v1.0, la v0.2 n'en ayant jamais eu besoin
+  (MASTER-006 : pas d'anticipation sans motif réel). Si un besoin réel
+  de distribution par type apparaît (ex. : un System qui doit réagir à
+  un événement d'un autre System dans le même Tick), il sera documenté
+  comme une évolution explicite de ce document, pas ajouté
+  silencieusement au code.
+- Passage de Maturité 2 (Spécification, avant tout code) à Maturité 3
+  (Implémentation : le document correspond au code existant,
+  identifiant pour identifiant --- MASTER-007).
+- Renommage du titre : « EventBus » suggérait un mécanisme de
+  distribution qui n'existe pas ; « Journal d'événements du World »
+  décrit fidèlement ce qui est implémenté.
 
 ## Version 1.0
 
-- Première spécification du système EventBus.
-- Définition des responsabilités.
-- Définition des invariants.
-- Définition du cycle de vie.
-- Définition des critères de validation.
+- Première spécification du système EventBus (Subscribe/Handler).
+- Définition des responsabilités, invariants, cycle de vie et critères
+  de validation --- jamais implémentés tels quels (voir version 2.0).

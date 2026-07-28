@@ -1,8 +1,9 @@
 # ENGINE
 
-> Version : 1.0
+> Version : 1.1
 > Statut : Stable
-> Famille : ENGINE
+> Maturité : 1
+> Bibliothèque : ENGINE
 
 ⸻
 
@@ -280,6 +281,12 @@ Elle reste volontairement indépendante de toute implémentation particulière a
 ---
 
 # Historique
+
+## Version 1.1
+
+- audit formel (méthodologie MASTER-008) : mêmes corrections de
+  conformité MASTER-004 qu'ENGINE-000 v1.1 --- `Famille` renommé
+  `Bibliothèque`, `Maturité` ajouté (1, Fondations).
 
 ## Version 1.0
 

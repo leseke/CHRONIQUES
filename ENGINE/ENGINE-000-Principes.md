@@ -1,8 +1,9 @@
 # ENGINE-000 — Principes d'architecture
 
-> Version : 1.0
+> Version : 1.1
 > Statut : Stable
-> Famille : ENGINE
+> Maturité : 1
+> Bibliothèque : ENGINE
 
 ⸻
 
@@ -181,6 +182,15 @@ Une évolution du moteur est considérée conforme si :
 ---
 
 # Historique
+
+## Version 1.1
+
+- audit formel (méthodologie MASTER-008) : correction de conformité à
+  l'en-tête MASTER-004 --- le champ `Famille` n'existe pas dans le
+  format prescrit (le champ obligatoire s'appelle `Bibliothèque`) ; le
+  champ obligatoire `Maturité` était également absent. Valeur retenue :
+  1 (Fondations, MASTER-007 --- ce document énonce des principes, pas
+  des solutions implémentables).
 
 ## Version 1.0
 

@@ -1,6 +1,6 @@
 # ENGINE-001 — Journal d'événements du World
 
-> Version : 2.0
+> Version : 2.1
 > Statut : Stable
 > Maturité : 3
 > Bibliothèque : ENGINE
@@ -153,6 +153,23 @@ Le journal d'événements doit rester :
 ---
 
 # 9. Historique
+
+## Version 2.1
+
+- Constat trouvé en vérifiant le moteur suite à la création d'ENGINE-002
+  à 005 : un dossier `Kernel/EventBus/` existait dans le code
+  (`EventBus.cs`, `IEventBus.cs`, `IEventHandler.cs`, `IEvent.cs`,
+  `TickAdvancedEvent.cs`), correspondant exactement à l'architecture
+  Subscribe/Handler décrite par la version 1.0 de ce document. Chaque
+  méthode y levait `NotImplementedException` --- un squelette jamais
+  terminé --- et aucun autre fichier du moteur n'y faisait référence
+  (`World`, `Scheduler`, `AgingSystem`, aucun test). Ce code contredisait
+  la version 2.0 de ce document, qui décrit le mécanisme réellement
+  fonctionnel (`World.Publish`/`Events`) comme le mécanisme officiel.
+  Décision du porteur de projet : supprimer ce dossier plutôt que le
+  laisser contredire silencieusement la spécification --- aucun projet
+  SDK-style ne référence les fichiers individuellement (glob
+  automatique), la suppression n'affecte aucune compilation.
 
 ## Version 2.0
 

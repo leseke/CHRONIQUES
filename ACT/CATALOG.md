@@ -1,6 +1,6 @@
 # ACT — Catalogue
 
-> Version : 1.3
+> Version : 1.5
 >
 > Statut : Foundation
 >
@@ -34,10 +34,10 @@ ACT
 ├── Acteurs                   (créé --- ACT-004, Statut : Proposition)
 ├── Cibles                    (créé --- ACT-005, Statut : Proposition)
 ├── Conditions                (créé --- ACT-006-A, v1.1 audité --- voir note sur le périmètre restreint)
-├── Conséquences              (planifié, non créé --- ACT-007, périmètre restreint --- voir note)
-├── Taxonomie                 (planifié, non créé --- ACT-008)
-├── Composition                (planifié, non créé --- ACT-009)
-├── Événements                (planifié, non créé --- ACT-010)
+├── Conséquences              (créé --- ACT-007-A, v1.1 audité --- voir note sur le périmètre restreint)
+├── Taxonomie                 (créé --- ACT-008-A, v1.0 audité --- voir note sur le périmètre restreint)
+├── Composition                (créé --- ACT-009-A, v1.1 audité --- voir note sur la frontière avec le Plan)
+├── Événements                (créé --- ACT-010-A, v1.0 audité --- voir note sur le périmètre restreint)
 ├── Patterns                  (planifié, non créé --- PATTERNS/)
 └── Verbes                    (planifié, non créé --- VERBS/)
 
@@ -138,57 +138,81 @@ cours d'exécution lorsqu'une Action en possède plusieurs. ACT-005 tranche
 aussi explicitement le renvoi laissé ouvert par ACT-004, section 8
 (Auto-ciblage). ACT-005 n'est pas redondant.
 
----
-
-# Chapitres planifiés, non créés
-
-Les chapitres suivants sont annoncés par l'architecture cible d'ACT (section 7
-du README) mais **n'existent pas encore** dans le dépôt. Ils ne doivent pas être
-comptés comme « non audités » : il n'y a aucun document à auditer tant qu'ils
-n'ont pas été rédigés.
-
 ## ACT-006 --- Conditions
 
-Décrira les prérequis nécessaires à l'exécution.
+Décrit les prérequis nécessaires à l'exécution.
 
 **Périmètre restreint par rapport à la version 1.1 de ce catalogue.**
 ACT-002-E (Action Contract, sections 5 et 6 --- Preconditions et
 Constraints) et ACT-001-B section 5 (Principe de conditions) couvrent déjà
 la place des conditions dans le contrat d'une action et leurs catégories
 (matérielles, sociales, économiques, juridiques, environnementales,
-temporelles, physiologiques, psychologiques). ACT-006 ne doit donc pas
-redéfinir ce que sont les Preconditions/Constraints, mais peut légitimement
-couvrir ce qui manque : une taxonomie stable des catégories de conditions
-(au-delà de la simple liste), et les règles de composition de plusieurs
-conditions entre elles (ET/OU, conditions mutuellement exclusives,
-priorité en cas de conflit). À vérifier une nouvelle fois avant rédaction
-que ce périmètre restreint reste suffisant pour justifier un document à
-part entière plutôt qu'une extension d'ACT-002-E.
+temporelles, physiologiques, psychologiques). ACT-006 ne redéfinit pas ce
+que sont les Preconditions/Constraints ; il couvre ce qui manquait : une
+taxonomie stable des catégories de conditions (au-delà de la simple
+liste), et les règles de composition de plusieurs conditions entre elles
+(unicité par catégorie, polarité, héritage entre entités liées). ACT-006
+n'est pas redondant.
 
 ## ACT-007 --- Conséquences
 
-Décrira les effets produits par une action.
+Décrit les effets produits par une action.
 
 **Périmètre restreint par rapport à la version 1.1 de ce catalogue**, pour
 la même raison qu'ACT-006 : ACT-002-E (sections 10 et 11 --- Effects et
 Events) et ACT-001-B section 6 (Principe de conséquence) couvrent déjà la
 place des effets et événements dans le contrat d'une action. ACT-007 ne
-doit pas redéfinir Effects/Events, mais peut couvrir une taxonomie des
-catégories de conséquences (immédiate/différée, réversible/irréversible,
-locale/globale) qui n'existe nulle part actuellement. Même vérification
-requise avant rédaction qu'ACT-006.
+redéfinit pas Effects/Events ; il couvre une taxonomie des catégories de
+conséquences (matérielle, relationnelle, informationnelle, statutaire,
+narrative), trois dimensions transverses (temporalité, réversibilité,
+portée), et les règles de composition selon la forme de l'Outcome
+(ACT-002-G), qui n'existaient nulle part. ACT-007 n'est pas redondant.
 
-## ACT-008 --- Taxonomie
+## ACT-008 --- Taxonomie des verbes
 
-Décrira les familles de verbes.
+Décrit les règles d'organisation des Verbes en familles partageant un
+même Pattern.
 
-## ACT-009 --- Composition
+Vérification de non-duplication : ACT-002-B (définitions de Principe,
+Pattern, Verbe) et ACT-002-C (relations autorisées entre niveaux,
+sections 3, 4, 8) posent déjà les définitions et la relation de
+spécialisation, mais aucun des deux ne définit la multiplicité
+Pattern/Verbe, le critère de création d'un nouveau Verbe, ni la règle de
+non-polysémie. Ce document n'énumère aucun Verbe concret --- cette
+responsabilité reste à VERBS, pilotée par GDB. ACT-008 n'est pas
+redondant.
 
-Décrira la combinaison des actions simples en actions complexes.
+## ACT-009 --- Composition d'Actions
 
-## ACT-010 --- Événements
+Décrit la combinaison d'Actions simples en Actions complexes.
 
-Décrira les événements générés par les actions.
+Vérification de non-duplication : ACT-002-C, section 6, pose déjà
+l'axiome (« une Action peut être composée de plusieurs Actions ») avec un
+exemple, mais sans règle de propagation d'échec, d'agrégation de
+l'Outcome ni d'héritage du Contexte --- et surtout sans trancher la
+frontière avec le Plan (ACT-002-I), qui décrit lui aussi plusieurs
+Actions liées entre elles. ACT-009 comble ce vide et tranche cette
+frontière explicitement. ACT-009 n'est pas redondant.
+
+## ACT-010 --- Taxonomie des événements
+
+Décrit les catégories d'événements qu'une Action peut publier et leur
+relation avec les Conséquences (ACT-007).
+
+Vérification de non-duplication : ACT-002-E, section 11, définit déjà ce
+qu'est un Event dans l'Action Contract, et ENGINE-001 définit déjà le
+mécanisme concret de publication --- mais aucun des deux ne propose de
+taxonomie des catégories conceptuelles d'événements. ACT-010 ne redéfinit
+ni l'un ni l'autre. ACT-010 n'est pas redondant.
+
+---
+
+# Chapitres planifiés, non créés
+
+Aucun chapitre numéroté d'ACT ne reste planifié à ce stade --- ACT-001 à
+ACT-010 sont désormais tous créés (ACT-003 excepté, retiré). Seules les
+bibliothèques PATTERNS et VERBS, distinctes du présent catalogue de
+chapitres, restent à créer (voir sections dédiées ci-dessous).
 
 ---
 
@@ -291,6 +315,42 @@ UX
 ---
 
 # Historique
+
+## Version 1.5
+
+- `ACT-008-A` (Taxonomie des verbes) créé --- règles de multiplicité
+  Pattern/Verbe, critère de nouveau Verbe en quatre tests, non-polysémie ;
+  n'énumère aucun Verbe concret (réservé à VERBS, piloté par GDB) ;
+- `ACT-009-A` (Composition d'Actions) créé --- règles de propagation
+  d'échec, d'agrégation de l'Outcome, d'héritage du Contexte, et
+  surtout tranche explicitement la frontière avec le Plan (ACT-002-I),
+  qui n'était pas résolue depuis la création d'ACT-002. Audit formel :
+  1 constat corrigé avant livraison (imprécision de citation sur le
+  vocabulaire de réévaluation d'un Plan) --- voir l'Historique
+  d'ACT-009-A ;
+- `ACT-010-A` (Taxonomie des événements) créé --- catégories
+  conceptuelles d'événements et leur relation avec les Conséquences
+  (ACT-007), sans redéfinir le mécanisme déjà couvert par ACT-002-E §11
+  et ENGINE-001 ;
+- ACT-001 à ACT-010 sont désormais tous créés (ACT-003 excepté, retiré).
+  Seules les bibliothèques PATTERNS et VERBS restent à créer.
+
+## Version 1.4
+
+- `ACT-007-A` (Conséquences) créé --- taxonomie (matérielle,
+  relationnelle, informationnelle, statutaire, narrative), trois
+  dimensions transverses (temporalité, réversibilité, portée), et
+  composition selon la forme de l'Outcome (ACT-002-G), qui n'existaient
+  nulle part. Audit formel : 2 constats trouvés et corrigés avant
+  livraison (citation erronée sur l'irréversibilité, référence imprécise
+  à ACT-001-E) --- voir l'Historique d'ACT-007-A ;
+- correction d'un oubli constaté en traitant ACT-007 : la sous-section
+  `## ACT-006 --- Conditions` était restée dans « Chapitres planifiés,
+  non créés » alors qu'ACT-006 est créé et audité depuis la v1.3 --- la
+  structure générale du catalogue le disait déjà correctement, seule
+  cette sous-section descriptive ne l'avait jamais suivie. Déplacée vers
+  « Chapitres créés, non encore audités », aux côtés d'ACT-004/005/007,
+  texte remis au présent.
 
 ## Version 1.3
 

@@ -1,6 +1,6 @@
 # ENGINE — Catalogue
 
-> Version : 1.0
+> Version : 1.1
 > Statut : Foundation
 > Maturité : 1
 > Bibliothèque : ENGINE
@@ -60,6 +60,16 @@ v0.2 du moteur. Couvre `NeedsDecaySystem`, `AgingSystem`,
 Statut : Stable. **Rédigé rétroactivement** --- implémenté depuis la
 v0.1 (World vide) et étendu en v0.2 (Components, Lifecycle).
 
+## ENGINE-006 --- Action Pipeline
+
+Statut : Proposition, Maturité 2. **Rédigé avant tout code** --- ordre
+normal de la Documentation First (ENGINE-000, section 3), contrairement
+à ENGINE-002 à 005. Traduit ACT-002-D à J et ACT-004-A à ACT-010-A en
+une architecture concrète (types, machine à états, règles de
+composition), condition requise avant toute implémentation du pipeline
+d'action (dépend de l'avancement d'ACT, v0.3, MASTER-005 --- désormais
+satisfaite, ACT-001 à ACT-010 étant tous créés).
+
 ---
 
 # Chapitres planifiés, non créés
@@ -68,12 +78,6 @@ Annoncés par PROD-005 et par ENGINE-000/Readme, mais sans code ni
 spécification existants --- rien à documenter rétroactivement, et
 aucune spécification prématurée n'est rédigée par anticipation
 (MASTER-006).
-
-## ENGINE-006 --- Action Pipeline
-
-Orchestration du pipeline Intent → Plan → Action → Outcome au niveau
-moteur (distinct du modèle universel déjà couvert par ACT-002-F à I,
-qui reste conceptuel). Dépend de l'avancement d'ACT (v0.3, MASTER-005).
 
 ## ENGINE-007 --- Resource Manager
 
@@ -106,6 +110,13 @@ justification explicite tracée ici.
 ---
 
 # Historique
+
+## Version 1.1
+
+- `ENGINE-006` (Action Pipeline) créé --- traduit ACT-002-D à J et
+  ACT-004-A à ACT-010-A en architecture concrète, maintenant qu'ACT-001
+  à ACT-010 sont tous créés. Premier document ENGINE rédigé avant tout
+  code (Maturité 2), à la différence d'ENGINE-002 à 005.
 
 ## Version 1.0
 

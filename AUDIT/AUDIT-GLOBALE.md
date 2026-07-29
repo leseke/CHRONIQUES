@@ -1,7 +1,7 @@
 # AUDIT-GLOBALE.md
 
-> Version : 2.6
-> Statut : GDB et ACT (001-002) clos --- ACT-003 retiré, ACT-004/005/006 audités et en attente de validation d'équipe --- bibliothèque ENGINE créée et auditée --- autres bibliothèques à approfondir
+> Version : 3.0
+> Statut : GDB et ACT (001-010, 003 excepté) clos --- ENGINE-000 à 006 créés et audités, squelette EventBus mort supprimé (ENGINE-C05) --- ENGINE-006 (Action Pipeline) est le premier document ENGINE rédigé avant tout code --- tout en attente de validation d'équipe --- autres bibliothèques à approfondir
 > Type : Audit
 > Maturité : 1
 > Bibliothèque : AUDIT
@@ -20,15 +20,20 @@
 | ACT-003 | ⛔ Retiré de la structure cible (redondant avec ACT-001-E et ACT-002-F à I, constaté et tracé dans ACT/CATALOG.md v1.2) --- rien à auditer, l'identifiant ne sera pas réattribué |
 | ACT-004 | ✅ Audité (v1.2, 1 constat P1 trouvé et corrigé --- Maturité manquant) --- non encore validé par l'équipe (cycle documentaire ACT-001-G, section 14 : Validée reste une étape distincte de l'audit) |
 | ACT-005 | ✅ Audité (v1.2, 3 constats trouvés et corrigés --- 1 P1 citation erronée, 1 P1 Maturité manquant, 1 précision de citation) --- non encore validé par l'équipe (cycle documentaire ACT-001-G, section 14) |
-| ACT (007 → 010), PATTERNS, VERBS | ◻️ Non créés --- rien à auditer tant qu'ils n'existent pas (voir ACT/CATALOG.md) |
+| PATTERNS, VERBS | ◻️ Non créés --- rien à auditer tant qu'ils n'existent pas (voir ACT/CATALOG.md) |
+| ACT-008 | ✅ Audité (v1.0 ; multiplicité Pattern/Verbe, critère de nouveau Verbe, non-polysémie) --- non encore validé par l'équipe (cycle documentaire ACT-001-G, section 14) |
+| ACT-009 | ✅ Audité (v1.1, 1 constat P2 corrigé --- imprécision de citation sur ACT-002-I ; tranche la frontière Action composite / Plan) --- non encore validé par l'équipe (cycle documentaire ACT-001-G, section 14) |
+| ACT-010 | ✅ Audité (v1.0 ; taxonomie des événements, relation avec les Conséquences) --- non encore validé par l'équipe (cycle documentaire ACT-001-G, section 14) |
 | ACT-006 | ✅ Audité (v1.1 ; taxonomie, périmètre restreint aux catégories stables et règles de composition) --- non encore validé par l'équipe (cycle documentaire ACT-001-G, section 14) |
+| ACT-007 | ✅ Audité (v1.1 ; taxonomie, dimensions transverses, composition selon la forme de l'Outcome, périmètre restreint) --- non encore validé par l'équipe (cycle documentaire ACT-001-G, section 14) |
 | ENGINE-000 (Principes) | ✅ Audité (v1.1, 1 constat P1 trouvé et corrigé --- Bibliothèque/Maturité manquants, non-conformité MASTER-004) |
-| ENGINE-001 (Journal d'événements) | ✅ Audité (v2.0, révision complète : divergence constatée entre la spécification Subscribe/Handler jamais construite et le mécanisme réel implémenté --- document réécrit pour refléter le code) |
+| ENGINE-001 (Journal d'événements) | ✅ Audité (v2.1, révision complète en v2.0 : divergence constatée entre la spécification Subscribe/Handler jamais construite et le mécanisme réel implémenté --- document réécrit pour refléter le code ; v2.1 : squelette EventBus mort trouvé dans le code lors de la vérification du moteur, supprimé) |
 | ENGINE-002 (Kernel) | ✅ Audité (v1.0, rédigé rétroactivement --- implémenté depuis la v0.1 du moteur, avant la création de la bibliothèque ENGINE) |
 | ENGINE-003 (Scheduler) | ✅ Audité (v1.0, rédigé rétroactivement --- implémenté depuis la v0.2) |
 | ENGINE-004 (Systems) | ✅ Audité (v1.0, rédigé rétroactivement, 1 constat corrigé en cours de rédaction --- affirmation erronée sur l'absence de tests NeedsDecaySystem, tests bien existants) |
 | ENGINE-005 (Persistence) | ✅ Audité (v1.0, rédigé rétroactivement) |
-| ENGINE-006 → ENGINE-007 | ◻️ Non créés --- Action Pipeline et Resource Manager, aucun code existant (voir ENGINE/CATALOG.md) |
+| ENGINE-006 (Action Pipeline) | ✅ Audité (v1.0, rédigé avant tout code --- Maturité 2, traduit ACT-002/004-010 en architecture concrète) --- non encore validé par l'équipe |
+| ENGINE-007 | ◻️ Non créé --- Resource Manager, aucun code existant (voir ENGINE/CATALOG.md) |
 | ADR | ✅ Audité en complément (constat ADR-C01, corrigé) |
 | TECH | ✅ Audité (corrigé) |
 | QA | ✅ Audité (corrigé) |
@@ -378,10 +383,17 @@ Toutes (MASTER, CORE, GDB, ACT, ENGINE, ADR, TECH, QA, UX, LORE, PROD, ART, AUDI
 - ACT-004 (v1.2)
 - ACT-005 (v1.2)
 - ACT-006-A (v1.1 ; taxonomie, périmètre restreint)
-- ENGINE-000 (v1.1), ENGINE-001 (v2.0), ENGINE-002 à ENGINE-005 (v1.0),
-  CATALOG.md (v1.0) --- bibliothèque ENGINE, introduite par PROD-005
+- ACT-007-A (v1.1 ; taxonomie, périmètre restreint)
+- ACT-008-A (v1.0), ACT-009-A (v1.1), ACT-010-A (v1.0) --- taxonomie des
+  verbes, composition d'Actions, taxonomie des événements ; ACT-001 à
+  ACT-010 sont désormais tous créés (ACT-003 excepté, retiré)
+- ENGINE-000 (v1.1), ENGINE-001 (v2.1), ENGINE-002 à ENGINE-005 (v1.0),
+  CATALOG.md (v1.1) --- bibliothèque ENGINE, introduite par PROD-005
   (Feuille de Route v2.2) et documentée rétroactivement pour ses
   composants déjà codés (voir section dédiée ci-dessous)
+- ENGINE-006-A (v1.0) --- Action Pipeline, premier document ENGINE
+  rédigé avant tout code (Maturité 2), traduisant ACT-002/004-010 en
+  architecture concrète
 
 ---
 
@@ -432,6 +444,31 @@ Aucun des quatre constats n'a nécessité de revoir la structure ou les
 invariants des documents --- uniquement des précisions de citation et
 un ajout de champ d'en-tête obligatoire.
 
+## Constats trouvés sur ACT-007 (et un oubli sur ACT-006)
+
+- **ACT-007-C01 (P2, corrigé avant livraison)** --- section 4
+  (Réversibilité) attribuait à tort à ACT-004-A, section 6, une
+  affirmation sur l'irréversibilité de la mort qu'elle ne contient pas ;
+  ACT-004-A section 5 utilise seulement la mort comme exemple d'état
+  disqualifiant, sans se prononcer sur sa réversibilité. Reformulé pour
+  ne plus sur-attribuer cette affirmation.
+- **ACT-007-C02 (P3, corrigé avant livraison)** --- référence vague à
+  ACT-001-E (« section sur l'interruption ») précisée (section 5,
+  Interruptions).
+- **ACT-CATALOG-C02 (P2, corrigé)** --- en traitant ACT-007, découverte
+  que la sous-section descriptive `## ACT-006 --- Conditions` du
+  catalogue était restée dans « Chapitres planifiés, non créés » depuis
+  sa création (v1.3), alors que la structure générale du même catalogue
+  la marquait déjà correctement « créé ». Même défaut que celui déjà
+  corrigé une fois pour ACT-004 (voir Historique d'ACT/CATALOG.md,
+  version 1.2) --- réapparu pour ACT-006 sans avoir été généralisé en
+  vérification systématique. Corrigé dans ACT/CATALOG.md v1.4 : les deux
+  vues (structure générale et sous-section descriptive) sont désormais
+  revérifiées ensemble à chaque création de chapitre.
+
+Les trois constats ci-dessus ont été trouvés et corrigés avant la
+première livraison des documents concernés.
+
 ## Constats trouvés sur ENGINE (documentation rétroactive + audit formel)
 
 Contexte : PROD-005 (Feuille de Route v2.2) introduit la bibliothèque
@@ -469,15 +506,27 @@ Persistence).
   directement `Scheduler.Register`/`Scheduler.Tick`. Vérification faite
   avant livraison : `SchedulerTests.cs` existe et couvre les trois
   invariants du document. Affirmation corrigée avant tout envoi.
+- **ENGINE-C05 (P1, corrigé)** --- en vérifiant le moteur suite à la
+  création d'ENGINE-002 à 005, découverte d'un dossier
+  `Kernel/EventBus/` correspondant exactement à l'architecture
+  Subscribe/Handler qu'ENGINE-001 v1.0 décrivait --- code jamais
+  terminé (chaque méthode levait `NotImplementedException`), jamais
+  référencé ailleurs dans le moteur. Ce squelette contredisait
+  silencieusement ENGINE-001 v2.0, déjà révisé pour refléter le
+  mécanisme réel (`World.Publish`/`Events`). Décision du porteur de
+  projet : supprimer le dossier. ENGINE-001 passe en v2.1.
 
 ENGINE-C03 et ENGINE-C04 n'ont jamais atteint l'utilisateur : trouvés et
 corrigés pendant la phase d'audit formel elle-même, avant la première
 livraison des documents --- exactement l'objectif de la pratique
-décrite ci-dessus.
+décrite ci-dessus. ENGINE-C05 illustre l'utilité du contrôle inverse ---
+vérifier le code à la lumière de la documentation, pas seulement l'autre
+sens --- désormais recommandé après toute création ou révision d'un
+document ENGINE touchant un composant déjà codé (voir Prochaine étape
+recommandée).
 
 ## Non concerné (n'existe pas encore)
 
-- ACT-007 → ACT-010
 - ACT/PATTERNS
 - ACT/VERBS
 
@@ -485,11 +534,18 @@ décrite ci-dessus.
 
 # Prochaine étape recommandée
 
-GDB (001 à 030) et ACT (001 et 002) sont désormais intégralement traités : 0
-constat ouvert. La dette de migration MASTER-004 (Maturité/Bibliothèque
-manquants sur CORE et une partie de GDB/ACT, voir section dédiée) reste le
+GDB (001 à 030) et ACT (001 à 010) sont désormais intégralement traités : 0
+constat ouvert (ACT-003 excepté, retiré). La dette de migration MASTER-004
+(Maturité/Bibliothèque manquants sur CORE et une partie de GDB) reste le
 principal chantier de fond, à traiter au fil des prochaines régénérations
 plutôt que par une campagne dédiée (MASTER-008, section 4). TECH, QA, UX, LORE,
 PROD, ART, AUDIO, MKT restent des bibliothèques à un seul document chacune :
 leur prochaine étape naturelle est la rédaction de leurs premiers documents
 numérotés, pas un nouvel audit.
+
+Suite à ENGINE-C05 : toute création ou révision d'un document ENGINE portant
+sur un composant déjà codé doit désormais s'accompagner d'une vérification
+dans l'autre sens --- le code contredit-il la documentation, pas seulement
+l'inverse (recherche de code mort, de scaffolding non terminé, ou de
+mécanismes parallèles non référencés) --- avant de considérer le document
+comme fiable à 100 %.

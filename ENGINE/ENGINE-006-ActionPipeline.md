@@ -1,6 +1,6 @@
 # ENGINE-006 — Action Pipeline
 
-> Version : 1.0
+> Version : 1.2
 > Statut : Proposition
 > Maturité : 2
 > Bibliothèque : ENGINE
@@ -362,6 +362,37 @@ par ACT-009-A, sans la rouvrir.
 ---
 
 # 12. Historique
+
+## Version 1.2
+
+- Preuve d'intégration de bout en bout, dans
+  `Simulation/Chroniques.Simulation/Actions/Exemples/` : un unique Verbe
+  de démonstration (« Se reposer », `SimplePlanner`,
+  `SimpleExecutionEngine`, `PipelineRunner`) exerçant Intent → Planner →
+  Plan → Action Instance → Execution Engine → Outcome → Effects → Events
+  réellement, pas seulement chaque pièce isolément. Ce n'est jamais un
+  Verbe officiel (ACT-008-A, section 1 : l'énumération des Verbes
+  appartient à VERBS, piloté par GDB) --- uniquement une validation
+  d'architecture. 4 tests d'intégration ajoutés
+  (`PipelineIntegrationTests`), en complément d'`ActionInstanceTests` et
+  `PlanTests` (unitaires). 91 tests existants confirmés passants avant
+  cet ajout (compilation et exécution réelles, hors de cet
+  environnement).
+
+## Version 1.1
+
+- Première implémentation, dans `Simulation/Chroniques.Simulation/Actions/`
+  (`CHRONIQUES-ENGINE`). Toutes les citations vérifiées avant livraison
+  (audit formel) ; aucun constat trouvé. Deux ajouts au-delà des
+  esquisses C# illustratives de ce document, cohérents avec le texte des
+  sections concernées mais non nommés explicitement dans les extraits de
+  code : `PlanStatus` (Actif/Suspendu/Abandonné, réalise la prose de la
+  section 4.3 sur la réévaluation d'un Plan) et les types complets des
+  taxonomies ACT-006/007/010 (`ConditionCategorie`, `ConsequenceTemplate`
+  et ses trois dimensions, `EventTemplate`), esquissés en prose ici mais
+  détaillés en code. Maturité laissée à 2 : une vérification dédiée
+  identifiant pour identifiant reste à faire avant de passer à 3
+  (MASTER-007).
 
 ## Version 1.0
 

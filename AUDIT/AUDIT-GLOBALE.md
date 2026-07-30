@@ -1,6 +1,6 @@
 # AUDIT-GLOBALE.md
 
-> Version : 3.0
+> Version : 3.1
 > Statut : GDB et ACT (001-010, 003 excepté) clos --- ENGINE-000 à 006 créés et audités, squelette EventBus mort supprimé (ENGINE-C05) --- ENGINE-006 (Action Pipeline) est le premier document ENGINE rédigé avant tout code --- tout en attente de validation d'équipe --- autres bibliothèques à approfondir
 > Type : Audit
 > Maturité : 1
@@ -32,7 +32,7 @@
 | ENGINE-003 (Scheduler) | ✅ Audité (v1.0, rédigé rétroactivement --- implémenté depuis la v0.2) |
 | ENGINE-004 (Systems) | ✅ Audité (v1.0, rédigé rétroactivement, 1 constat corrigé en cours de rédaction --- affirmation erronée sur l'absence de tests NeedsDecaySystem, tests bien existants) |
 | ENGINE-005 (Persistence) | ✅ Audité (v1.0, rédigé rétroactivement) |
-| ENGINE-006 (Action Pipeline) | ✅ Audité (v1.0, rédigé avant tout code --- Maturité 2, traduit ACT-002/004-010 en architecture concrète) --- non encore validé par l'équipe |
+| ENGINE-006 (Action Pipeline) | ✅ Audité (v1.2, rédigé avant tout code --- Maturité 2, traduit ACT-002/004-010 en architecture concrète) --- implémentation confirmée compilable, 91/91 tests passants (dont 4 d'intégration de bout en bout via un Verbe de démonstration), non encore validée par l'équipe |
 | ENGINE-007 | ◻️ Non créé --- Resource Manager, aucun code existant (voir ENGINE/CATALOG.md) |
 | ADR | ✅ Audité en complément (constat ADR-C01, corrigé) |
 | TECH | ✅ Audité (corrigé) |

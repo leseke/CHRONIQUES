@@ -543,26 +543,30 @@ recommandée).
      `ENGINE-006`, est entré au catalogue en `Proposition`, Maturité 2.
 - **Constat :** au-delà du rejet de la proposition elle-même, elle
   pointe une lacune réelle et non encore adressée : aucun composant du
-  moteur n'orchestre aujourd'hui le `Scheduler` (Systems) et le futur
-  Pipeline d'Actions (`ENGINE-006`) au sein d'un même Tick.
-  `Scheduler.Tick` n'a connaissance que des Systems ; rien n'invoque le
-  Pipeline d'Actions, qui reste de toute façon non implémenté à ce jour
-  (`ENGINE-006`, Maturité 2, non encore validé par l'équipe). Ce trou
-  n'existait pas avant la création d'`ENGINE-006` --- il devient visible
-  maintenant qu'un Pipeline d'Actions est spécifié sans que rien ne
-  prévoie de l'appeler.
+  moteur n'orchestre aujourd'hui le `Scheduler` (Systems) et le Pipeline
+  d'Actions (`ENGINE-006`) au sein d'un même Tick. `Scheduler.Tick` n'a
+  connaissance que des Systems. Le Pipeline existe bien en code
+  (`Actions/`, dont `PipelineRunner`, 91/91 tests passants) --- **contrairement
+  à une première version de ce constat qui affirmait à tort le
+  contraire, corrigée avant clôture de la session** --- mais il reste
+  câblé à la main pour l'unique Verbe de démonstration « Se reposer »
+  (`PipelineRunner.ExecuterSeReposer`), invoqué manuellement, jamais par
+  `Scheduler` ni par aucun autre point d'entrée automatique du Tick.
 - **Décision :** ne pas rédiger de spécification ENGINE par
-  anticipation (MASTER-006) --- le Pipeline d'Actions lui-même n'est pas
-  encore implémenté. Constat consigné ici pour ne pas le perdre, à
-  rouvrir explicitement au moment de l'implémentation d'`ENGINE-006`,
-  moment où le besoin d'orchestration deviendra concret plutôt
-  qu'anticipé. À cette occasion : choisir un identifiant réellement
+  anticipation (MASTER-006) --- généraliser `PipelineRunner` au-delà d'un
+  Verbe unique, ou l'intégrer au Tick, sans qu'un second Verbe réel n'en
+  démontre le besoin, serait anticiper (cf. le commentaire de
+  `PipelineRunner.cs` lui-même sur ce point). Constat consigné ici pour
+  ne pas le perdre, à rouvrir explicitement à l'un des deux déclencheurs
+  suivants, le premier atteint : validation d'équipe d'`ENGINE-006`, ou
+  apparition d'un second Verbe réel nécessitant l'orchestration
+  automatique. À cette occasion : choisir un identifiant réellement
   libre (pas `ENGINE-007`), fournir la justification de réouverture de
   la consolidation `ENGINE-003`, et n'attribuer un statut `Validé` qu'à
   l'issue du cycle documentaire normal (Proposée → Validée →
   Spécifiée → Implémentée → Testée → Stable, ACT-001-G section 14).
-- **Condition de clôture :** ouverture réelle du chantier `ENGINE-006`
-  (implémentation du Pipeline d'Actions).
+- **Condition de clôture :** validation d'équipe d'`ENGINE-006`, ou
+  apparition d'un second Verbe réel --- pas avant.
 
 ## Non concerné (n'existe pas encore)
 
@@ -589,7 +593,6 @@ l'inverse (recherche de code mort, de scaffolding non terminé, ou de
 mécanismes parallèles non référencés) --- avant de considérer le document
 comme fiable à 100 %.
 
-ENGINE-C06 reste ouvert et différé volontairement : à rouvrir au moment de
-l'implémentation du Pipeline d'Actions (`ENGINE-006`), pas avant --- c'est à
-ce moment que l'orchestration Scheduler / Pipeline d'Actions cessera d'être
-une anticipation pour devenir un besoin réel.
+ENGINE-C06 reste ouvert et différé volontairement : à rouvrir à la validation
+d'équipe d'`ENGINE-006`, ou dès qu'un second Verbe réel exigera une
+orchestration automatique Scheduler / Pipeline d'Actions --- pas avant.

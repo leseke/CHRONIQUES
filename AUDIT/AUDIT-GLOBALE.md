@@ -1,7 +1,7 @@
 # AUDIT-GLOBALE.md
 
-> Version : 3.3
-> Statut : GDB et ACT (001-010, 003 excepté) clos --- ENGINE-000 à 006 créés et audités, squelette EventBus mort supprimé (ENGINE-C05) --- ENGINE-006 (Action Pipeline) validé par le porteur du projet, Maturité 4 --- 1 constat ENGINE ouvert (ENGINE-C06, lacune d'orchestration Scheduler/Action Pipeline, différé jusqu'à MASTER-005 Phase 3) --- autres bibliothèques à approfondir
+> Version : 3.4
+> Statut : GDB et ACT (001-010, 003 excepté) clos --- ENGINE-000 à 006 créés et audités, squelette EventBus mort supprimé (ENGINE-C05) --- ENGINE-006 (Action Pipeline) validé par le porteur du projet, Maturité 4 --- GDB-004C/004H/004J régénérés à Maturité 2 (Relations, Compétences, Héritage) en préparation d'une future spec ENGINE --- 2 constats ouverts : ENGINE-C06 (orchestration Scheduler/Action Pipeline, différé jusqu'à MASTER-005 Phase 3), GDB-CATALOG-C02 (angle mort du repérage par titre de GDB-CATALOG-C01, 3 occurrences déjà corrigées, passage dédié restant à mener) --- autres bibliothèques à approfondir
 > Type : Audit
 > Maturité : 1
 > Bibliothèque : AUDIT
@@ -204,6 +204,41 @@ document concerné ; résumé par chapitre :
 - **Constat :** 19 titres de documents identiques répétés entre chapitres.
 - **Correction :** les 19 paires ont chacune reçu une frontière explicite (l'un des deux documents fait autorité sur le mécanisme, l'autre sur une dimension complémentaire), avec renvois croisés `[réf: ...]` dans les deux sens et titres précisés lorsque nécessaire. Table détaillée dans `GDB/CATALOG.md`.
 
+### GDB-CATALOG-C02 --- ⏳ Ouvert (portée non traitée entièrement)
+- **Priorité :** P2
+- **Type :** Méthodologie d'audit
+- **Constat :** `GDB-CATALOG-C01` appariait les chapitres par **titre de
+  document identique**. Ce repérage a un angle mort : deux documents
+  peuvent traiter le même sujet sous des titres différents, sans jamais
+  être rapprochés par une comparaison de titres. Trois occurrences de ce
+  défaut, non couvertes par `GDB-CATALOG-C01`, ont été découvertes
+  incidemment en régénérant `GDB-004C`, `GDB-004H` et `GDB-004J` pour
+  atteindre la précision opérationnelle requise avant une future spec
+  ENGINE (Relations/Compétences/Héritage) :
+  1. `GDB-004H` (Les Compétences) / `GDB-007A` (Les Compétences du
+     Joueur) --- même mécanique, titres différents, aucun renvoi croisé.
+  2. `GDB-004H` / `GDB-007B` (La Maîtrise) --- recoupement partiel, même
+     défaut.
+  3. `GDB-004J` (La Transmission) / `GDB-008G` (L'Héritage) --- « ce qui
+     peut être transmis » quasi identique entre les deux, aucun renvoi
+     croisé.
+- **Correction partielle déjà appliquée :** les trois paires ci-dessus
+  ont chacune reçu une frontière explicite dans les deux sens
+  (`GDB-004C` v1.1, `GDB-004H` v1.2, `GDB-004J` v1.2, `GDB-007A` v1.1,
+  `GDB-007B` v1.1, `GDB-008G` v1.1) --- au passage, mise en conformité
+  MASTER-004 des documents qui n'avaient encore ni `Maturité` ni
+  `Bibliothèque` (`GDB-004C`, `GDB-007A`, `GDB-007B`, `GDB-008G`).
+- **Ce qui reste ouvert :** ces trois paires ont été trouvées
+  incidemment, pas par une recherche systématique. Un passage d'audit
+  dédié, comparant les 30 chapitres de la GDB par **concept** plutôt que
+  par titre (par exemple : chaque paire de documents dont l'ensemble des
+  sections IMPACT/INTERACTIONS se recoupe significativement), reste à
+  mener pour savoir si d'autres occurrences du même défaut existent
+  ailleurs dans le dépôt.
+- **Condition de clôture :** réalisation de ce passage d'audit dédié,
+  qu'il trouve ou non de nouvelles occurrences --- sa seule exécution,
+  pas son résultat, ferme ce constat.
+
 ---
 
 # ACT
@@ -364,7 +399,7 @@ GDB-005-C01/C02/C03/C04, GDB-CATALOG-C01, ACT-001-C01/C02/C03, ACT-002-C01/C02/C
 
 **0 constat du backlog documentaire ouvert + 0 constat d'audit indépendant restant = 0 constat à traiter sur GDB et ACT.**
 
-Le backlog documentaire initial du dépôt (GDB et ACT) est intégralement traité.
+Le backlog documentaire initial du dépôt (GDB et ACT) est intégralement traité. Ce total ne compte pas `GDB-CATALOG-C02`, constat distinct ouvert lors de sessions de travail ultérieures (voir section ENGINE/GDB ci-dessous) --- même logique que pour `ENGINE-C06`, qui n'entre pas non plus dans ce décompte historique.
 
 ---
 

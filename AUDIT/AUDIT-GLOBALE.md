@@ -1,7 +1,7 @@
 # AUDIT-GLOBALE.md
 
-> Version : 3.2
-> Statut : GDB et ACT (001-010, 003 excepté) clos --- ENGINE-000 à 006 créés et audités, squelette EventBus mort supprimé (ENGINE-C05) --- ENGINE-006 (Action Pipeline) est le premier document ENGINE rédigé avant tout code --- tout en attente de validation d'équipe --- 1 constat ENGINE ouvert (ENGINE-C06, lacune d'orchestration Scheduler/Action Pipeline) --- autres bibliothèques à approfondir
+> Version : 3.3
+> Statut : GDB et ACT (001-010, 003 excepté) clos --- ENGINE-000 à 006 créés et audités, squelette EventBus mort supprimé (ENGINE-C05) --- ENGINE-006 (Action Pipeline) validé par le porteur du projet, Maturité 4 --- 1 constat ENGINE ouvert (ENGINE-C06, lacune d'orchestration Scheduler/Action Pipeline, différé jusqu'à MASTER-005 Phase 3) --- autres bibliothèques à approfondir
 > Type : Audit
 > Maturité : 1
 > Bibliothèque : AUDIT
@@ -32,7 +32,7 @@
 | ENGINE-003 (Scheduler) | ✅ Audité (v1.0, rédigé rétroactivement --- implémenté depuis la v0.2) |
 | ENGINE-004 (Systems) | ✅ Audité (v1.0, rédigé rétroactivement, 1 constat corrigé en cours de rédaction --- affirmation erronée sur l'absence de tests NeedsDecaySystem, tests bien existants) |
 | ENGINE-005 (Persistence) | ✅ Audité (v1.0, rédigé rétroactivement) |
-| ENGINE-006 (Action Pipeline) | ✅ Audité (v1.2, rédigé avant tout code --- Maturité 2, traduit ACT-002/004-010 en architecture concrète) --- implémentation confirmée compilable, 91/91 tests passants (dont 4 d'intégration de bout en bout via un Verbe de démonstration), non encore validée par l'équipe |
+| ENGINE-006 (Action Pipeline) | ✅ Audité et validé (v1.3, Statut Validée, Maturité 4 --- vérification identifiant pour identifiant sans écart, `PipelineIntegrationTests` observe le comportement décrit, validation du porteur du projet) |
 | ENGINE-007 | ◻️ Non créé --- Resource Manager, aucun code existant (voir ENGINE/CATALOG.md). Numéro également invoqué à tort par une proposition externe non retenue (ENGINE-C06, ouvert) --- sans lien avec le Resource Manager |
 | ADR | ✅ Audité en complément (constat ADR-C01, corrigé) |
 | TECH | ✅ Audité (corrigé) |
@@ -391,9 +391,6 @@ Toutes (MASTER, CORE, GDB, ACT, ENGINE, ADR, TECH, QA, UX, LORE, PROD, ART, AUDI
   CATALOG.md (v1.1) --- bibliothèque ENGINE, introduite par PROD-005
   (Feuille de Route v2.2) et documentée rétroactivement pour ses
   composants déjà codés (voir section dédiée ci-dessous)
-- ENGINE-006-A (v1.0) --- Action Pipeline, premier document ENGINE
-  rédigé avant tout code (Maturité 2), traduisant ACT-002/004-010 en
-  architecture concrète
 
 ---
 
@@ -554,19 +551,24 @@ recommandée).
   `Scheduler` ni par aucun autre point d'entrée automatique du Tick.
 - **Décision :** ne pas rédiger de spécification ENGINE par
   anticipation (MASTER-006) --- généraliser `PipelineRunner` au-delà d'un
-  Verbe unique, ou l'intégrer au Tick, sans qu'un second Verbe réel n'en
-  démontre le besoin, serait anticiper (cf. le commentaire de
-  `PipelineRunner.cs` lui-même sur ce point). Constat consigné ici pour
-  ne pas le perdre, à rouvrir explicitement à l'un des deux déclencheurs
-  suivants, le premier atteint : validation d'équipe d'`ENGINE-006`, ou
-  apparition d'un second Verbe réel nécessitant l'orchestration
-  automatique. À cette occasion : choisir un identifiant réellement
-  libre (pas `ENGINE-007`), fournir la justification de réouverture de
-  la consolidation `ENGINE-003`, et n'attribuer un statut `Validé` qu'à
-  l'issue du cycle documentaire normal (Proposée → Validée →
-  Spécifiée → Implémentée → Testée → Stable, ACT-001-G section 14).
-- **Condition de clôture :** validation d'équipe d'`ENGINE-006`, ou
-  apparition d'un second Verbe réel --- pas avant.
+  Verbe unique, ou l'intégrer au Tick, sans qu'un besoin réel ne le
+  démontre, serait anticiper (cf. le commentaire de `PipelineRunner.cs`
+  lui-même sur ce point). Examiné explicitement par le porteur du projet
+  au moment de valider `ENGINE-006` (v1.3, voir son Historique) : les
+  deux limitations que ce constat décrit ne sont pas des écarts à
+  corriger dans ce document ni dans `ENGINE-006` --- l'invocation
+  automatique par Tick est un besoin de `MASTER-005` Phase 3 (habitants
+  autonomes), pas de la Phase 1 en cours, où les Actions sont
+  déclenchées par les choix du joueur ; elle pourrait même s'avérer la
+  mauvaise architecture pour des Actions joueur. Trancher ce point avant
+  la Phase 3 reviendrait à décider sans les données nécessaires. Constat
+  consigné ici pour ne pas le perdre, à rouvrir explicitement à l'entrée
+  en Phase 3. À cette occasion : choisir un identifiant réellement libre
+  (pas `ENGINE-007`, toujours réservé au Resource Manager) et fournir la
+  justification de réouverture de la consolidation `ENGINE-003`.
+- **Condition de clôture :** entrée en Phase 3 de `MASTER-005` ---
+  pas avant, et pas simplement à l'apparition d'un second Verbe (question
+  de contenu GDB/VERBS, sans rapport avec ce constat d'architecture).
 
 ## Non concerné (n'existe pas encore)
 
@@ -593,6 +595,12 @@ l'inverse (recherche de code mort, de scaffolding non terminé, ou de
 mécanismes parallèles non référencés) --- avant de considérer le document
 comme fiable à 100 %.
 
-ENGINE-C06 reste ouvert et différé volontairement : à rouvrir à la validation
-d'équipe d'`ENGINE-006`, ou dès qu'un second Verbe réel exigera une
-orchestration automatique Scheduler / Pipeline d'Actions --- pas avant.
+ENGINE-006 (Action Pipeline) est validé par le porteur du projet (v1.3, Statut
+Validée, Maturité 4) --- premier document ENGINE à parcourir tout le cycle
+Spécification → Implémentation → Tests → Validation (ENGINE-000, section 8).
+
+ENGINE-C06 reste ouvert et différé volontairement : à rouvrir à l'entrée en
+Phase 3 de MASTER-005 (habitants autonomes), moment où l'orchestration
+automatique Scheduler / Pipeline d'Actions cessera d'être hors sujet pour la
+Phase en cours --- pas avant, et pas simplement à l'apparition d'un second
+Verbe (question de contenu GDB/VERBS, sans rapport avec ce constat).

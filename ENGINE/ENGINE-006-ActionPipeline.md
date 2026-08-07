@@ -1,8 +1,8 @@
 # ENGINE-006 — Action Pipeline
 
-> Version : 1.2
-> Statut : Proposition
-> Maturité : 2
+> Version : 1.3
+> Statut : Validée
+> Maturité : 4
 > Bibliothèque : ENGINE
 
 ⸻
@@ -15,9 +15,14 @@ Events → World Update → Outcome, enrichi par ACT-004 à ACT-010) en une
 architecture concrète --- types, interfaces, machine à états --- prête à
 être implémentée dans `CHRONIQUES-ENGINE`.
 
-Ce document précède tout code (Maturité 2, Spécification --- MASTER-007),
-conformément à ENGINE-000, section 3 : aucune implémentation du pipeline
-d'action ne doit commencer avant sa validation.
+Ce document a précédé le code (Maturité 2, Spécification --- MASTER-007,
+lors de sa création v1.0), conformément à ENGINE-000, section 3 : aucune
+implémentation du pipeline d'action n'a commencé avant sa validation
+initiale. L'implémentation (v1.1) puis la preuve d'intégration de bout
+en bout (v1.2) ont suivi ; la vérification identifiant pour identifiant
+contre le code réel et la validation par le porteur du projet (v1.3)
+portent ce document à Maturité 4 (MASTER-007 : « le comportement décrit
+a été observé lors d'un test »).
 
 Ce document ne redéfinit aucun concept déjà posé par ACT. Il traduit :
 chaque type ci-dessous porte le nom de son concept ACT d'origine et cite
@@ -362,6 +367,41 @@ par ACT-009-A, sans la rouvrir.
 ---
 
 # 12. Historique
+
+## Version 1.3
+
+- **Validation par le porteur du projet.** Statut `Proposition` →
+  `Validée`, Maturité 2 → 4.
+- Vérification identifiant pour identifiant menée contre le code réel
+  (`Actions/*.cs`, `Actions/Exemples/*.cs`) : tous les types de la
+  section 4, les huit catégories de `ConditionCategorie`, les cinq de
+  `ConsequenceCategorie`, les quatre d'`EventCategorie`, et la table de
+  transitions de la section 6 correspondent exactement à ce document.
+  Aucun écart trouvé. C'est cette vérification, jusqu'ici manquante
+  (voir historique v1.1), qui satisfait le critère de Maturité 3
+  (MASTER-007 : « correspondance identifiant pour identifiant »).
+- Maturité portée directement à 4, et non 3 : `PipelineIntegrationTests`
+  (v1.2) observe déjà réellement le comportement décrit --- critère de
+  Maturité 4 (MASTER-007 : « le comportement décrit a été observé lors
+  d'un test »), déjà rempli avant cette révision, simplement jamais
+  reconnu formellement.
+- Deux réserves examinées explicitement avant validation, tranchées
+  toutes deux en faveur du statu quo --- ni l'une ni l'autre n'est un
+  écart à corriger dans ce document :
+  1. `PipelineRunner` ne gère qu'un Verbe unique (« Se reposer »),
+     câblé à la main. Conforme à MASTER-006 : généraliser l'interprète
+     sur la foi d'un seul cas réel anticiperait un besoin non observé.
+     Ce que ce document valide est le pipeline de bout en bout, pas la
+     largeur du catalogue de Verbes --- une question GDB/VERBS, hors
+     périmètre d'ENGINE (section 3).
+  2. Aucune invocation automatique du Pipeline à chaque Tick n'existe.
+     Constaté et laissé ouvert sous `ENGINE-C06` (AUDIT-GLOBALE.md) ---
+     ce besoin appartient à MASTER-005 Phase 3 (habitants autonomes),
+     pas à la Phase 1 en cours, où les Actions sont déclenchées par les
+     choix du joueur. Une invocation automatique par Tick pourrait même
+     s'avérer la mauvaise architecture pour des Actions joueur ; trancher
+     ce point avant la Phase 3 reviendrait à décider sans les données
+     nécessaires.
 
 ## Version 1.2
 

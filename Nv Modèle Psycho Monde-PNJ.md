@@ -1,8 +1,8 @@
-# AUDIT — Engagement joueur et modèle psychologique des PNJ
+# PROPOSITION — Engagement joueur et modèle psychologique des PNJ
 
-> Version : 1.0  
+> Version : 2.0  
 > Statut : Proposition  
-> Type : Audit de conception  
+> Type : Proposition de conception  
 > Domaine : Game Design / Simulation / Comportement / Engagement  
 > Projet : Chroniques
 
@@ -10,30 +10,63 @@
 
 # 1. Objet du document
 
-Ce document analyse deux évolutions complémentaires de Chroniques :
+Ce document propose deux évolutions complémentaires de Chroniques :
 
-1. un modèle d'engagement du joueur inspiré des boucles de progression observées dans certains jeux Roblox ;
-2. un modèle psychologique permettant aux PNJ de percevoir, interpréter et réagir au monde selon leur propre histoire.
+1. renforcer l'engagement du joueur en s'inspirant de certaines boucles de progression observées dans des jeux à forte rétention, notamment sur Roblox, sans reprendre leurs mécanismes de gambling ou de rétention artificielle ;
+2. approfondir le comportement des habitants afin qu'ils agissent selon leur propre perception du monde, leur personnalité, leurs expériences, leurs ambitions et leur histoire.
 
-Ces deux modèles ne doivent pas être confondus.
+Ces deux propositions doivent rester distinctes.
 
-Le premier répond à la question :
+La première répond à la question :
 
-> Pourquoi le joueur a-t-il envie de poursuivre son histoire ?
+> Pourquoi le joueur a-t-il naturellement envie de poursuivre son histoire ?
 
-Le second répond à la question :
+La seconde répond à la question :
 
-> Pourquoi un PNJ décide-t-il d'agir d'une certaine manière ?
+> Pourquoi un habitant choisit-il cette décision plutôt qu'une autre ?
 
-Ils utilisent néanmoins le même World, les mêmes événements et les mêmes conséquences de simulation.
+Elles partagent néanmoins un même principe :
+
+> les conséquences produites par la simulation doivent créer de nouvelles possibilités.
 
 ---
 
-# PARTIE I — MODÈLE D'ENGAGEMENT JOUEUR
+# 2. Compatibilité avec l'architecture actuelle
 
-# 2. Inspiration du modèle Roblox
+Cette proposition ne nécessite aucune remise en cause des fondations actuelles.
 
-Le modèle observé repose principalement sur une boucle :
+Elle s'appuie notamment sur :
+
+- GDB-004 — Les habitants ;
+- GDB-006 — L'expérience émotionnelle du joueur ;
+- GDB-008 — Temps, générations et évolution ;
+- GDB-009 — Structures sociales et valeurs ;
+- ACT-002 — Intent, Plan, Action, Outcome et exécution ;
+- ACT-004 à ACT-010 — acteurs, cibles, conditions, conséquences, composition et événements ;
+- ENGINE-002 — Kernel ;
+- ENGINE-003 — Scheduler ;
+- ENGINE-004 — Systems ;
+- ENGINE-006 — Action Pipeline ;
+- le moteur `CHRONIQUES-ENGINE` actuellement implémenté.
+
+Elle constitue donc principalement une **extension du Game Design et de la Simulation**, et non la création d'une nouvelle infrastructure fondamentale.
+
+---
+
+# PARTIE I — ENGAGEMENT JOUEUR
+
+# 3. Principe directeur
+
+GDB-006B établit déjà un principe fondamental :
+
+> Chroniques ne cherche pas à retenir le joueur.  
+> Il cherche à lui donner envie de revenir.
+
+Cette proposition ne modifie pas ce principe.
+
+Elle cherche uniquement à renforcer les mécanismes permettant d'obtenir naturellement ce résultat.
+
+Le modèle observé dans certains jeux Roblox peut être résumé ainsi :
 
 ```text
 Action
@@ -44,50 +77,51 @@ Progression visible
 ↓
 Statut / reconnaissance
 ↓
-Nouvel objectif
+Prochaine possibilité
 ↓
 Nouvelle action
 ```
 
-Sa puissance ne provient pas uniquement du hasard.
+Chroniques ne doit pas copier la récompense artificielle.
 
-Elle repose surtout sur :
+Il peut en revanche reprendre :
 
-- un feedback fréquent ;
-- une progression compréhensible ;
+- la lisibilité de la progression ;
 - l'anticipation ;
-- le statut ;
-- la comparaison ;
-- l'escalade des objectifs ;
-- la présence permanente d'une prochaine possibilité.
-
-Chroniques peut exploiter ces principes sans reprendre les mécanismes de gambling.
+- la présence d'un prochain objectif possible ;
+- la reconnaissance sociale ;
+- les boucles courtes, moyennes et longues ;
+- l'impression constante que l'histoire peut encore évoluer.
 
 ---
 
-# 3. Ce que Chroniques ne doit pas reproduire
+# 4. Ce que Chroniques ne doit pas reproduire
 
-Le projet ne doit pas être construit autour de :
+La proposition exclut explicitement :
 
 - lootboxes ;
-- probabilités volontairement opaques ;
 - quasi-victoires artificielles ;
-- frustrations destinées à pousser à l'achat ;
+- probabilités volontairement opaques ;
+- frustration conçue pour déclencher un achat ;
+- FOMO ;
+- récompenses quotidiennes obligatoires ;
 - fausse rareté ;
 - pay-to-win ;
-- pression temporelle artificielle ;
-- récompenses quotidiennes obligatoires ;
+- progression artificiellement accélérée ;
+- obligation de connexion ;
 - inflation infinie des nombres.
 
-L'objectif est :
+Ces pratiques entreraient directement en contradiction avec GDB-006B, GDB-006C et GDB-006J.
 
-> reprendre la boucle d'engagement, pas les mécanismes prédateurs.
+Le principe reste :
+
+> Le plaisir, la curiosité et l'histoire personnelle doivent être les moteurs du retour au jeu.
 
 ---
 
-# 4. Transposition dans Chroniques
+# 5. Transposition dans Chroniques
 
-Le modèle :
+La boucle classique :
 
 ```text
 Je joue
@@ -104,105 +138,138 @@ devient :
 ```text
 Je prends une décision
 ↓
-Le monde réagit
+Le monde évolue
 ↓
-Ma situation évolue
+Ma situation change
 ↓
-Une nouvelle possibilité apparaît
+De nouvelles possibilités apparaissent
 ↓
-Je veux découvrir ce qu'elle produira
+Je veux découvrir leurs conséquences
 ```
 
-La récompense fondamentale de Chroniques devient donc :
+La récompense principale n'est donc pas :
 
-> une nouvelle possibilité significative dans la simulation.
+```text
++500 XP
+```
+
+mais :
+
+```text
+Ma situation m'autorise désormais quelque chose
+qui était auparavant impossible, improbable ou inutile.
+```
 
 ---
 
-# 5. Boucle d'engagement cible
+# 6. Boucle d'engagement cible
 
 ```text
-Découverte
+DÉCOUVERTE
+    ↓
+DÉCISION
+    ↓
+ACTION
+    ↓
+OUTCOME
+    ↓
+CONSÉQUENCES
+    ↓
+WORLD MODIFIÉ
+    ↓
+PROGRESSION PERÇUE
+    ↓
+NOUVELLES POSSIBILITÉS
+    ↓
+ANTICIPATION
+    ↓
+NOUVELLE DÉCISION
+```
+
+Cette boucle complète naturellement ACT.
+
+ACT reste responsable de :
+
+```text
+Intent
 ↓
-Décision
+Plan
 ↓
 Action
 ↓
-Conséquence
+Outcome
 ↓
-Réaction du monde
+Effects
 ↓
-Progression perceptible
+Events
 ↓
-Nouvelle possibilité
-↓
-Anticipation
-↓
-Nouvelle décision
+World Update
 ```
 
-L'engagement repose moins sur :
-
-```text
-Quelle sera ma prochaine récompense ?
-```
-
-que sur :
-
-```text
-Quelle sera la prochaine conséquence de mon histoire ?
-```
+L'engagement du joueur apparaît ensuite dans la manière dont les changements du World deviennent compréhensibles et significatifs.
 
 ---
 
-# 6. Boucles temporelles
+# 7. Trois échelles d'engagement
 
-Chroniques doit pouvoir maintenir plusieurs boucles simultanément.
+Chroniques doit maintenir simultanément plusieurs horizons.
 
 ## Boucle courte
 
-Quelques secondes à quelques minutes.
+Durée :
+
+quelques secondes à quelques minutes.
 
 Exemple :
 
 ```text
-Chercher un emploi
+Chercher un travail
 ↓
 Postuler
 ↓
-Être accepté
+Être recruté
 ↓
-Premier salaire
+Premier revenu
 ```
+
+Le joueur constate immédiatement que sa décision a produit quelque chose.
 
 ---
 
 ## Boucle moyenne
 
-Plusieurs dizaines de minutes ou sessions.
+Durée :
+
+plusieurs dizaines de minutes ou plusieurs sessions.
 
 ```text
 Premier emploi
+↓
+Expérience
 ↓
 Compétence
 ↓
 Promotion
 ↓
-Meilleur revenu
+Revenus supérieurs
 ↓
-Nouveau logement
+Nouvelles possibilités économiques
 ```
 
 ---
 
 ## Boucle longue
 
-Une vie ou plusieurs générations.
+Durée :
+
+une vie ou plusieurs générations.
 
 ```text
-Départ sans patrimoine
+Départ
 ↓
 Carrière
+↓
+Relations
 ↓
 Famille
 ↓
@@ -215,199 +282,216 @@ Transmission
 Héritier
 ```
 
+Cette troisième boucle est particulièrement compatible avec GDB-008 et la vision générationnelle de Chroniques.
+
 ---
 
-# 7. Progression perceptible
+# 8. Progression perçue
 
-La simulation peut produire énormément de changements sans que le joueur les perçoive clairement.
+GDB-006C précise déjà :
 
-Chroniques doit donc traduire certains états complexes en informations lisibles.
+> La progression doit être ressentie avant d'être mesurée.
 
-Exemples :
+La proposition renforce ce principe.
 
-## Situation économique
+Le joueur doit pouvoir comprendre comment sa situation a évolué sans réduire cette évolution à un niveau numérique unique.
+
+Exemples possibles :
+
+## Économie
 
 ```text
-Précaire
+Précarité
 ↓
-Stable
+Stabilité
 ↓
-Aisé
+Confort
 ↓
-Fortuné
+Patrimoine
 ↓
-Grande fortune
+Fortune
 ```
 
-## Influence
+## Influence sociale
 
 ```text
 Inconnu
 ↓
-Connu
+Connu localement
 ↓
 Respecté
 ↓
 Influent
 ↓
-Figure majeure
+Personnalité majeure
 ```
 
-## Patrimoine
+## Famille
 
 ```text
-Aucun patrimoine
+Individu
 ↓
-Premier logement
+Couple
 ↓
-Propriétaire
+Famille
 ↓
-Entreprise
-↓
-Patrimoine familial
+Lignée
 ↓
 Dynastie
 ```
 
-Ces catégories doivent rester des interprétations de la simulation et non devenir nécessairement des niveaux artificiels.
+Ces catégories doivent être des **lectures de l'état réel de la simulation**, jamais des niveaux arbitraires qui remplaceraient celle-ci.
 
 ---
 
-# 8. La prochaine possibilité
+# 9. Progression par ouverture
 
-Un principe particulièrement important est :
+GDB-006C indique également :
 
-> le joueur doit comprendre sa situation actuelle et entrevoir plusieurs évolutions possibles.
+> Une bonne progression ouvre de nouvelles possibilités plutôt qu'elle ne rend les anciennes obsolètes.
+
+Ce principe devient central.
 
 Exemple :
 
 ```text
-Situation actuelle
-
-Employé
-Revenu stable
-Petit logement
-Relation stable
+Premier revenu stable
+        ↓
+┌───────┼─────────┬─────────┐
+↓       ↓         ↓         ↓
+Louer  Épargner  Investir  Consommer
 ```
 
-Le monde permet désormais :
+Puis :
 
 ```text
+Patrimoine suffisant
+        ↓
+┌──────────┼──────────┐
+↓          ↓          ↓
+Acheter  Entreprendre  Transmettre
+```
+
+La progression augmente donc principalement :
+
+> l'espace des décisions disponibles.
+
+---
+
+# 10. La prochaine possibilité
+
+Le joueur ne doit pas nécessairement recevoir une liste de quêtes.
+
+Il doit cependant pouvoir comprendre qu'une situation crée des possibilités.
+
+Exemple :
+
+```text
+Situation
+
+Métier stable
+Revenus réguliers
+Bonne réputation locale
+Relation durable
+```
+
+Le World peut désormais permettre :
+
+```text
+→ changer de carrière
 → demander une promotion
-→ changer de métier
 → acheter un logement
-→ entreprendre
+→ créer une activité
 → fonder une famille
+→ entrer dans une organisation
 ```
 
-Ce ne sont pas nécessairement des quêtes.
+Ces possibilités existent parce que l'état du monde les autorise.
 
-Ce sont des possibilités produites par l'état du monde.
+Elles ne sont pas créées artificiellement pour occuper le joueur.
 
 ---
 
-# 9. Récompense systémique
+# 11. Statut social systémique
 
-Chroniques doit favoriser les récompenses qui ouvrent d'autres systèmes.
+GDB-004I définit déjà la réputation comme :
+
+> la perception qu'ont les autres d'un individu à partir des faits qu'ils connaissent.
+
+La proposition ne doit donc pas créer une nouvelle jauge globale de prestige.
+
+Elle doit exploiter ce système existant.
 
 Exemple :
 
 ```text
-Premier salaire
+Le personnage s'enrichit
 ↓
-Accès économique
-├── logement
-├── épargne
-├── consommation
-├── investissement
-└── crédit
+Certaines personnes l'observent
+↓
+Leur perception évolue
+↓
+Sa réputation locale évolue
+↓
+Leurs comportements peuvent changer
 ```
 
-Une réussite ne donne donc pas seulement une récompense.
-
-Elle élargit l'espace décisionnel.
-
----
-
-# 10. Statut social
-
-Le statut peut devenir une forme majeure de progression.
-
-Mais contrairement à un jeu où le statut est seulement affiché, Chroniques peut le rendre fonctionnel.
-
-```text
-Richesse
-↓
-Perception sociale
-↓
-Réputation
-↓
-Réactions différentes
-↓
-Nouvelles relations
-↓
-Nouvelles opportunités
-```
-
-Exemple :
-
-Un personnage devenu riche peut attirer :
+Conséquences possibles :
 
 - admiration ;
 - jalousie ;
+- confiance ;
+- méfiance ;
 - demandes d'aide ;
 - propositions commerciales ;
 - alliances ;
-- tentatives de manipulation ;
+- tentatives d'exploitation ;
 - criminalité.
 
-Le statut devient une propriété du monde.
+Le statut devient intéressant parce qu'il **transforme les relations et les possibilités**.
 
 ---
 
-# 11. Méta-progression générationnelle
+# 12. Progression générationnelle
 
-La mort ne constitue pas obligatoirement un reset.
+La transmission prévue par GDB-004J et GDB-008 permet à Chroniques d'aller au-delà d'une progression limitée au personnage actuel.
 
 ```text
-Vie 1
+Vie A
+↓
+Décisions
 ↓
 Conséquences
 ↓
 Transmission
 ↓
-Vie 2
-↓
-Nouvelles conséquences
-↓
-Transmission
-↓
-Vie 3
+Vie B
 ```
 
-Une lignée peut transmettre :
+Peuvent notamment survivre ou évoluer :
 
 - patrimoine ;
-- réputation familiale ;
-- relations ;
+- relations familiales ;
+- réputation ;
 - ennemis ;
-- histoire ;
-- influence ;
-- croyances ;
-- traditions ;
-- conséquences politiques ou économiques.
+- culture ;
+- connaissances ;
+- héritages ;
+- conséquences historiques.
 
-La lignée devient la progression longue durée de Chroniques.
+La mort devient alors :
+
+> une transformation de la progression plutôt qu'une suppression complète de celle-ci.
 
 ---
 
-# 12. Incertitude
+# 13. Incertitude systémique
 
-Le RNG artificiel n'est pas indispensable pour provoquer de l'anticipation.
+Le modèle Roblox peut utiliser le hasard pour provoquer l'anticipation.
 
-Chroniques possède quelque chose de plus intéressant :
+Chroniques dispose déjà d'une alternative plus cohérente :
 
-> l'incertitude systémique.
+> l'incertitude créée par l'interaction des systèmes.
 
 Exemple :
 
@@ -415,37 +499,51 @@ Exemple :
 Créer une entreprise
 ```
 
-peut conduire à :
+peut produire :
 
 ```text
-croissance
-faillite
+succès
 association
-dette
+concurrence
 innovation
-trahison
+dette
+faillite
+conflit
 fortune
-influence politique
+influence
 ```
 
-Le joueur sait ce qu'il tente.
+L'incertitude ne provient donc pas nécessairement d'une roulette cachée.
 
-Il ne sait pas exactement comment le monde va réagir.
+Elle provient de :
+
+- l'état du World ;
+- les autres habitants ;
+- l'économie ;
+- les relations ;
+- les événements ;
+- les décisions précédentes.
+
+Lorsque du hasard est nécessaire, il reste soumis au RNG déterministe existant dans le Kernel.
 
 ---
 
-# 13. Échec comme contenu
+# 14. Échec productif
 
-L'échec ne doit pas signifier :
+GDB-006J établit déjà :
 
-```text
-pas de récompense
-```
+> L'échec a aussi une valeur.
 
-mais :
+La proposition renforce cette orientation.
 
 ```text
-nouvelle situation
+Échec
+↓
+Situation modifiée
+↓
+Nouveaux problèmes
+↓
+Nouvelles possibilités
 ```
 
 Exemple :
@@ -457,238 +555,313 @@ Faillite
 ↓
 Dette
 ↓
-Conflit familial
+Tensions familiales
 ↓
 Déménagement
 ↓
-Nouvelle carrière
+Nouvelle profession
 ```
 
-L'échec peut générer davantage d'histoire qu'un succès.
+L'objectif n'est donc pas de garantir le succès.
+
+L'objectif est de garantir :
+
+> que les conséquences intéressantes ne s'arrêtent pas avec l'échec.
 
 ---
 
-# 14. Progression horizontale
+# 15. Progression horizontale
 
-Toutes les trajectoires ne doivent pas être comparables par une valeur unique.
+Les différentes vies doivent pouvoir être incomparables.
 
 ```text
-Entrepreneur
-Politicien
 Médecin
+≠
+Entrepreneur
+≠
 Criminel
-Artiste
+≠
 Parent
-Militaire
-Scientifique
-Ermite
+≠
+Artiste
+≠
+Politicien
 ```
 
-Une nouvelle trajectoire constitue elle-même une forme de récompense.
+Aucune trajectoire ne doit nécessairement être considérée comme supérieure aux autres.
 
-Cela protège Chroniques contre une progression exclusivement verticale.
+La découverte d'une nouvelle manière de vivre peut elle-même constituer une récompense.
 
 ---
 
-# 15. Modèle final d'engagement
+# 16. Formule finale d'engagement
+
+La transposition retenue devient :
 
 ```text
 ACTION SIGNIFICATIVE
         ↓
 CONSÉQUENCE
         ↓
-RÉACTION DU MONDE
+WORLD TRANSFORMÉ
         ↓
-PROGRESSION PERCEPTIBLE
+CHANGEMENT PERCEPTIBLE
         ↓
-NOUVELLE POSSIBILITÉ
+NOUVELLES POSSIBILITÉS
         ↓
-ANTICIPATION
+CURIOSITÉ / ANTICIPATION
         ↓
 NOUVELLE DÉCISION
-        ↓
-ACTION SIGNIFICATIVE
 ```
 
-L'engagement doit émerger de la simulation.
+Chroniques ne doit pas chercher à rendre :
 
-Il ne doit pas nécessiter un moteur artificiel chargé de rendre le jeu "addictif".
+```text
+la prochaine récompense
+```
+
+irrésistible.
+
+Il doit chercher à rendre :
+
+```text
+la prochaine conséquence
+```
+
+intéressante à découvrir.
 
 ---
 
-# PARTIE II — MODÈLE PSYCHOLOGIQUE DES PNJ
+# PARTIE II — MODÈLE PSYCHOLOGIQUE DES HABITANTS
 
-# 16. Objectif
+# 17. Position par rapport à GDB-004
 
-Le modèle psychologique des PNJ vise à empêcher le comportement suivant :
+Cette proposition ne remplace pas GDB-004.
+
+Elle cherche à relier et approfondir plusieurs concepts qui y existent déjà :
 
 ```text
-État du monde
-↓
-Règle
-↓
-Action
+GDB-004B  Besoins
+GDB-004C  Relations
+GDB-004D  Personnalité
+GDB-004E  Habitudes
+GDB-004F  Ambitions
+GDB-004G  Connaissances
+GDB-004H  Compétences
+GDB-004I  Réputation
+GDB-004J  Transmission
 ```
 
-Un personnage ne doit pas simplement agir selon l'état objectif du World.
+Le modèle psychologique proposé constitue donc avant tout :
 
-Il doit agir selon :
-
-> sa représentation du monde.
-
-Cela permet à deux personnages confrontés à la même situation de produire des comportements différents.
+> une architecture comportementale permettant à ces concepts de produire des décisions autonomes.
 
 ---
 
-# 17. Modèle psychologique cible
+# 18. Principe directeur
 
-La chaîne conceptuelle proposée est :
+Un habitant ne doit pas fonctionner selon :
 
 ```text
+WORLD OBJECTIF
+↓
+RÈGLE
+↓
+ACTION
+```
+
+Il doit fonctionner selon :
+
+```text
+WORLD
+↓
+INFORMATION ACCESSIBLE
+↓
+REPRÉSENTATION PERSONNELLE
+↓
+DÉCISION
+```
+
+Le personnage ne réagit donc pas nécessairement à ce qui est vrai.
+
+Il réagit à :
+
+> ce qu'il sait, croit, ressent et considère important.
+
+---
+
+# 19. Modèle cible révisé
+
+Compte tenu des concepts déjà présents dans GDB-004 et ACT, le modèle proposé devient :
+
+```text
+WORLD
+↓
 Perception
 ↓
 Attention
 ↓
 Interprétation
 ↓
-Émotion
+État émotionnel
 ↓
-Mémoire
+Connaissances / Mémoire
 ↓
 Croyances
 ↓
-Valeurs
-↓
 Personnalité
 ↓
-Motivations
+Valeurs
+↓
+Besoins
+↓
+Ambitions / Motivations
 ↓
 Objectifs
 ↓
 Intent
 ↓
+Planner
+↓
 Plan
 ↓
-Action
+Action Instance
+↓
+Execution Engine
 ↓
 Outcome
 ↓
-Nouvelle perception / mémoire
+Effects
+↓
+Events
+↓
+World Update
 ```
 
-ACT commence réellement au niveau de :
+La partie :
 
 ```text
 Intent
 ↓
+Planner
+↓
 Plan
 ↓
-Action
+Action Instance
+↓
+Execution Engine
 ↓
 Outcome
 ```
 
-La psychologie se situe principalement en amont.
+est déjà définie par ACT et traduite concrètement dans ENGINE-006.
+
+La proposition psychologique se concentre donc essentiellement **avant Intent**.
 
 ---
 
-# 18. Perception
+# 20. Perception
 
-Un PNJ ne connaît pas automatiquement l'état du World.
+Un habitant ne dispose jamais automatiquement de l'état complet du World.
 
-Il ne perçoit que :
+Il connaît uniquement ce qu'il peut raisonnablement obtenir par :
 
-- ce qu'il voit ;
-- ce qu'il entend ;
-- ce qu'on lui raconte ;
-- ce qu'il peut raisonnablement détecter.
+- observation ;
+- communication ;
+- expérience ;
+- relation ;
+- connaissance transmise ;
+- information disponible.
 
 Exemple :
 
 ```text
-World réel :
+WORLD :
 Pierre est ruiné.
 
-PNJ :
-Pierre possède toujours une grande maison.
+Habitant :
+Pierre possède encore sa grande maison.
 
 Perception :
 Pierre semble riche.
 ```
 
-Le PNJ peut donc agir sur une information incorrecte.
+Le comportement peut donc être cohérent sans être basé sur la vérité complète.
 
 ---
 
-# 19. Attention
+# 21. Attention
 
-Tout ce qui est perceptible n'est pas nécessairement traité.
+Un habitant ne traite pas tout ce qu'il pourrait percevoir.
 
-L'attention sélectionne ce qui est pertinent pour le personnage.
+L'attention sélectionne certains éléments.
 
-Elle peut dépendre de :
+Cette sélection peut être influencée par :
 
 - besoins ;
-- peur ;
-- intérêts ;
 - personnalité ;
-- objectifs ;
-- relations.
+- ambitions ;
+- habitudes ;
+- relations ;
+- danger ;
+- intérêt actuel.
 
-Exemple :
-
-Dans une même pièce :
+Même situation :
 
 ```text
-un marchand remarque les vêtements coûteux ;
-un garde remarque l'arme ;
-un amoureux remarque le comportement ;
-un voleur remarque la montre.
+Une foule
 ```
 
-Même scène.
+peut produire :
 
-Attention différente.
+```text
+Marchand   → remarque les clients potentiels
+Garde      → remarque les armes
+Voleur     → remarque les objets précieux
+Parent     → remarque son enfant
+```
 
 ---
 
-# 20. Interprétation
+# 22. Interprétation
 
-La perception brute doit être interprétée.
+L'information perçue n'a pas automatiquement une signification unique.
 
 Exemple :
 
 ```text
-Une personne ne répond pas à un salut.
+Une personne ne répond pas.
 ```
 
-Interprétation A :
+Habitant A :
 
 ```text
-Elle ne m'a probablement pas entendu.
+"Elle ne m'a pas entendu."
 ```
 
-Interprétation B :
+Habitant B :
 
 ```text
-Elle me méprise.
+"Elle me méprise."
 ```
 
-Interprétation C :
+Habitant C :
 
 ```text
-Elle cache quelque chose.
+"Elle cache quelque chose."
 ```
 
-L'interprétation dépend du personnage.
+Cette étape permet notamment à la personnalité et aux expériences passées d'avoir une influence réelle.
 
 ---
 
-# 21. Émotions
+# 23. État émotionnel
 
-L'interprétation produit des états émotionnels.
+GDB-004 ne possède actuellement pas de document consacré spécifiquement aux émotions internes des habitants.
 
-Exemples :
+Cette proposition introduit donc ce concept avec prudence.
+
+Une interprétation peut produire ou modifier :
 
 - joie ;
 - peur ;
@@ -700,61 +873,68 @@ Exemples :
 - admiration ;
 - gratitude.
 
-Les émotions influencent ensuite :
+L'émotion :
 
-- l'attention ;
-- les décisions ;
-- la mémoire ;
-- les relations.
+- influence la décision ;
+- influence l'importance d'un souvenir ;
+- peut influencer une relation ;
+- ne produit jamais directement une Action.
 
-Elles ne doivent pas déterminer directement une Action.
-
----
-
-# 22. Mémoire
-
-Le PNJ conserve certaines expériences.
-
-```text
-Événement
-↓
-Interprétation
-↓
-Importance
-↓
-Mémoire
-```
-
-Toutes les expériences ne doivent pas nécessairement devenir des souvenirs durables.
-
-La mémoire peut notamment contenir :
-
-- événement ;
-- personnes impliquées ;
-- contexte ;
-- émotion ;
-- importance ;
-- interprétation.
+Elle reste un facteur de décision parmi plusieurs autres.
 
 ---
 
-# 23. Croyances
+# 24. Mémoire et connaissances
 
-Une distinction fondamentale doit exister entre :
+GDB-004G définit déjà les connaissances.
+
+Le modèle proposé distingue cependant deux notions :
+
+## Connaissance
+
+Information considérée comme disponible pour l'habitant.
+
+## Mémoire personnelle
+
+Trace d'une expérience vécue.
+
+Exemple :
 
 ```text
-ce qui est vrai dans le World
+Connaissance :
+"Cette personne est commerçante."
+
+Mémoire :
+"Cette personne m'a aidé lorsque j'étais en difficulté."
 ```
 
-et :
+La mémoire personnelle peut influencer :
 
-```text
-ce que le PNJ croit vrai.
-```
+- relations ;
+- interprétations ;
+- confiance ;
+- ambitions ;
+- décisions futures.
 
-Une croyance peut être :
+La création d'un système de mémoire dédié devra être vérifiée contre GDB-004G, GDB-004C et GDB-027 afin d'éviter toute duplication documentaire.
 
-- vraie ;
+---
+
+# 25. Croyances
+
+La réputation définie par GDB-004I démontre déjà un principe important :
+
+> une perception n'est pas une vérité.
+
+Le modèle psychologique généralise ce principe au personnage lui-même.
+
+Une croyance représente :
+
+> une proposition que l'habitant considère suffisamment vraisemblable pour influencer ses décisions.
+
+Elle peut être :
+
+- correcte ;
 - fausse ;
 - partielle ;
 - obsolète ;
@@ -764,59 +944,44 @@ Exemple :
 
 ```text
 Croyance :
-Paul a volé mon argent.
+Paul m'a volé.
 
-Réalité :
+WORLD :
 Paul est innocent.
 ```
 
-Le PNJ peut néanmoins :
+L'habitant peut malgré tout développer :
 
 ```text
-détester Paul
+méfiance
 ↓
-refuser de l'aider
+hostilité
 ↓
-chercher vengeance
+Intent
 ```
 
-Le monde obtient ainsi de véritables malentendus.
-
 ---
 
-# 24. Valeurs
+# 26. Personnalité
 
-Les PNJ ne doivent pas uniquement maximiser leur intérêt personnel.
+GDB-004D reste la référence officielle.
 
-Ils peuvent accorder différentes importances à :
+La personnalité doit influencer notamment :
 
-- famille ;
-- argent ;
-- liberté ;
-- religion ;
-- loyauté ;
-- honneur ;
-- pouvoir ;
-- justice ;
-- sécurité ;
-- tradition.
+- attention ;
+- interprétation ;
+- réaction émotionnelle ;
+- préférence entre plusieurs décisions.
 
-Les valeurs permettent notamment de résoudre les conflits de motivation.
-
----
-
-# 25. Personnalité
-
-La personnalité modifie la manière dont les informations sont interprétées et transformées en décisions.
+Elle ne doit pas devenir un ensemble de scripts.
 
 Exemple :
 
 ```text
-Situation :
-un inconnu insulte le personnage.
+Insulte
 ```
 
-Personnage agressif :
+Personnalité impulsive :
 
 ```text
 colère
@@ -824,7 +989,7 @@ colère
 confrontation
 ```
 
-Personnage prudent :
+Personnalité prudente :
 
 ```text
 colère
@@ -832,662 +997,812 @@ colère
 évitement
 ```
 
-Personnage manipulateur :
+Personnalité calculatrice :
 
 ```text
-colère
+mémoire
 ↓
-mémorisation
-↓
-vengeance différée
+réponse différée
 ```
 
-Même stimulus.
+---
 
-Comportements différents.
+# 27. Valeurs
+
+Les valeurs collectives sont déjà couvertes par GDB-009E.
+
+La proposition distingue cependant :
+
+```text
+Valeurs de la société
+```
+
+et :
+
+```text
+adhésion personnelle de l'habitant à ces valeurs.
+```
+
+Un individu peut :
+
+- adopter pleinement une valeur culturelle ;
+- la suivre partiellement ;
+- la rejeter ;
+- entrer en conflit avec elle.
+
+Cela permet de conserver GDB-009E comme autorité sur les valeurs sociales tout en laissant le modèle des habitants représenter l'adhésion individuelle.
 
 ---
 
-# 26. Motivations
+# 28. Besoins
 
-Une Motivation représente une force relativement durable.
+GDB-004B définit déjà les besoins.
 
-Exemples :
+Le moteur actuel implémente également un premier `NeedsComponent` ainsi qu'un `NeedsDecaySystem`.
 
-- survivre ;
-- protéger sa famille ;
-- devenir riche ;
-- appartenir à un groupe ;
-- être respecté ;
-- obtenir du pouvoir ;
-- découvrir ;
-- aimer ;
-- se venger.
+Les besoins constituent donc une entrée déjà concrète de la future prise de décision.
 
-Les Motivations ne sont pas des Actions.
+Ils peuvent influencer :
 
-Elles génèrent des objectifs.
+- attention ;
+- priorité des Intent ;
+- abandon d'un objectif ;
+- changement d'habitude.
+
+Exemple :
+
+```text
+Ambition :
+devenir riche
+
+mais
+
+Faim critique
+```
+
+peut temporairement produire :
+
+```text
+Intent prioritaire :
+chercher de la nourriture
+```
 
 ---
 
-# 27. Objectifs
+# 29. Habitudes
 
-Un objectif représente un état futur désiré.
+GDB-004E définit déjà explicitement les habitudes.
+
+Elles constituent une optimisation naturelle du modèle cognitif.
+
+Une routine connue peut suivre :
+
+```text
+Contexte familier
+↓
+Habitude
+↓
+Action connue
+```
+
+sans nécessiter une planification complexe complète.
+
+Lorsqu'une habitude devient impossible :
+
+```text
+Habitude
+↓
+Échec / contrainte
+↓
+Nouvel Intent ou réévaluation
+```
+
+Cela favorise à la fois :
+
+- crédibilité ;
+- performance ;
+- émergence lorsque la routine est perturbée.
+
+---
+
+# 30. Ambitions et motivations
+
+GDB-004F constitue déjà la référence officielle sur les ambitions.
+
+Il précise que celles-ci naissent de :
+
+- personnalité ;
+- besoins ;
+- expériences ;
+- culture ;
+- opportunités ;
+- relations.
+
+Le modèle proposé ne doit donc pas créer un nouveau système redondant de Motivation remplaçant les Ambitions.
+
+La distinction proposée est :
+
+```text
+Motivation
+= force immédiate ou générale
+
+Ambition
+= direction relativement durable de l'existence
+```
 
 Exemple :
 
 ```text
 Motivation :
-sécurité familiale
-```
+sécurité
 
-produit :
+Ambition :
+construire une vie stable
 
-```text
 Objectif :
-acheter une maison
+acheter un logement
 ```
 
-qui peut produire :
-
-```text
-Intent :
-augmenter mes revenus
-```
-
-puis :
-
-```text
-Plan :
-chercher un meilleur emploi
-```
+Si cette distinction ne produit aucun bénéfice concret lors de la spécification future, le terme `Motivation` devra être supprimé au profit de `Ambition`.
 
 ---
 
-# 28. Habitudes
+# 31. Objectifs
 
-Tous les comportements ne doivent pas utiliser la chaîne cognitive complète.
-
-Une action répétée peut devenir une habitude :
-
-```text
-Stimulus
-↓
-Routine
-```
+Un objectif traduit une Ambition en état futur identifiable.
 
 Exemple :
 
 ```text
-Matin
+Ambition :
+réussir professionnellement
+
 ↓
-aller travailler
+
+Objectif :
+obtenir un poste de direction
+
+↓
+
+Intent :
+faire progresser ma carrière
 ```
 
-Cela permet :
+L'Intent reste ensuite conforme à ACT :
 
-- des comportements crédibles ;
-- une réduction importante du coût de simulation ;
-- des routines facilement perturbables par les événements.
-
-Lorsqu'une habitude échoue :
-
-```text
-Routine impossible
-↓
-Cognition complète
-```
-
-Le personnage cherche alors une nouvelle solution.
+> il exprime ce que l'acteur veut accomplir, jamais comment.
 
 ---
 
-# 29. Interaction avec ACT
+# 32. Passage vers ACT
 
-Le modèle psychologique ne remplace pas ACT.
-
-Il alimente ACT.
+La frontière doit rester stricte.
 
 ```text
-Psychologie
+PSYCHOLOGIE / SIMULATION
 ↓
-Intent
+produit un Intent
+```
 
-ACT
+Puis :
+
+```text
+ACT / ENGINE-006
+↓
+Planner
+↓
+Plan
+↓
+Action Definition
+↓
+Action Instance
+↓
+Execution Engine
+↓
+Outcome
+↓
+Effects
+↓
+Events
+↓
+World Update
+```
+
+La psychologie :
+
+- ne crée pas directement d'Action Instance ;
+- ne modifie pas directement le World ;
+- ne contourne jamais le Planner ;
+- ne produit pas directement d'Outcome.
+
+---
+
+# 33. Retour des conséquences
+
+Le retour vers le modèle psychologique ne doit pas utiliser `ENGINE-001` comme mécanisme Publish/Subscribe.
+
+Dans l'architecture actuelle :
+
+> `ENGINE-001` est le journal d'événements du World, destiné à l'observabilité.
+
+Les Systems ne doivent pas réagir directement à `World.Events`.
+
+Ils observent l'état du World au Tick approprié.
+
+Le cycle proposé devient donc :
+
+```text
+Action Pipeline
+↓
+Effects
+↓
+World Update
+↓
+État du World
+↓
+Tick suivant
+↓
+Systems de perception / cognition
+↓
+Nouvelle représentation
+↓
+Nouvel Intent éventuel
+```
+
+Les `GameEvent` peuvent néanmoins conserver une trace observable des faits importants.
+
+Ils ne constituent pas le canal de communication cognitive.
+
+---
+
+# 34. Compatibilité avec le Scheduler
+
+Le Scheduler actuel exécute les Systems dans un ordre d'enregistrement déterministe.
+
+La future cognition devra donc prendre la forme de Systems spécialisés ou d'un ensemble équivalent compatible avec ENGINE-003 et ENGINE-004.
+
+Exemple conceptuel futur :
+
+```text
+Needs System
+↓
+Perception System
+↓
+Cognition System
+↓
+Intent Generation
+↓
+Action Pipeline
+```
+
+L'ordre exact ne doit pas être fixé dans cette proposition.
+
+Il devra être spécifié avant implémentation conformément à ENGINE-000.
+
+---
+
+# PARTIE III — INTERACTION DES DEUX PROPOSITIONS
+
+# 35. Principe de séparation
+
+Le modèle d'engagement du joueur et le modèle psychologique des habitants ne doivent jamais dépendre directement l'un de l'autre.
+
+Ils se rencontrent uniquement par l'état du World.
+
+```text
+                      WORLD
+                    /       \
+                   /         \
+                  ▼           ▼
+        EXPÉRIENCE JOUEUR   HABITANTS
+```
+
+---
+
+# 36. Exemple combiné
+
+Le joueur acquiert une propriété importante.
+
+## ACT / Simulation
+
+```text
+Intent
 ↓
 Plan
 ↓
 Action
 ↓
 Outcome
-```
-
-Puis l'Outcome revient dans le système cognitif :
-
-```text
-Outcome
 ↓
-Perception
+Effects
 ↓
-Mémoire
-↓
-Nouvelle décision
-```
-
-La boucle devient :
-
-```text
-MONDE
-↓
-PERCEPTION
-↓
-PSYCHOLOGIE
-↓
-INTENT
-↓
-ACT
-↓
-OUTCOME
-↓
-MONDE
+World Update
 ```
 
 ---
 
-# 30. Exemple complet
+## Expérience joueur
 
-Situation :
-
-```text
-Le joueur obtient une promotion.
-```
-
-PNJ A :
+La nouvelle situation peut produire :
 
 ```text
-Perception
+Patrimoine supérieur
 ↓
-"Il gagne désormais davantage."
+Progression perceptible
+↓
+Nouvelles possibilités
 
-Valeur dominante :
-réussite
-
-Personnalité :
-ambitieuse
-
-Émotion :
-admiration + jalousie
-
-Motivation :
-statut
-
-Objectif :
-obtenir une promotion
-
-Intent :
-améliorer ma carrière
+→ louer
+→ vendre
+→ transmettre
+→ investir
 ```
-
-PNJ B :
-
-```text
-Même événement
-
-Valeur dominante :
-famille
-
-Personnalité :
-peu compétitive
-
-Émotion :
-neutre
-
-Résultat :
-aucun nouvel Intent majeur
-```
-
-PNJ C :
-
-```text
-Même événement
-
-Relation avec le joueur :
-rivalité
-
-Interprétation :
-"Il va devenir plus puissant que moi."
-
-Émotion :
-peur + jalousie
-
-Objectif :
-affaiblir le joueur
-
-Intent :
-nuire à sa réputation
-```
-
-Un seul événement produit trois histoires différentes.
 
 ---
 
-# PARTIE III — INTERACTION DES DEUX MODÈLES
+## Habitants
 
-# 31. Point de connexion
+Chaque habitant concerné peut ensuite, selon ce qu'il perçoit, produire une interprétation différente.
 
-Le modèle joueur et le modèle PNJ ne doivent pas communiquer directement.
-
-Ils se rencontrent dans le World.
+Habitant A :
 
 ```text
-JOUEUR
+Perçoit la réussite
 ↓
-Action
+Admiration
 ↓
-Outcome
-↓
-WORLD
-↓
-Event
+Réputation positive
 ```
 
-Puis deux traitements indépendants peuvent exister :
+Habitant B :
 
 ```text
-                    WORLD EVENT
-                    /         \
-                   /           \
-                  ▼             ▼
-        Engagement joueur    Perception PNJ
-                ↓                 ↓
-        Progression visible     Psychologie
-                ↓                 ↓
-        Opportunités           Intent PNJ
+Perçoit la réussite
+↓
+Jalousie
+↓
+Ambition concurrente
 ```
 
-Cette séparation est fondamentale.
+Habitant C :
+
+```text
+Perçoit la nouvelle propriété
+↓
+Identifie une opportunité économique
+↓
+Nouvel Intent
+```
+
+Un même changement du World produit donc :
+
+- de nouvelles possibilités pour le joueur ;
+- de nouveaux comportements chez les habitants.
 
 ---
 
-# 32. Exemple combiné
-
-Le joueur achète une propriété prestigieuse.
-
-## Simulation
+# 37. Boucle émergente complète
 
 ```text
-Action
-↓
-Achat
-↓
-Outcome
-↓
-World modifié
-```
-
-## Engagement joueur
-
-```text
-Nouvelle propriété
-↓
-Patrimoine augmenté
-↓
-Nouveau statut perceptible
-↓
-Possibilités :
-- louer
-- revendre
-- agrandir
-- transmettre
-```
-
-## PNJ
-
-PNJ A :
-
-```text
-admiration
-↓
-relation positive
-```
-
-PNJ B :
-
-```text
-jalousie
-↓
-rivalité
-```
-
-PNJ C :
-
-```text
-opportunité commerciale
-↓
-proposition au joueur
-```
-
-La même conséquence nourrit donc simultanément :
-
-- l'engagement joueur ;
-- la simulation sociale.
-
----
-
-# 33. Effet recherché
-
-Ces deux modèles combinés permettent de créer une boucle particulièrement puissante :
-
-```text
-LE JOUEUR AGIT
+JOUEUR / HABITANT
         ↓
-LE MONDE CHANGE
+      INTENT
         ↓
-LES PNJ LE PERÇOIVENT
+      PLANNER
         ↓
-LES PNJ RÉAGISSENT
+       PLAN
         ↓
-LE MONDE CHANGE DAVANTAGE
+      ACTION
         ↓
-LE JOUEUR DÉCOUVRE DE NOUVELLES POSSIBILITÉS
+     OUTCOME
         ↓
-LE JOUEUR AGIT
+      EFFECTS
+        ↓
+       WORLD
+        ↓
+ ┌──────┴────────┐
+ ↓               ↓
+JOUEUR         HABITANTS
+ ↓               ↓
+Progression    Perception
+ ↓               ↓
+Possibilités   Interprétation
+ ↓               ↓
+Décision       Ambitions / Intent
+ └──────┬────────┘
+        ↓
+      ACT
 ```
 
-La boucle d'engagement n'est donc plus seulement alimentée par les propres actions du joueur.
-
-Elle est également alimentée par les conséquences autonomes produites par les PNJ.
+La simulation s'auto-alimente.
 
 ---
 
-# 34. Conséquence architecturale majeure
+# 38. Ce que la proposition change réellement
 
-Chroniques peut alors éviter un système traditionnel :
+Elle ne demande pas de remplacer :
 
-```text
-Quête
-↓
-Récompense
-↓
-Nouvelle quête
-```
+- CORE ;
+- GDB-004 ;
+- GDB-006 ;
+- ACT ;
+- ENGINE ;
+- le Kernel ;
+- le Scheduler ;
+- l'Action Pipeline.
 
-et tendre vers :
+Elle propose principalement de :
 
-```text
-Décision
-↓
-Conséquence
-↓
-Réaction
-↓
-Nouvelle situation
-↓
-Nouvelle décision
-```
+## Côté joueur
 
-Le contenu n'est plus seulement consommé.
+mieux exploiter :
 
-Il est produit par la simulation.
+- GDB-006B — Motivation ;
+- GDB-006C — Progression ;
+- GDB-006J — Satisfaction ;
+- GDB-004I — Réputation ;
+- GDB-008 — générations.
 
----
+## Côté habitants
 
-# 35. Risque principal
+relier plus précisément :
 
-Le risque majeur n'est pas conceptuel.
-
-Il est computationnel.
-
-Avec plusieurs milliers de PNJ, il serait trop coûteux d'exécuter en permanence :
-
-```text
-Perception
-Attention
-Interprétation
-Émotion
-Mémoire
-Croyances
-Motivations
-Objectifs
-Planning
-```
-
-pour chaque personnage à chaque Tick.
-
-Le modèle devra donc respecter le principe de simulation à plusieurs niveaux.
-
-Exemple :
-
-```text
-PNJ proche / important
-→ cognition détaillée
-
-PNJ éloigné
-→ cognition simplifiée
-
-PNJ dormant
-→ simulation agrégée
-```
-
-La richesse psychologique doit être compatible avec l'échelle du monde.
+- besoins ;
+- relations ;
+- personnalité ;
+- habitudes ;
+- ambitions ;
+- connaissances ;
+- réputation ;
+- valeurs ;
+- perception future ;
+- croyances futures ;
+- émotions futures.
 
 ---
 
-# 36. Ordre d'implémentation recommandé
+# 39. Nouveaux concepts réellement candidats
 
-Ne pas construire toute la psychologie simultanément.
+Après confrontation avec les documents existants, les concepts véritablement nouveaux ou insuffisamment spécifiés sont principalement :
 
-## Phase 1
+## Habitants
+
+- Perception individuelle ;
+- Attention ;
+- Interprétation ;
+- État émotionnel ;
+- Mémoire personnelle ;
+- Croyances individuelles ;
+- Objectifs intermédiaires.
+
+## Expérience joueur
+
+Aucun nouveau moteur fondamental n'est nécessaire.
+
+Les principes proposés sont déjà largement compatibles avec GDB-006.
+
+Le travail futur devrait surtout préciser leur application dans les systèmes concrets.
+
+---
+
+# 40. Concepts qu'il ne faut pas dupliquer
+
+La proposition ne doit pas recréer :
+
+- `Personality` → GDB-004D existe ;
+- `Habits` → GDB-004E existe ;
+- `Ambitions` → GDB-004F existe ;
+- `Knowledge` → GDB-004G existe ;
+- `Reputation` → GDB-004I existe ;
+- `Values` collectives → GDB-009E existe ;
+- `Intent / Plan / Action / Outcome` → ACT existe ;
+- Action Pipeline → ENGINE-006 existe ;
+- EventBus Subscribe/Handler → n'est **pas** l'architecture officielle actuelle.
+
+---
+
+# 41. Risque principal — performance
+
+Le modèle psychologique complet serait coûteux s'il était exécuté intégralement pour chaque habitant à chaque Tick.
+
+La proposition devra donc ultérieurement prévoir plusieurs niveaux de simulation.
+
+Conceptuellement :
 
 ```text
-Perception
+Habitant important / proche
 ↓
+Cognition détaillée
+```
+
+```text
+Habitant distant
+↓
+Cognition simplifiée
+```
+
+```text
+Population hors zone active
+↓
+Simulation agrégée
+```
+
+Cette optimisation ne doit toutefois être spécifiée que lorsqu'un besoin mesuré apparaît.
+
+Elle ne doit pas être implémentée prématurément.
+
+---
+
+# 42. Ordre de développement recommandé
+
+L'ordre doit respecter la feuille de route actuelle : d'abord une vie complète, puis la profondeur.
+
+## Étape A — utiliser ce qui existe
+
+Le moteur dispose déjà de :
+
+- Entity ;
+- Components ;
+- besoins ;
+- âge ;
+- Lifecycle ;
+- Scheduler ;
+- Systems ;
+- Intent ;
+- Planner ;
+- Plan ;
+- Action Pipeline ;
+- Outcome ;
+- Persistence.
+
+Ces briques doivent être stabilisées avant d'ajouter la cognition complète.
+
+---
+
+## Étape B — autonomie minimale
+
+Construire une première chaîne :
+
+```text
 Besoin
 ↓
 Intent
 ↓
-ACT
+Planner
+↓
+Action
+↓
+Outcome
 ```
 
-Permet déjà des PNJ autonomes simples.
+Exemple :
+
+```text
+Faim faible
+↓
+Intent : se nourrir
+↓
+Plan
+↓
+Action
+```
 
 ---
 
-## Phase 2
+## Étape C — personnalité et ambitions existantes
+
+Connecter progressivement :
+
+- personnalité ;
+- habitudes ;
+- ambitions.
+
+---
+
+## Étape D — perception et mémoire
+
+Ajouter seulement ensuite :
+
+- perception ;
+- mémoire personnelle ;
+- information partielle.
+
+---
+
+## Étape E — profondeur psychologique
 
 Ajouter :
 
+- émotion ;
+- croyances ;
+- valeurs individuelles ;
+- interprétation ;
+- attention.
+
+---
+
+# 43. Proposition pour l'organisation documentaire
+
+Cette proposition ne doit pas devenir immédiatement un document ENGINE.
+
+Les sujets appartiennent d'abord au Game Design.
+
+La démarche recommandée est :
+
 ```text
-Mémoire
-Personnalité
-Émotions
+PROPOSITION
+↓
+Validation
+↓
+Analyse de couverture documentaire
+↓
+Modification / création des GDB nécessaires
+↓
+Contrats ACT si nécessaire
+↓
+ENGINE seulement si une infrastructure technique nouvelle est requise
+↓
+Implémentation
+↓
+Tests
+↓
+TECH
+```
+
+Cela respecte ENGINE-000 et évite de transformer une idée de gameplay en infrastructure prématurée.
+
+---
+
+# 44. Proposition — engagement joueur
+
+La proposition d'engagement est considérée cohérente avec la documentation actuelle si elle respecte les invariants suivants :
+
+- aucune mécanique de rétention artificielle ;
+- aucune obligation de connexion ;
+- aucune récompense conçue uniquement pour provoquer une répétition ;
+- progression ressentie plutôt que simplement chiffrée ;
+- nouvelles possibilités plutôt qu'obsolescence des anciennes ;
+- échec susceptible de créer une nouvelle histoire ;
+- statut produit par la simulation ;
+- progression générationnelle possible.
+
+Elle constitue donc principalement une **extension et une mise en pratique de GDB-006**, pas un nouveau système indépendant.
+
+---
+
+# 45. Proposition — psychologie des habitants
+
+Le modèle psychologique est considéré cohérent avec Chroniques s'il respecte :
+
+- l'autonomie des habitants de GDB-004 ;
+- les besoins existants ;
+- la personnalité existante ;
+- les habitudes existantes ;
+- les ambitions existantes ;
+- les connaissances existantes ;
+- la réputation comme perception, non vérité ;
+- les valeurs sociales existantes ;
+- ACT comme unique chemin conceptuel de l'Intent à l'Outcome ;
+- ENGINE-006 comme traduction du pipeline ACT ;
+- le Scheduler comme orchestrateur déterministe ;
+- `World.Events` comme journal d'observabilité et non comme bus de réaction entre Systems.
+
+---
+
+# 46. Vision combinée proposée
+
+Le modèle global devient :
+
+```text
+                             WORLD
+                               │
+                               ▼
+                      ÉTAT DE SIMULATION
+                         /           \
+                        /             \
+                       ▼               ▼
+                 EXPÉRIENCE         HABITANT
+                   JOUEUR              │
+                     │             Perception
+                     │                 ↓
+             Progression          Attention
+                     │                 ↓
+             Possibilités        Interprétation
+                     │                 ↓
+             Anticipation         Émotion
+                     │                 ↓
+                 Décision      Mémoire / Connaissance
+                     │                 ↓
+                     │            Croyances
+                     │                 ↓
+                     │           Personnalité
+                     │                 ↓
+                     │             Valeurs
+                     │                 ↓
+                     │             Besoins
+                     │                 ↓
+                     │           Ambitions
+                     │                 ↓
+                     │            Objectifs
+                     │                 ↓
+                     └──────────────► Intent
+                                      ↓
+                                    Planner
+                                      ↓
+                                     Plan
+                                      ↓
+                               Action Instance
+                                      ↓
+                              Execution Engine
+                                      ↓
+                                    Outcome
+                                      ↓
+                                    Effects
+                                      ↓
+                                     World
 ```
 
 ---
 
-## Phase 3
+# 47. Principe directeur final
 
-Ajouter :
+La combinaison des deux propositions peut être résumée ainsi :
+
+> **Le joueur doit vouloir découvrir ce que ses choix feront au monde, tandis que les habitants doivent posséder leurs propres raisons de transformer ce même monde.**
+
+Le résultat recherché n'est donc pas :
 
 ```text
-Croyances
-Valeurs
-Motivations
+plus de récompenses
 ```
 
----
-
-## Phase 4
-
-Ajouter :
+ni simplement :
 
 ```text
-Objectifs long terme
-Habitudes
-Interprétation avancée
-Attention
+plus d'IA
 ```
 
----
-
-## Phase 5
-
-Optimisation multi-échelle.
+mais :
 
 ```text
-Cognition complète
-Cognition simplifiée
-Simulation agrégée
-```
-
----
-
-# 37. Verdict — modèle d'engagement joueur
-
-**Compatibilité avec Chroniques : très élevée.**
-
-Le modèle Roblox doit être utilisé comme inspiration structurelle :
-
-```text
-progression
+davantage de conséquences significatives
 +
-anticipation
+davantage d'acteurs capables d'en créer
 +
-statut
-+
-nouvelle possibilité
+davantage de possibilités qui en émergent
 ```
-
-et non comme modèle économique ou de gambling.
-
-La meilleure adaptation est :
-
-> remplacer l'attente de la prochaine récompense par l'attente de la prochaine conséquence.
 
 ---
 
-# 38. Verdict — modèle psychologique PNJ
+# 48. Décision proposée
 
-**Compatibilité avec Chroniques : très élevée.**
+Avant toute implémentation supplémentaire :
 
-Ce modèle transforme les PNJ :
-
-```text
-de systèmes réactifs
-```
-
-en :
-
-```text
-agents possédant leur propre représentation du monde.
-```
-
-La distinction entre :
-
-```text
-World réel
-```
-
-et :
-
-```text
-World perçu
-```
-
-est particulièrement importante.
-
-Elle permet :
-
-- malentendus ;
-- rumeurs ;
-- erreurs ;
-- jalousie ;
-- confiance ;
-- manipulation ;
-- évolution des relations ;
-- comportements réellement différents.
-
----
-
-# 39. Vision combinée
-
-Le modèle global de Chroniques devient :
-
-```text
-                     WORLD
-                       │
-                       ▼
-                    EVENTS
-                  /          \
-                 /            \
-                ▼              ▼
-          JOUEUR             PNJ
-             │                │
-             │          PERCEPTION
-             │                ↓
-             │          INTERPRÉTATION
-             │                ↓
-             │           PSYCHOLOGIE
-             │                ↓
-             │              INTENT
-             │                ↓
-             └──────────────► ACT
-                              ↓
-                             PLAN
-                              ↓
-                            ACTION
-                              ↓
-                           OUTCOME
-                              ↓
-                            WORLD
-```
-
-Autour du joueur :
-
-```text
-WORLD
-↓
-CONSÉQUENCES
-↓
-PROGRESSION PERCEPTIBLE
-↓
-OPPORTUNITÉS
-↓
-ANTICIPATION
-↓
-DÉCISION
-```
-
-Les deux boucles s'auto-alimentent.
-
----
-
-# 40. Principe directeur
-
-La synthèse des deux modèles peut être formulée ainsi :
-
-> **Le joueur doit avoir envie de découvrir ce que le monde fera ensuite, tandis que les PNJ doivent avoir leurs propres raisons de provoquer ce qui arrivera ensuite.**
-
-C'est probablement la meilleure articulation entre :
-
-- simulation ;
-- narration émergente ;
-- IA comportementale ;
-- engagement ;
-- rejouabilité.
+1. conserver le présent document au statut **Proposition** ;
+2. ne créer aucun `EngagementEngine` ;
+3. ne recréer aucun EventBus Publish/Subscribe ;
+4. considérer GDB-006 comme l'autorité principale sur l'engagement joueur ;
+5. considérer GDB-004 comme l'autorité principale sur la psychologie et l'autonomie des habitants ;
+6. identifier précisément les lacunes documentaires de GDB-004 concernant Perception, Attention, Interprétation, Émotions, Mémoire personnelle et Croyances ;
+7. compléter ensuite les spécifications avant toute implémentation, conformément à ENGINE-000.
 
 ---
 
 # Historique
 
-## Version 1.0
+## Version 2.0
 
-- audit du modèle d'engagement inspiré de Roblox ;
-- exclusion explicite des mécanismes de gambling ;
-- adaptation du modèle à la progression systémique de Chroniques ;
-- définition du modèle psychologique des PNJ ;
-- introduction de Perception, Attention, Interprétation, Émotion, Mémoire, Croyances, Valeurs, Personnalité, Motivations et Objectifs ;
-- articulation avec ACT ;
-- définition de la relation entre engagement joueur et cognition PNJ ;
-- identification des risques de performance ;
-- proposition d'une implémentation progressive et multi-échelle.
+- remplacement du terme `Audit` par `Proposition` ;
+- mise à jour à partir de l'état réel des dépôts `CHRONIQUES` et `CHRONIQUES-ENGINE` ;
+- alignement du modèle d'engagement sur GDB-006B, GDB-006C et GDB-006J ;
+- suppression de l'idée d'un `EngagementEngine` dédié ;
+- alignement du modèle psychologique sur GDB-004B à GDB-004J ;
+- reconnaissance de la personnalité, des habitudes, des ambitions, des connaissances et de la réputation comme concepts déjà spécifiés ;
+- clarification de la frontière entre valeurs sociales (GDB-009E) et adhésion individuelle ;
+- alignement du pipeline sur ACT-002 et ENGINE-006 réellement présents ;
+- remplacement du modèle simplifié `Intent → Plan → Action → Outcome` par l'architecture actuelle `Intent → Planner → Plan → Action Instance → Execution Engine → Outcome → Effects → Events → World Update` ;
+- correction du rôle d'ENGINE-001 : journal d'événements du World, et non bus Publish/Subscribe ;
+- suppression de toute dépendance cognitive directe envers `World.Events` ;
+- alignement sur le Scheduler et les Systems réellement implémentés ;
+- prise en compte des composants et systèmes déjà présents dans `CHRONIQUES-ENGINE` ;
+- proposition d'une progression d'implémentation compatible avec l'état réel du moteur.

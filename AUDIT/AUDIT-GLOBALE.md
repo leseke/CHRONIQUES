@@ -1,7 +1,7 @@
 # AUDIT-GLOBALE.md
 
-> Version : 3.4
-> Statut : GDB et ACT (001-010, 003 excepté) clos --- ENGINE-000 à 006 créés et audités, squelette EventBus mort supprimé (ENGINE-C05) --- ENGINE-006 (Action Pipeline) validé par le porteur du projet, Maturité 4 --- GDB-004C/004H/004J régénérés à Maturité 2 (Relations, Compétences, Héritage) en préparation d'une future spec ENGINE --- 2 constats ouverts : ENGINE-C06 (orchestration Scheduler/Action Pipeline, différé jusqu'à MASTER-005 Phase 3), GDB-CATALOG-C02 (angle mort du repérage par titre de GDB-CATALOG-C01, 3 occurrences déjà corrigées, passage dédié restant à mener) --- autres bibliothèques à approfondir
+> Version : 3.5
+> Statut : GDB et ACT (001-010, 003 excepté) clos --- ENGINE-000 à 006 créés et audités, squelette EventBus mort supprimé (ENGINE-C05) --- ENGINE-006 (Action Pipeline) validé par le porteur du projet, Maturité 4 --- ENGINE-008 (Systems de population) créé, en attente de validation d'équipe --- GDB-004C/004H/004J régénérés à Maturité 2 (Relations, Compétences, Héritage) --- 2 constats ouverts : ENGINE-C06 (orchestration Scheduler/Action Pipeline, différé jusqu'à MASTER-005 Phase 3), GDB-CATALOG-C02 (angle mort du repérage par titre de GDB-CATALOG-C01, 3 occurrences déjà corrigées, passage dédié restant à mener) --- autres bibliothèques à approfondir
 > Type : Audit
 > Maturité : 1
 > Bibliothèque : AUDIT
@@ -34,6 +34,7 @@
 | ENGINE-005 (Persistence) | ✅ Audité (v1.0, rédigé rétroactivement) |
 | ENGINE-006 (Action Pipeline) | ✅ Audité et validé (v1.3, Statut Validée, Maturité 4 --- vérification identifiant pour identifiant sans écart, `PipelineIntegrationTests` observe le comportement décrit, validation du porteur du projet) |
 | ENGINE-007 | ◻️ Non créé --- Resource Manager, aucun code existant (voir ENGINE/CATALOG.md). Numéro également invoqué à tort par une proposition externe non retenue (ENGINE-C06, ouvert) --- sans lien avec le Resource Manager |
+| ENGINE-008 (Systems de population) | ✅ Audité (v1.0, rédigé avant tout code --- Maturité 2, traduit GDB-004C/004H/004J en architecture concrète) --- non encore implémenté, non encore validé par l'équipe |
 | ADR | ✅ Audité en complément (constat ADR-C01, corrigé) |
 | TECH | ✅ Audité (corrigé) |
 | QA | ✅ Audité (corrigé) |
@@ -423,9 +424,12 @@ Toutes (MASTER, CORE, GDB, ACT, ENGINE, ADR, TECH, QA, UX, LORE, PROD, ART, AUDI
   verbes, composition d'Actions, taxonomie des événements ; ACT-001 à
   ACT-010 sont désormais tous créés (ACT-003 excepté, retiré)
 - ENGINE-000 (v1.1), ENGINE-001 (v2.1), ENGINE-002 à ENGINE-005 (v1.0),
-  CATALOG.md (v1.1) --- bibliothèque ENGINE, introduite par PROD-005
+  CATALOG.md (v1.2) --- bibliothèque ENGINE, introduite par PROD-005
   (Feuille de Route v2.2) et documentée rétroactivement pour ses
   composants déjà codés (voir section dédiée ci-dessous)
+- ENGINE-008-A (v1.0) --- Systems de population (Relations,
+  Compétences, Héritage), deuxième document ENGINE rédigé avant tout
+  code, traduisant GDB-004C/004H/004J en architecture concrète
 
 ---
 

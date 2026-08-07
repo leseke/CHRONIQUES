@@ -1,7 +1,7 @@
 # AUDIT-GLOBALE.md
 
-> Version : 3.1
-> Statut : GDB et ACT (001-010, 003 excepté) clos --- ENGINE-000 à 006 créés et audités, squelette EventBus mort supprimé (ENGINE-C05) --- ENGINE-006 (Action Pipeline) est le premier document ENGINE rédigé avant tout code --- tout en attente de validation d'équipe --- autres bibliothèques à approfondir
+> Version : 3.2
+> Statut : GDB et ACT (001-010, 003 excepté) clos --- ENGINE-000 à 006 créés et audités, squelette EventBus mort supprimé (ENGINE-C05) --- ENGINE-006 (Action Pipeline) est le premier document ENGINE rédigé avant tout code --- tout en attente de validation d'équipe --- 1 constat ENGINE ouvert (ENGINE-C06, lacune d'orchestration Scheduler/Action Pipeline) --- autres bibliothèques à approfondir
 > Type : Audit
 > Maturité : 1
 > Bibliothèque : AUDIT
@@ -33,7 +33,7 @@
 | ENGINE-004 (Systems) | ✅ Audité (v1.0, rédigé rétroactivement, 1 constat corrigé en cours de rédaction --- affirmation erronée sur l'absence de tests NeedsDecaySystem, tests bien existants) |
 | ENGINE-005 (Persistence) | ✅ Audité (v1.0, rédigé rétroactivement) |
 | ENGINE-006 (Action Pipeline) | ✅ Audité (v1.2, rédigé avant tout code --- Maturité 2, traduit ACT-002/004-010 en architecture concrète) --- implémentation confirmée compilable, 91/91 tests passants (dont 4 d'intégration de bout en bout via un Verbe de démonstration), non encore validée par l'équipe |
-| ENGINE-007 | ◻️ Non créé --- Resource Manager, aucun code existant (voir ENGINE/CATALOG.md) |
+| ENGINE-007 | ◻️ Non créé --- Resource Manager, aucun code existant (voir ENGINE/CATALOG.md). Numéro également invoqué à tort par une proposition externe non retenue (ENGINE-C06, ouvert) --- sans lien avec le Resource Manager |
 | ADR | ✅ Audité en complément (constat ADR-C01, corrigé) |
 | TECH | ✅ Audité (corrigé) |
 | QA | ✅ Audité (corrigé) |
@@ -525,6 +525,45 @@ sens --- désormais recommandé après toute création ou révision d'un
 document ENGINE touchant un composant déjà codé (voir Prochaine étape
 recommandée).
 
+### ENGINE-C06 --- ⏳ Ouvert (différé volontairement)
+- **Priorité :** P2
+- **Type :** Lacune architecturale
+- **Origine :** proposition externe (« ChatGPT »), soumise sous
+  l'identifiant `ENGINE-007 --- Simulation Loop`, statut auto-déclaré
+  « Validé ». Non retenue telle quelle --- trois défauts de traçabilité :
+  1. `ENGINE-007` est déjà réservé au Resource Manager (voir
+     `ENGINE/CATALOG.md`, section « Chapitres planifiés, non créés ») ;
+  2. elle recrée une séparation Scheduler / Simulation Loop déjà
+     tranchée et consolidée dans `ENGINE-003` (« le code n'a jamais
+     séparé les deux : `Scheduler.Tick` fait avancer le World *et*
+     invoque les Systems »), sans fournir la justification explicite
+     que le catalogue exige pour rouvrir cette consolidation ;
+  3. un statut « Validé » ne peut pas s'auto-attribuer à un document
+     anticipant du code non écrit --- seul précédent comparable,
+     `ENGINE-006`, est entré au catalogue en `Proposition`, Maturité 2.
+- **Constat :** au-delà du rejet de la proposition elle-même, elle
+  pointe une lacune réelle et non encore adressée : aucun composant du
+  moteur n'orchestre aujourd'hui le `Scheduler` (Systems) et le futur
+  Pipeline d'Actions (`ENGINE-006`) au sein d'un même Tick.
+  `Scheduler.Tick` n'a connaissance que des Systems ; rien n'invoque le
+  Pipeline d'Actions, qui reste de toute façon non implémenté à ce jour
+  (`ENGINE-006`, Maturité 2, non encore validé par l'équipe). Ce trou
+  n'existait pas avant la création d'`ENGINE-006` --- il devient visible
+  maintenant qu'un Pipeline d'Actions est spécifié sans que rien ne
+  prévoie de l'appeler.
+- **Décision :** ne pas rédiger de spécification ENGINE par
+  anticipation (MASTER-006) --- le Pipeline d'Actions lui-même n'est pas
+  encore implémenté. Constat consigné ici pour ne pas le perdre, à
+  rouvrir explicitement au moment de l'implémentation d'`ENGINE-006`,
+  moment où le besoin d'orchestration deviendra concret plutôt
+  qu'anticipé. À cette occasion : choisir un identifiant réellement
+  libre (pas `ENGINE-007`), fournir la justification de réouverture de
+  la consolidation `ENGINE-003`, et n'attribuer un statut `Validé` qu'à
+  l'issue du cycle documentaire normal (Proposée → Validée →
+  Spécifiée → Implémentée → Testée → Stable, ACT-001-G section 14).
+- **Condition de clôture :** ouverture réelle du chantier `ENGINE-006`
+  (implémentation du Pipeline d'Actions).
+
 ## Non concerné (n'existe pas encore)
 
 - ACT/PATTERNS
@@ -549,3 +588,8 @@ dans l'autre sens --- le code contredit-il la documentation, pas seulement
 l'inverse (recherche de code mort, de scaffolding non terminé, ou de
 mécanismes parallèles non référencés) --- avant de considérer le document
 comme fiable à 100 %.
+
+ENGINE-C06 reste ouvert et différé volontairement : à rouvrir au moment de
+l'implémentation du Pipeline d'Actions (`ENGINE-006`), pas avant --- c'est à
+ce moment que l'orchestration Scheduler / Pipeline d'Actions cessera d'être
+une anticipation pour devenir un besoin réel.

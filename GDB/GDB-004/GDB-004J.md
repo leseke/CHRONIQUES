@@ -1,6 +1,6 @@
 GDB-004J --- La Transmission
 
-Version : 1.1
+Version : 1.2
 Statut : Officiel
 Type : Population du Monde
 Maturité : 2
@@ -10,18 +10,40 @@ Bibliothèque : GDB
 
 OBJECTIF
 
-Définir les principes qui gouvernent la transmission entre les individus 
+Définir les principes qui gouvernent la transmission entre les individus
 et les générations.
 
-La transmission permet au monde de conserver et faire évoluer son 
+La transmission permet au monde de conserver et faire évoluer son
 savoir, ses traditions et ses réalisations.
 ⸻
 PRINCIPE
 
 Rien d'important ne devrait disparaître sans laisser de trace.
 
-Les connaissances, techniques, valeurs, œuvres et patrimoines peuvent 
+Les connaissances, techniques, valeurs, œuvres et patrimoines peuvent
 être transmis.
+⸻
+FRONTIÈRE AVEC GDB-008G
+
+`GDB-008G` (L'Héritage) décrit, sous un titre différent, le même
+principe --- « ce qui peut être transmis » y est presque mot pour mot
+identique à la section suivante --- sans qu'aucun renvoi croisé n'existe
+entre les deux documents avant cette révision. Troisième occurrence du
+même défaut que celui déjà signalé entre GDB-004H et GDB-007A/B : deux
+chapitres traitant le même sujet sous des titres distincts échappent au
+repérage par titre identique qu'a effectué GDB-CATALOG-C01. Ce document
+ne résout pas la frontière ici --- la régénération de GDB-008G reste à
+faire séparément (un constat à la fois, MASTER-008) --- mais signale
+qu'un passage d'audit dédié au repérage par *concept* plutôt que par
+*titre* serait probablement nécessaire pour trouver les occurrences
+restantes de ce même défaut ailleurs dans la GDB.
+
+En l'attente de cette régénération, la frontière de fait est : GDB-004J
+fait autorité sur le mécanisme de transmission entre deux individus
+(un défunt et son héritier) --- ce document, y compris son MODÈLE DE
+DÉSIGNATION DE L'HÉRITIER ci-dessous ; GDB-008G reste la référence sur
+la portée générationnelle plus large (ce qu'une génération, au sens
+collectif, laisse à la suivante).
 ⸻
 CE QUI PEUT ÊTRE TRANSMIS
 
@@ -57,13 +79,42 @@ La transmission influence :
 	⁃	les cultures ;
 	⁃	les histoires émergentes.
 ⸻
+MODÈLE DE DÉSIGNATION DE L'HÉRITIER
+
+Les cas d'échec ci-dessous supposent qu'un « successeur » soit
+identifié ou non --- ce que ce document ne précisait pas jusqu'ici.
+S'appuyant sur le modèle de Force désormais défini par GDB-004C, la
+désignation suit une règle déterministe, conforme au Principe 10 de
+MASTER-002 (« à état identique, la même séquence produit toujours le
+même résultat ») :
+
+1. Parmi les relations actives du défunt au moment de la transmission,
+   isoler celles de type Familiale [réf: GDB-004C].
+2. S'il en existe au moins une, l'héritier est celle dont la Force est
+   la plus élevée. En cas d'égalité stricte de Force, la relation la
+   plus ancienne (Tick de création le plus bas) l'emporte.
+3. Si aucune relation Familiale n'existe, la même règle s'applique à
+   l'ensemble des relations actives du défunt, tous types confondus.
+4. Si aucune relation active n'existe, il n'y a pas de successeur ---
+   voir CAS D'ÉCHEC, « Absence de successeur ».
+
+Ce modèle ne privilégie jamais un type de relation autre que Familiale
+par construction --- une relation Amicale très forte ne l'emporte
+jamais sur une relation Familiale plus faible, conformément à la place
+que GDB-009C (Les Familles) accorde au lien du sang. Il reste
+volontairement silencieux sur tout critère narratif supplémentaire
+(mérite, promesse, testament explicite du défunt) --- leur ajout
+éventuel reste un enrichissement futur de ce document, pas une
+correction de celui-ci.
+⸻
 CAS D'ÉCHEC DE LA TRANSMISSION
 
 La transmission n'aboutit pas toujours. Trois cas d'échec doivent être
 distingués, car ils appellent des résolutions différentes.
 
 - **Absence de successeur.** Aucun héritier n'existe au moment de la
-  transmission (mort sans descendance, lignée interrompue). Le
+  transmission (mort sans descendance, lignée interrompue) --- au sens
+  du MODÈLE DE DÉSIGNATION ci-dessus, aucune relation active. Le
   patrimoine matériel rejoint alors la communauté ou la relation la
   plus proche du défunt [réf: GDB-004C] ; la réputation et les œuvres
   durables suivent leur propre cycle de persistance indépendamment de
@@ -104,7 +155,7 @@ Toute mécanique liée à la transmission devra :
 ⸻
 CRITÈRE DE VALIDATION
 
-Cette mécanique transmet-elle un héritage crédible sans supprimer la 
+Cette mécanique transmet-elle un héritage crédible sans supprimer la
 liberté de la génération suivante ?
 
 Si la réponse est non, elle devra être repensée.
@@ -114,6 +165,16 @@ Fin du document
 Statut : Validé -- Référence officielle.
 ⸻
 HISTORIQUE
+
+Version 1.2 : ajout du MODÈLE DE DÉSIGNATION DE L'HÉRITIER, absent
+jusqu'ici alors que les CAS D'ÉCHEC en dépendaient implicitement ---
+règle déterministe fondée sur le modèle de Force de GDB-004C
+(priorité Familiale, puis Force la plus élevée, tie-break par
+ancienneté). Ajout de la frontière avec GDB-008G (troisième
+recoupement de contenu sous un titre différent, après GDB-004C/GDB-002B
+et GDB-004H/GDB-007A --- suggère un défaut structurel du repérage par
+titre de GDB-CATALOG-C01, à corriger par un passage dédié). Aucun
+changement aux CAS D'ÉCHEC ni aux RÈGLES DE CONCEPTION, déjà conformes.
 
 Version 1.1 : ajout des trois cas d'échec de la transmission (absence de
 successeur, refus, transmission incomplète) et de leur invariant commun. Corrige

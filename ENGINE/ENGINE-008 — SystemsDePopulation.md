@@ -72,9 +72,13 @@ de :
 ## HeritageSystem
 
 Implémente GDB-004J. Ne porte aucun Component propre --- il consomme
-`RelationComponent` (pour désigner l'héritier) et déclenche la
-transmission au moment où `AgingSystem` (ENGINE-004) fait passer une
-Entity à l'état `"mort"`. Responsable de :
+`RelationComponent` (pour désigner l'héritier) et détecte la mort d'une
+Entity en inspectant directement son `Lifecycle` (si
+`CurrentState.Name == "mort"` et que l'Entity n'a pas encore été traitée
+pour l'héritage). Il ne lit jamais `World.Events` pour détecter un
+`vie.mort` --- `World.Events` reste un journal d'observabilité
+(ENGINE-001 v2.0), jamais un canal de coordination entre Systems.
+Responsable de :
 
 - désigner l'héritier selon le modèle déterministe de GDB-004J
   (priorité Familiale, puis Force la plus élevée, tie-break par
@@ -84,7 +88,8 @@ Entity à l'état `"mort"`. Responsable de :
   n'aboutit pas normalement --- jamais une disparition silencieuse
   (GDB-004J, invariant commun) ;
 - publier un `GameEvent` observable pour toute transmission, réussie ou
-  non.
+  non --- ce `GameEvent` est produit pour l'observabilité, pas pour
+  déclencher un autre System.
 
 ---
 
@@ -161,21 +166,70 @@ Scheduler[Scheduler.Tick] --> Needs[NeedsDecaySystem]
 Needs --> Aging[AgingSystem]
 Aging --> Rel[RelationSystem : érosion]
 Rel --> Skill[SkillSystem : déclin]
-Skill --> Her[HeritageSystem : scrute les vie.mort du Tick]
+Skill --> Her[HeritageSystem : inspecte Lifecycle de chaque Entity]
 Her --> Pub[World.Publish]
 ```
 
 L'ordre place `HeritageSystem` après `AgingSystem` dans l'enregistrement
-Scheduler --- condition nécessaire pour qu'un événement `vie.mort`
-produit ce même Tick soit déjà présent dans `World.Events` quand
+Scheduler --- condition nécessaire pour que le `Lifecycle` d'une Entity
+décédée ce même Tick soit déjà à l'état `"mort"` quand
 `HeritageSystem.Update` s'exécute.
 
 En dehors du Tick, un second flux existe, indépendant du Scheduler :
-l'application des Effects d'une Action Instance (ENGINE-006, section 5)
-appelle directement `RelationSystem.EnregistrerInteraction` ou
-`SkillSystem.Pratiquer` --- ces deux méthodes ne sont jamais invoquées
-depuis `Update`, seulement depuis le traitement des Effects d'une
-Action résolue.
+l'application des Effects d'une Action Instance résolue (ENGINE-006,
+section 5) passe par un mécanisme de résolution d'Effects (voir section
+5.1 ci-dessous) --- le pipeline ne connaît jamais les Systems concrets,
+il produit des Effects typés qu'un résolveur dispatche vers le
+composant responsable.
+
+## 5.1 Résolution des Effects
+
+Le pipeline d'Actions (ENGINE-006) produit des Effects (données) à la
+résolution d'une Action Instance. Il ne sait pas quel System les
+traitera --- il ne dépend d'aucun System concret.
+
+La traduction d'un Effect en mutation du World passe par un résolveur
+(`EffectApplicator` ou équivalent), qui dispatche chaque Effect typé
+vers le composant responsable :
+
+```text
+Action Instance
+↓
+Execution Engine
+↓
+Effects (données typées)
+↓
+EffectApplicator / Resolver
+↓
+World mutation via le service métier dédié
+```
+
+Exemples d'Effects typés introduits par ce document :
+
+- `RelationInteractionEffect` --- dispatché vers `RelationSystem`, qui
+  applique l'effet d'interaction et crée éventuellement un Épisode
+  (GDB-004C) ;
+- `SkillPracticeEffect` --- dispatché vers `SkillSystem`, qui applique
+  le gain de Niveau (GDB-004H).
+
+Ce mécanisme préserve deux séparations fondamentales :
+
+1. **ENGINE-006 ne connaît pas ENGINE-008.** Le pipeline produit des
+   Effects, jamais des appels directs à des Systems concrets. Ajouter un
+   nouveau type d'Effect ne modifie pas ENGINE-006.
+2. **Le flux temporel (Update) reste distinct du flux déclenché par une
+   Action.** `RelationSystem.Update` fait l'érosion naturelle ;
+   `RelationSystem` traite un `RelationInteractionEffect` quand le
+   résolveur le lui dispatche --- deux chemins d'entrée, une seule
+   source de vérité sur l'état de la relation.
+
+Le résolveur lui-même est un composant d'infrastructure dont la
+spécification complète dépend d'ENGINE-006 --- ce document ne le définit
+pas en détail, seulement les types d'Effects qu'ENGINE-008 introduit et
+les Systems qui en sont responsables. Si ENGINE-006 ne prévoit pas
+encore ce résolveur, c'est un enrichissement à y apporter au moment de
+l'implémentation, pas une anticipation (le besoin est concret dès
+qu'ENGINE-008 est implémenté).
 
 ---
 
@@ -201,8 +255,9 @@ Action résolue.
 
 ## HeritageSystem
 
-- Un `vie.mort` publié à un Tick antérieur au Tick courant n'est jamais
-  retraité --- chaque transmission n'est déclenchée qu'une seule fois.
+- Un `vie.mort` survenu à un Tick antérieur au Tick courant n'est
+  jamais retraité --- chaque transmission n'est déclenchée qu'une
+  seule fois par `HeritageSystem`, au Tick où l'événement est publié.
 - La désignation de l'héritier suit exactement l'algorithme de GDB-004J
   --- aucune Entity ne peut être désignée héritière par un autre chemin.
 - L'un des trois cas d'échec de GDB-004J s'applique systématiquement
@@ -220,6 +275,14 @@ Action résolue.
   il le lit pour désigner l'héritier, seul `RelationSystem` le modifie.
 - Aucun des trois Systems ne publie d'événement sans qu'un changement
   d'état réel se soit produit.
+- Aucun System ne lit `World.Events` pour décider d'agir ---
+  `World.Events` reste un journal d'observabilité (ENGINE-001), jamais
+  un canal de coordination entre Systems. `HeritageSystem` détecte la
+  mort par inspection directe du `Lifecycle`.
+- Le pipeline d'Actions (ENGINE-006) ne connaît aucun System concret
+  d'ENGINE-008. Les mutations déclenchées par une Action passent par
+  des Effects typés et un résolveur (section 5.1), jamais par un appel
+  direct du pipeline vers `RelationSystem` ou `SkillSystem`.
 
 ---
 
@@ -227,18 +290,56 @@ Action résolue.
 
 ✓ `RelationSystemTests` --- érosion, plancher familial, création,
   disparition à Force 0, création d'Épisode au-dessus du seuil, absence
-  d'Épisode en dessous, éviction du plus ancien au-delà de la capacité ;
+  d'Épisode en dessous, éviction du plus ancien au-delà de la capacité,
+  traitement correct d'un `RelationInteractionEffect` dispatché par le
+  résolveur ;
 
 ✓ `SkillSystemTests` --- gain décroissant en approchant 100, absence de
-  déclin avant le seuil d'inactivité, déclin après ;
+  déclin avant le seuil d'inactivité, déclin après, traitement correct
+  d'un `SkillPracticeEffect` dispatché par le résolveur ;
 
 ✓ `HeritageSystemTests` --- désignation priorisant Familiale, tie-break
   par ancienneté, absence de successeur, refus, transmission
-  incomplète, non-retraitement d'un `vie.mort` d'un Tick antérieur.
+  incomplète, détection de la mort par inspection du Lifecycle (jamais
+  par lecture de `World.Events`), non-retraitement d'une Entity déjà
+  traitée pour l'héritage.
 
 ---
 
 # 9. Historique
+
+## Version 1.2
+
+- Corrigé deux erreurs d'architecture introduites en v1.0-v1.1, toutes
+  deux identifiées par revue externe :
+  1. `HeritageSystem` détecte désormais la mort par inspection directe
+     du `Lifecycle` de chaque Entity, plus par lecture de `World.Events`
+     --- `World.Events` reste un journal d'observabilité (ENGINE-001),
+     jamais un canal de coordination entre Systems.
+  2. Le pipeline d'Actions ne connaît plus aucun System concret
+     d'ENGINE-008. Les mutations déclenchées par une Action passent par
+     des Effects typés (`RelationInteractionEffect`,
+     `SkillPracticeEffect`) et un résolveur (`EffectApplicator`,
+     section 5.1), jamais par un appel direct du pipeline vers
+     `RelationSystem` ou `SkillSystem`. Cette architecture préserve la
+     séparation entre flux temporel (`Update`) et mutation déclenchée
+     par une Action, sans coupler ENGINE-006 aux Systems.
+- Tests de validation enrichis en conséquence.
+
+## Version 1.1
+
+- Corrigé le mécanisme de détection des événements `vie.mort` par
+  `HeritageSystem` : traitement dans son propre `Update`, après
+  `AgingSystem` dans l'ordre du Scheduler, pas via un bus de réaction
+  --- la proposition initiale était juste sur ce point, c'est sa
+  première rédaction en v1.0 qui avait introduit l'erreur.
+- Ajouté le flux Effects → `RelationSystem.EnregistrerInteraction` /
+  `SkillSystem.Pratiquer`, distinct de la boucle de Tick --- autre
+  correction d'une hypothèse erronée en v1.0, le code réel a bien
+  besoin de ces deux chemins d'invocation.
+- Précisé qu'`HeritageSystem` ne retraite jamais un `vie.mort` survenu
+  à un Tick antérieur --- même engagement que `GameEventTests` vérifie
+  déjà pour le journal d'événements dans `AgingSystemTests`.
 
 ## Version 1.0
 

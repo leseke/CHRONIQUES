@@ -1,7 +1,7 @@
 # AUDIT-GLOBALE.md
 
-> Version : 3.5
-> Statut : GDB et ACT (001-010, 003 excepté) clos --- ENGINE-000 à 006 créés et audités, squelette EventBus mort supprimé (ENGINE-C05) --- ENGINE-006 (Action Pipeline) validé par le porteur du projet, Maturité 4 --- ENGINE-008 (Systems de population) créé, en attente de validation d'équipe --- GDB-004C/004H/004J régénérés à Maturité 2 (Relations, Compétences, Héritage) --- 2 constats ouverts : ENGINE-C06 (orchestration Scheduler/Action Pipeline, différé jusqu'à MASTER-005 Phase 3), GDB-CATALOG-C02 (angle mort du repérage par titre de GDB-CATALOG-C01, 3 occurrences déjà corrigées, passage dédié restant à mener) --- autres bibliothèques à approfondir
+> Version : 3.6
+> Statut : GDB et ACT (001-010, 003 excepté) clos --- ENGINE-000 à 006 créés et audités, squelette EventBus mort supprimé (ENGINE-C05) --- ENGINE-006 (Action Pipeline) validé par le porteur du projet, Maturité 4 --- ENGINE-008 (Systems de population) créé, en attente de validation d'équipe --- GDB-004C/004H/004J régénérés à Maturité 2 (Relations, Compétences, Héritage) --- ENGINE/README.md v1.2 (ENGINE-C07 clos) --- 2 constats ouverts : ENGINE-C06 (orchestration Scheduler/Action Pipeline, différé jusqu'à MASTER-005 Phase 3), GDB-CATALOG-C02 (angle mort du repérage par titre de GDB-CATALOG-C01, 3 occurrences déjà corrigées, passage dédié restant à mener) --- autres bibliothèques à approfondir
 > Type : Audit
 > Maturité : 1
 > Bibliothèque : AUDIT
@@ -608,6 +608,19 @@ recommandée).
 - **Condition de clôture :** entrée en Phase 3 de `MASTER-005` ---
   pas avant, et pas simplement à l'apparition d'un second Verbe (question
   de contenu GDB/VERBS, sans rapport avec ce constat d'architecture).
+
+### ENGINE-C07 --- ✅ Clos
+- **Priorité :** P2
+- **Type :** Cohérence documentaire
+- **Constat :** `ENGINE/README.md` affirmait que cette bibliothèque « ne
+  contient aucun code source », alors que `ENGINE-006` et `ENGINE-008`
+  contiennent des esquisses de code concrètes (types C#, signatures).
+- **Correction :** Option A retenue par le porteur du projet. `ENGINE/README.md`
+  v1.2 corrige la doctrine : ENGINE peut contenir des esquisses de code
+  lorsqu'elles sont nécessaires pour exprimer un contrat avec précision.
+  La section « Implémentation indépendante » est renommée et reformulée.
+  La section 5 (Organisation) est mise à jour pour refléter la structure
+  réelle de la bibliothèque.
 
 ## Non concerné (n'existe pas encore)
 

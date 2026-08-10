@@ -1,6 +1,6 @@
 # ENGINE — Catalogue
 
-> Version : 1.2
+> Version : 1.3
 > Statut : Foundation
 > Maturité : 1
 > Bibliothèque : ENGINE
@@ -12,137 +12,295 @@
 # Objectif
 
 Ce catalogue référence l'ensemble des documents constituant la
-bibliothèque ENGINE, introduite par PROD-005 (Feuille de Route v2.2).
+bibliothèque ENGINE.
 
-ENGINE décrit l'architecture fonctionnelle et technique du moteur ---
-jamais les règles métier, qui appartiennent à CORE et ACT.
+ENGINE décrit l'architecture fonctionnelle et technique du moteur.
 
-Comme pour ACT/CATALOG.md, ce catalogue distingue explicitement ce qui
-existe dans le dépôt de ce qui est planifié mais non encore créé, et
-signale les documents rédigés rétroactivement (le code existait avant
-la spécification) plutôt que dans l'ordre prescrit par ENGINE-000,
-section 3.
+Les règles métier restent définies dans leurs bibliothèques d'autorité,
+notamment CORE, GDB et ACT.
+
+Le catalogue distingue :
+
+- les spécifications existantes ;
+- les spécifications rédigées rétroactivement ;
+- les spécifications rédigées avant implémentation ;
+- les documents encore planifiés.
 
 ---
 
 # Documents existants
 
-## ENGINE-000 --- Principes d'architecture
+## ENGINE-000 — Principes d'architecture
 
-Statut : Stable. Rédigé avant tout code ENGINE --- respecte l'ordre
-Documentation First prescrit par lui-même.
+Statut : Stable.
 
-## ENGINE-001 --- Journal d'événements du World
+Définit les principes de gouvernance d'ENGINE, notamment :
 
-Statut : Stable (v2.0). Rédigé avant le code sous une forme
-(Subscribe/Handler) jamais construite, puis révisé pour refléter le
-mécanisme réellement implémenté (simple accumulation sur `World`). Voir
-son Historique pour le détail de cette divergence et sa résolution.
-
-## ENGINE-002 --- Kernel
-
-Statut : Stable. **Rédigé rétroactivement** --- implémenté dès la v0.1
-du moteur, avant la création de la bibliothèque ENGINE.
-
-## ENGINE-003 --- Scheduler et boucle de simulation
-
-Statut : Stable. **Rédigé rétroactivement** --- implémenté depuis la
-v0.2 du moteur.
-
-## ENGINE-004 --- Systems de simulation
-
-Statut : Stable. **Rédigé rétroactivement** --- implémenté depuis la
-v0.2 du moteur. Couvre `NeedsDecaySystem`, `AgingSystem`,
-`CalendrierSimule`.
-
-## ENGINE-005 --- Persistence et Serialization
-
-Statut : Stable. **Rédigé rétroactivement** --- implémenté depuis la
-v0.1 (World vide) et étendu en v0.2 (Components, Lifecycle).
-
-## ENGINE-006 --- Action Pipeline
-
-Statut : Validée, Maturité 4. Rédigé avant tout code (Maturité 2),
-implémenté et testé (91/91 tests, 4 d'intégration de bout en bout via
-un Verbe de démonstration), puis validé par le porteur du projet ---
-vérification identifiant pour identifiant sans écart trouvé. Voir son
-Historique v1.3.
-
-## ENGINE-008 --- Systems de population (Relations, Compétences, Héritage)
-
-Statut : Proposition, Maturité 2. Rédigé avant tout code, comme
-ENGINE-006 --- traduit GDB-004C, GDB-004H et GDB-004J en architecture
-concrète, condition préalable à la cible v0.3 de PROD/FeuilleDeRoute.md
-(« relations, mémoire, compétences, héritage minimal »). Numéroté 008 et
-non 007 --- 007 reste réservé au Resource Manager (voir ci-dessous),
-sans rapport avec ce document.
+- Documentation First ;
+- déterminisme ;
+- contrats ;
+- tests ;
+- séparation des responsabilités ;
+- validation avant intégration.
 
 ---
 
-# Chapitres planifiés, non créés
+## ENGINE-001 — Journal d'événements du World
 
-Annoncés par PROD-005 et par ENGINE-000/Readme, mais sans code ni
-spécification existants --- rien à documenter rétroactivement, et
-aucune spécification prématurée n'est rédigée par anticipation
-(MASTER-006).
+Statut : Stable — v2.0.
 
-## ENGINE-007 --- Resource Manager
+Décrit `World.Events`.
 
-Gestion des ressources (mémoire, contenu externe chargé). Aucun code
-existant à ce jour.
+Le journal :
+
+- accumule les `GameEvent` observables ;
+- ne constitue pas un EventBus Publish/Subscribe ;
+- n'est jamais utilisé comme canal de coordination entre Systems.
 
 ---
 
-# Note sur la consolidation par rapport à l'organisation initiale
+## ENGINE-002 — Kernel
 
-ENGINE-000, section 5, suggérait une organisation en documents séparés
-pour EventBus, Scheduler, **Simulation Loop**, Action Pipeline,
-Persistence, **Serialization**, Resource Manager. La documentation
-rétroactive a consolidé :
+Statut : Stable.
 
-- **Simulation Loop** dans ENGINE-003, aux côtés du Scheduler --- le
-  code n'a jamais séparé les deux : `Scheduler.Tick` fait avancer le
-  World *et* invoque les Systems, c'est la boucle elle-même ;
-- **Serialization** dans ENGINE-005, aux côtés de la Persistence --- le
-  code n'a jamais séparé les deux : `WorldRepository` sérialise et
-  persiste dans la même classe, avec le même contrat.
+Rédigé rétroactivement.
 
-Cette consolidation reflète le code existant (Maturité 3 exige une
-correspondance identifiant pour identifiant) --- elle n'est pas un choix
-arbitraire de ce catalogue. Si Simulation Loop ou Serialization
-devenaient un jour des responsabilités réellement distinctes dans le
-code, elles seraient alors séparées en documents propres, avec une
-justification explicite tracée ici.
+Documente les primitives du Kernel déjà présentes dans le moteur.
+
+---
+
+## ENGINE-003 — Scheduler et boucle de simulation
+
+Statut : Stable.
+
+Rédigé rétroactivement.
+
+Documente :
+
+- l'avancement du Tick ;
+- l'ordre déterministe des Systems ;
+- la boucle de simulation actuelle.
+
+---
+
+## ENGINE-004 — Systems de simulation
+
+Statut : Stable.
+
+Rédigé rétroactivement.
+
+Couvre notamment :
+
+- `NeedsDecaySystem` ;
+- `AgingSystem` ;
+- `CalendrierSimule`.
+
+---
+
+## ENGINE-005 — Persistence et Serialization
+
+Statut : Stable.
+
+Rédigé rétroactivement.
+
+Documente :
+
+- `WorldRepository` ;
+- snapshots ;
+- sérialisation JSON ;
+- restauration du World.
+
+---
+
+## ENGINE-006 — Action Pipeline
+
+Statut : Validée.
+
+Maturité : 4.
+
+Première spécification ENGINE ayant parcouru le cycle complet :
+
+```text
+Spécification
+↓
+Implémentation
+↓
+Tests
+↓
+Validation
+```
+
+Traduit ACT en architecture concrète :
+
+```text
+Intent
+↓
+Planner
+↓
+Plan
+↓
+Action Instance
+↓
+Execution Engine
+↓
+Outcome
+```
+
+L'implémentation est présente et testée dans `CHRONIQUES-ENGINE`.
+
+---
+
+## ENGINE-008 — Systems de population
+
+### Relations, Compétences, Héritage
+
+Statut : Validée.
+
+Maturité : 4.
+
+Rédigé avant implémentation puis implémenté et validé dans
+`CHRONIQUES-ENGINE`.
+
+Couvre :
+
+- `RelationComponent` ;
+- `RelationSystem` ;
+- `SkillComponent` ;
+- `SkillSystem` ;
+- `HeritageSystem` ;
+- `RelationInteractionEffect` ;
+- `SkillPracticeEffect` ;
+- `HeritageRefusalEffect` ;
+- `PopulationEffectApplicator`.
+
+Validation courante :
+
+```text
+dotnet build
+→ succès
+
+dotnet test
+→ 122 / 122 tests réussis
+→ 0 échec
+```
+
+La transmission matérielle incomplète définie conceptuellement par
+GDB-004J reste volontairement différée tant que le moteur ne dispose
+pas d'une représentation du patrimoine transmissible.
+
+ENGINE-008 participe à la cible v0.3 :
+
+```text
+relations
+mémoire
+compétences
+héritage minimal
+```
+
+La mémoire reste encore à spécifier séparément.
+
+---
+
+# Documents planifiés mais non créés
+
+## ENGINE-007 — Resource Manager
+
+Gestion future des ressources :
+
+- mémoire ;
+- contenu externe chargé ;
+- durée de vie des ressources.
+
+Aucun besoin d'implémentation concret ne justifie encore sa création.
+
+Il reste donc réservé mais non spécifié conformément à MASTER-006.
+
+---
+
+# Consolidation de l'organisation initiale
+
+La structure initiale envisageait notamment des documents distincts pour :
+
+- Scheduler ;
+- Simulation Loop ;
+- Persistence ;
+- Serialization.
+
+L'architecture réellement implémentée a montré que certaines
+responsabilités sont actuellement indissociables.
+
+Ainsi :
+
+```text
+Simulation Loop
+→ intégré à ENGINE-003
+```
+
+car `Scheduler.Tick` constitue la boucle actuellement implémentée.
+
+Et :
+
+```text
+Serialization
+→ intégrée à ENGINE-005
+```
+
+car persistance et sérialisation sont actuellement portées par le même
+ensemble de contrats.
+
+Cette consolidation reflète le code réel.
+
+Si ces responsabilités deviennent un jour techniquement indépendantes,
+elles pourront être séparées par une nouvelle spécification.
+
+---
+
+# État de concordance
+
+À la version 1.3 du présent catalogue :
+
+```text
+ENGINE-000  Stable
+ENGINE-001  Stable
+ENGINE-002  Stable
+ENGINE-003  Stable
+ENGINE-004  Stable
+ENGINE-005  Stable
+ENGINE-006  Validée / Maturité 4
+ENGINE-007  Réservé / non créé
+ENGINE-008  Validée / Maturité 4
+```
 
 ---
 
 # Historique
 
+## Version 1.3
+
+- `ENGINE-008` passe de Proposition / Maturité 2 à
+  **Validée / Maturité 4**.
+- Implémentation correspondante confirmée dans `CHRONIQUES-ENGINE`.
+- Build confirmé.
+- **122 / 122 tests réussis.**
+- Ajout des Effects de population et de `PopulationEffectApplicator`.
+- `HeritageRefusalEffect` désormais traité par `HeritageSystem`.
+- Correction du comportement du plancher familial et ajout des tests
+  associés.
+- Transmission incomplète explicitement marquée comme différée.
+- Mémoire identifiée comme partie de la cible v0.3 restant à spécifier.
+
 ## Version 1.2
 
-- `ENGINE-006` (Action Pipeline) validé par le porteur du projet
-  (v1.3, Statut Validée, Maturité 4) --- première spécification ENGINE à
-  parcourir tout le cycle Spécification → Implémentation → Tests →
-  Validation (ENGINE-000, section 8).
-- `ENGINE-008` (Systems de population --- Relations, Compétences,
-  Héritage) créé --- traduit GDB-004C, GDB-004H et GDB-004J en
-  architecture concrète, condition préalable à la cible v0.3 de
-  PROD/FeuilleDeRoute.md. Numéroté 008, pas 007 : 007 reste réservé au
-  Resource Manager, toujours non créé (voir « Chapitres planifiés »).
-  Deuxième document ENGINE rédigé avant tout code, comme ENGINE-006.
-  Première dépendance ENGINE explicite envers GDB plutôt que ACT seul ---
-  dépendance ajoutée à l'en-tête du catalogue.
+- `ENGINE-006` validé après implémentation et tests.
+- Création d'`ENGINE-008` comme spécification préalable aux Systems de
+  population.
+- Dépendance GDB ajoutée au catalogue.
 
 ## Version 1.1
 
-- `ENGINE-006` (Action Pipeline) créé --- traduit ACT-002-D à J et
-  ACT-004-A à ACT-010-A en architecture concrète, maintenant qu'ACT-001
-  à ACT-010 sont tous créés. Premier document ENGINE rédigé avant tout
-  code (Maturité 2), à la différence d'ENGINE-002 à 005.
+- Création d'`ENGINE-006` — Action Pipeline.
 
 ## Version 1.0
 
-- Création du catalogue, à l'occasion de la documentation rétroactive
-  d'ENGINE-002 à ENGINE-005 (Kernel, Scheduler, Systems, Persistence),
-  suite à la découverte que ces composants, déjà codés, n'avaient
-  jamais reçu de spécification ENGINE.
+- Création du catalogue lors de la documentation rétroactive
+  d'ENGINE-002 à ENGINE-005.

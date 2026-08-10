@@ -1,8 +1,8 @@
 # ENGINE-008 — Systems de population (Relations, Compétences, Héritage)
 
-> Version : 1.0
-> Statut : Proposition
-> Maturité : 2
+> Version : 1.3
+> Statut : Validée
+> Maturité : 3
 > Bibliothèque : ENGINE
 
 ⸻
@@ -126,6 +126,15 @@ par Tick, plancher familial, seuil d'importance d'un Épisode, capacité
 maximale d'Épisodes, Force initiale d'une nouvelle relation --- toutes
 volontairement non fixées par GDB-004C (voir section 2).
 
+**Cas limite verrouillé — plancher familial :** une relation Familiale
+dont la Force est au plancher ne peut pas descendre en dessous par la
+seule érosion naturelle. Un effet d'interaction négatif d'amplitude
+suffisante peut l'y amener. Si la Force franchit 0 par interaction
+négative, la relation disparaît --- il n'y a pas d'immunité absolue,
+seulement une immunité à l'érosion seule (cohérent avec GDB-009C :
+le lien du sang s'affaiblit, il ne s'efface jamais par le seul temps,
+mais peut se rompre par un acte délibéré).
+
 ## 4.2 Compétences
 
 ```csharp
@@ -144,6 +153,15 @@ public sealed class SkillComponent : IComponent
 `SkillSystem` porte : facteur de gain par pratique, seuil d'inactivité,
 taux de déclin par Tick inactif --- non fixés par GDB-004H.
 
+**Cas limite verrouillé — décroissance du gain :** le gain d'une
+pratique est une fonction strictement décroissante du Niveau courant.
+À Niveau 0, le gain est maximal (valeur du facteur de gain en
+paramètre) ; à Niveau 100, le gain est nul ou infinitésimal. La forme
+exacte de cette décroissance (linéaire, exponentielle inverse, etc.)
+est un paramètre d'implémentation, mais le comportement qualitatif est
+fixé : chaque point de Niveau supplémentaire rend la progression
+marginalement plus difficile que le précédent, jamais plus facile.
+
 ## 4.3 Héritage
 
 `HeritageSystem` ne définit aucun type propre --- il opère sur
@@ -155,6 +173,19 @@ pas de représentation dans le Kernel --- ne pas anticiper (MASTER-006).
 Ce que ce document fixe est uniquement la désignation de l'héritier et
 la production d'un événement observable pour chacun des trois cas
 d'échec.
+
+**Cas limite verrouillé — refus de l'héritier :** GDB-004J (CAS
+D'ÉCHEC, « Refus du successeur ») dit que l'héritier peut rejeter
+l'héritage en tout ou partie. Ce document fixe le mécanisme déclencheur
+sans anticiper le patrimoine matériel : le refus est déclenché par un
+Intent de l'héritier (via le pipeline d'Actions, ENGINE-006) qui
+produit un Effect de type `HeritageRefusalEffect`. `HeritageSystem`
+traite cet Effect en appliquant le même chemin que l'absence de
+successeur pour la part refusée. L'Intent lui-même est créé par le
+modèle comportemental de l'héritier --- hors périmètre de ce document,
+relevant de la psychologie des habitants (Phase 3, MASTER-005). En
+Phase 1, le refus peut être déclenché manuellement par le joueur si
+son personnage est l'héritier désigné.
 
 ---
 
@@ -255,9 +286,9 @@ qu'ENGINE-008 est implémenté).
 
 ## HeritageSystem
 
-- Un `vie.mort` survenu à un Tick antérieur au Tick courant n'est
-  jamais retraité --- chaque transmission n'est déclenchée qu'une
-  seule fois par `HeritageSystem`, au Tick où l'événement est publié.
+- Une Entity morte déjà traitée par `HeritageSystem` n'est jamais
+  retraitée --- chaque transmission n'est déclenchée qu'une seule fois
+  pour une même Entity.
 - La désignation de l'héritier suit exactement l'algorithme de GDB-004J
   --- aucune Entity ne peut être désignée héritière par un autre chemin.
 - L'un des trois cas d'échec de GDB-004J s'applique systématiquement
@@ -307,6 +338,31 @@ qu'ENGINE-008 est implémenté).
 ---
 
 # 9. Historique
+
+## Version 1.3
+
+- Corrigé l'en-tête (Version 1.0 → 1.2, erreur de copie persistante
+  depuis la création du document).
+- Corrigé le contrat `HeritageSystem` : « au Tick où l'événement est
+  publié » supprimé --- la détection repose désormais exclusivement sur
+  l'inspection du `Lifecycle`, plus sur `vie.mort`. Formulé comme
+  « une Entity morte déjà traitée n'est jamais retraitée », sans
+  référence à un journal d'événements.
+- Ajouté trois cas limites verrouillés, identifiés par revue externe
+  comme insuffisamment précis avant implémentation :
+  1. Plancher familial : la Force d'une relation Familiale est immune
+     à la seule érosion, pas à un effet d'interaction négatif suffisant.
+     Une relation Familiale peut donc disparaître par acte délibéré,
+     pas par le seul écoulement du temps (cohérent avec GDB-009C).
+  2. Décroissance du gain de Compétence : strictement décroissante en
+     fonction du Niveau, sans préciser la forme exacte (paramètre
+     d'implémentation), mais en fixant le comportement qualitatif.
+  3. Mécanisme du refus d'héritage : déclenché par un
+     `HeritageRefusalEffect` produit par un Intent de l'héritier
+     (pipeline ENGINE-006). En Phase 1, déclenché manuellement par le
+     joueur si son personnage est l'héritier désigné.
+- Statut : **Proposition → Validée**, Maturité 2 → 3, sur verdict de
+  revue externe (« ENGINE-008 est maintenant architecturalement sain »).
 
 ## Version 1.2
 

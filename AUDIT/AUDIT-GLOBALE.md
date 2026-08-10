@@ -1,7 +1,7 @@
 # AUDIT-GLOBALE.md
 
-> Version : 3.6
-> Statut : GDB et ACT (001-010, 003 excepté) clos --- ENGINE-000 à 006 créés et audités, squelette EventBus mort supprimé (ENGINE-C05) --- ENGINE-006 (Action Pipeline) validé par le porteur du projet, Maturité 4 --- ENGINE-008 (Systems de population) créé, en attente de validation d'équipe --- GDB-004C/004H/004J régénérés à Maturité 2 (Relations, Compétences, Héritage) --- ENGINE/README.md v1.2 (ENGINE-C07 clos) --- 2 constats ouverts : ENGINE-C06 (orchestration Scheduler/Action Pipeline, différé jusqu'à MASTER-005 Phase 3), GDB-CATALOG-C02 (angle mort du repérage par titre de GDB-CATALOG-C01, 3 occurrences déjà corrigées, passage dédié restant à mener) --- autres bibliothèques à approfondir
+> Version : 3.7
+> Statut : GDB et ACT (001-010, 003 excepté) clos --- ENGINE-000 à 006 créés et audités, squelette EventBus mort supprimé (ENGINE-C05) --- ENGINE-006 (Action Pipeline) validé, Maturité 4 --- ENGINE-008 (Systems de population) validé, Maturité 3, non encore implémenté --- GDB-004C/004H/004J régénérés à Maturité 2 --- ENGINE/README.md v1.2 (ENGINE-C07 clos) --- 2 constats ouverts : ENGINE-C06 (différé Phase 3), GDB-CATALOG-C02 (passage dédié à mener)
 > Type : Audit
 > Maturité : 1
 > Bibliothèque : AUDIT
@@ -34,7 +34,7 @@
 | ENGINE-005 (Persistence) | ✅ Audité (v1.0, rédigé rétroactivement) |
 | ENGINE-006 (Action Pipeline) | ✅ Audité et validé (v1.3, Statut Validée, Maturité 4 --- vérification identifiant pour identifiant sans écart, `PipelineIntegrationTests` observe le comportement décrit, validation du porteur du projet) |
 | ENGINE-007 | ◻️ Non créé --- Resource Manager, aucun code existant (voir ENGINE/CATALOG.md). Numéro également invoqué à tort par une proposition externe non retenue (ENGINE-C06, ouvert) --- sans lien avec le Resource Manager |
-| ENGINE-008 (Systems de population) | ✅ Audité (v1.0, rédigé avant tout code --- Maturité 2, traduit GDB-004C/004H/004J en architecture concrète) --- non encore implémenté, non encore validé par l'équipe |
+| ENGINE-008 (Systems de population) | ✅ Audité et validé (v1.3, Statut Validée, Maturité 3 --- quatre corrections de contrat appliquées sur revue externe, trois cas limites verrouillés, non encore implémenté dans CHRONIQUES-ENGINE) |
 | ADR | ✅ Audité en complément (constat ADR-C01, corrigé) |
 | TECH | ✅ Audité (corrigé) |
 | QA | ✅ Audité (corrigé) |

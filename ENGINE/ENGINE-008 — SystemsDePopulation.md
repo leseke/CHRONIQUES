@@ -1,8 +1,8 @@
 # ENGINE-008 — Systems de population (Relations, Compétences, Héritage)
 
-> Version : 1.3
+> Version : 1.4
 > Statut : Validée
-> Maturité : 3
+> Maturité : 4
 > Bibliothèque : ENGINE
 
 ⸻
@@ -11,16 +11,22 @@
 
 Traduire GDB-004C (Les Relations Sociales), GDB-004H (Les Compétences) et
 GDB-004J (La Transmission) en architecture concrète --- types, Systems,
-formules --- prête à être implémentée dans `CHRONIQUES-ENGINE`.
+formules --- implémentée dans `CHRONIQUES-ENGINE`.
 
-Ce document précède tout code (Maturité 2, Spécification --- MASTER-007),
-conformément à ENGINE-000, section 3. Il correspond à la cible « relations,
-mémoire, compétences, héritage minimal » de PROD/FeuilleDeRoute.md pour
-v0.3, qui atteint le critère de sortie de la Phase 1 de MASTER-005.
+Ce document a précédé l'implémentation conformément à ENGINE-000,
+section 3. Après spécification, implémentation et validation par tests,
+il constitue désormais le contrat architectural de référence des
+Systems de population couverts par ce lot.
 
-Ce document ne redéfinit aucun concept déjà posé par la GDB. Chaque
-type ci-dessous porte le nom de son concept GDB d'origine et cite la
-section qu'il implémente, jamais une règle nouvelle.
+Il correspond à une partie de la cible « relations, mémoire, compétences,
+héritage minimal » de PROD/FeuilleDeRoute.md pour v0.3.
+
+La mémoire n'est pas couverte par ENGINE-008 et reste à spécifier
+séparément avant implémentation.
+
+Ce document ne redéfinit aucun concept déjà posé par la GDB. Chaque type
+ci-dessous porte le nom de son concept GDB d'origine et cite la section
+qu'il implémente, jamais une règle métier nouvelle.
 
 ---
 
@@ -29,11 +35,19 @@ section qu'il implémente, jamais une règle nouvelle.
 Toute la logique vit dans les Systems, jamais dans les Components qu'ils
 font évoluer (CORE-003-C) --- même principe qu'ENGINE-004.
 
-Les paramètres numériques (taux d'érosion, seuils, capacités) sont des
-paramètres de constructeur, jamais des constantes internes ---
-directement exigé par GDB-004C et GDB-004H eux-mêmes (section
-« Paramètres d'implémentation » des deux documents), et cohérent avec
-NeedsDecaySystem/AgingSystem (ENGINE-004).
+Les paramètres numériques :
+
+- taux d'érosion ;
+- seuils ;
+- capacités ;
+- facteurs de progression ;
+- taux de déclin ;
+
+sont des paramètres de constructeur, jamais des constantes métier
+cachées dans les Systems.
+
+Cette règle est directement cohérente avec GDB-004C, GDB-004H,
+NeedsDecaySystem et AgingSystem.
 
 ---
 
@@ -41,55 +55,79 @@ NeedsDecaySystem/AgingSystem (ENGINE-004).
 
 ## RelationComponent / RelationSystem
 
-Implémente GDB-004C. `RelationComponent` porte la liste des relations
-actives d'un habitant. `RelationSystem` est responsable de :
+Implémente GDB-004C.
 
-- l'érosion naturelle de la Force de chaque relation à chaque Tick, avec
-  un plancher non nul pour les relations de type Familiale (GDB-004C,
-  ÉVOLUTION) ;
-- l'enregistrement d'une interaction qualifiante --- création de la
-  relation si elle n'existe pas encore, application de l'effet
-  d'interaction, création d'un Épisode si l'ampleur franchit le seuil
-  d'importance, éviction du plus ancien Épisode au-delà de la capacité
-  (GDB-004C, ÉPISODES) ;
-- la suppression d'une relation dont la Force atteint 0 (sauf plancher
-  familial).
+`RelationComponent` porte la liste des relations actives d'un habitant.
 
-N'est jamais responsable de la Réputation (GDB-004I) --- différée à
-MASTER-005 Phase 3 (GDB-004C, FRONTIÈRE AVEC GDB-004I).
+`RelationSystem` est responsable de :
+
+- l'érosion naturelle de la Force de chaque relation à chaque Tick ;
+- l'application du plancher familial ;
+- l'enregistrement d'une interaction qualifiante ;
+- la création d'une relation lorsqu'elle n'existe pas ;
+- l'application de l'impact d'une interaction ;
+- la création d'un Épisode lorsque l'ampleur franchit le seuil
+  d'importance ;
+- l'éviction du plus ancien Épisode lorsque la capacité maximale est
+  dépassée ;
+- la suppression d'une relation dont la Force atteint 0.
+
+Il n'est jamais responsable de la Réputation, définie par GDB-004I et
+différée à une phase ultérieure.
+
+---
 
 ## SkillComponent / SkillSystem
 
-Implémente GDB-004H. `SkillComponent` porte les Compétences d'un
-habitant, chacune identifiée par son nom. `SkillSystem` est responsable
-de :
+Implémente GDB-004H.
 
-- le déclin du Niveau d'une Compétence non pratiquée au-delà d'un seuil
-  d'inactivité (GDB-004H, MODÈLE DE PROGRESSION) ;
-- l'enregistrement d'une pratique qualifiante --- gain de Niveau
-  décroissant à mesure que le Niveau approche 100.
+`SkillComponent` porte les Compétences d'un habitant, chacune identifiée
+par son nom.
+
+`SkillSystem` est responsable de :
+
+- créer une Compétence lors de sa première pratique qualifiante ;
+- enregistrer la dernière pratique ;
+- appliquer un gain de Niveau ;
+- faire décroître ce gain à mesure que le Niveau approche 100 ;
+- appliquer le déclin d'une Compétence après un seuil d'inactivité ;
+- maintenir le Niveau entre 0 et 100.
+
+---
 
 ## HeritageSystem
 
-Implémente GDB-004J. Ne porte aucun Component propre --- il consomme
-`RelationComponent` (pour désigner l'héritier) et détecte la mort d'une
-Entity en inspectant directement son `Lifecycle` (si
-`CurrentState.Name == "mort"` et que l'Entity n'a pas encore été traitée
-pour l'héritage). Il ne lit jamais `World.Events` pour détecter un
-`vie.mort` --- `World.Events` reste un journal d'observabilité
-(ENGINE-001 v2.0), jamais un canal de coordination entre Systems.
-Responsable de :
+Implémente la partie actuellement représentable de GDB-004J.
 
-- désigner l'héritier selon le modèle déterministe de GDB-004J
-  (priorité Familiale, puis Force la plus élevée, tie-break par
-  ancienneté) ;
-- appliquer l'un des trois cas d'échec (absence de successeur, refus,
-  transmission incomplète) lorsque la désignation ou la transmission
-  n'aboutit pas normalement --- jamais une disparition silencieuse
-  (GDB-004J, invariant commun) ;
-- publier un `GameEvent` observable pour toute transmission, réussie ou
-  non --- ce `GameEvent` est produit pour l'observabilité, pas pour
-  déclencher un autre System.
+`HeritageSystem` ne porte aucun Component propre.
+
+Il utilise :
+
+- `Lifecycle` pour détecter la mort ;
+- `RelationComponent` pour désigner un héritier.
+
+Il détecte directement :
+
+```text
+Lifecycle.CurrentState.Name == "mort"
+```
+
+et ne lit jamais `World.Events` pour décider d'agir.
+
+`World.Events` reste un journal d'observabilité conforme à ENGINE-001,
+jamais un canal de coordination entre Systems.
+
+`HeritageSystem` est responsable de :
+
+- détecter une Entity morte non encore traitée ;
+- garantir une seule tentative de transmission par Entity morte ;
+- désigner l'héritier de manière déterministe ;
+- traiter l'absence de successeur ;
+- traiter le refus d'héritage ;
+- publier les `GameEvent` observables associés.
+
+La transmission matérielle complète reste différée tant qu'aucune
+représentation du patrimoine transmissible n'existe dans le moteur.
 
 ---
 
@@ -100,18 +138,30 @@ Responsable de :
 ```csharp
 public enum TypeRelation
 {
-    Familiale, Amicale, Professionnelle, Commerciale,
-    Politique, Conflictuelle, Sentimentale
+    Familiale,
+    Amicale,
+    Professionnelle,
+    Commerciale,
+    Politique,
+    Conflictuelle,
+    Sentimentale
 }
 
-public sealed record Episode(Tick Tick, string Description, double Impact);
+public sealed record Episode(
+    Tick Tick,
+    string Description,
+    double Impact);
 
 public sealed class Relation
 {
     public EntityId Cible { get; }
+
     public TypeRelation Type { get; }
+
     public double Force { get; internal set; }
+
     public Tick CreeeAu { get; }
+
     public IReadOnlyList<Episode> Episodes { get; }
 }
 
@@ -121,26 +171,90 @@ public sealed class RelationComponent : IComponent
 }
 ```
 
-`RelationSystem` porte les paramètres de constructeur : taux d'érosion
-par Tick, plancher familial, seuil d'importance d'un Épisode, capacité
-maximale d'Épisodes, Force initiale d'une nouvelle relation --- toutes
-volontairement non fixées par GDB-004C (voir section 2).
+`RelationSystem` porte notamment comme paramètres :
 
-**Cas limite verrouillé — plancher familial :** une relation Familiale
-dont la Force est au plancher ne peut pas descendre en dessous par la
-seule érosion naturelle. Un effet d'interaction négatif d'amplitude
-suffisante peut l'y amener. Si la Force franchit 0 par interaction
-négative, la relation disparaît --- il n'y a pas d'immunité absolue,
-seulement une immunité à l'érosion seule (cohérent avec GDB-009C :
-le lien du sang s'affaiblit, il ne s'efface jamais par le seul temps,
-mais peut se rompre par un acte délibéré).
+- taux d'érosion par Tick ;
+- plancher familial ;
+- seuil d'importance d'un Épisode ;
+- capacité maximale d'Épisodes ;
+- Force initiale d'une nouvelle relation.
 
-## 4.2 Compétences
+Ces valeurs ne sont volontairement pas imposées par ENGINE-008.
+
+---
+
+## 4.2 Plancher familial
+
+Le plancher familial protège exclusivement contre l'érosion naturelle.
+
+Si :
+
+```text
+Force > plancher familial
+```
+
+l'érosion peut faire diminuer la Force jusqu'au plancher, mais jamais
+au-dessous.
+
+Exemple :
+
+```text
+Force = 12
+Plancher = 10
+Érosion = 5
+
+Résultat = 10
+```
+
+En revanche, une interaction négative peut faire tomber la Force
+sous ce plancher.
+
+Exemple :
+
+```text
+Force = 40
+Interaction = -35
+
+Résultat = 5
+```
+
+Une fois sous le plancher, l'érosion naturelle :
+
+- ne diminue pas davantage la relation Familiale ;
+- ne la remonte surtout pas artificiellement vers le plancher.
+
+Ainsi :
+
+```text
+Force = 5
+Plancher = 10
+Tick suivant
+
+Résultat = 5
+```
+
+et jamais :
+
+```text
+5 → 10
+```
+
+Une interaction négative suffisamment forte peut atteindre `0`.
+
+Dans ce cas, la relation Familiale disparaît.
+
+Le lien familial est donc protégé contre le seul écoulement du temps,
+pas contre une rupture produite par les interactions.
+
+---
+
+## 4.3 Compétences
 
 ```csharp
 public sealed class Competence
 {
     public double Niveau { get; internal set; }
+
     public Tick DernierePratique { get; internal set; }
 }
 
@@ -150,117 +264,267 @@ public sealed class SkillComponent : IComponent
 }
 ```
 
-`SkillSystem` porte : facteur de gain par pratique, seuil d'inactivité,
-taux de déclin par Tick inactif --- non fixés par GDB-004H.
+`SkillSystem` porte :
 
-**Cas limite verrouillé — décroissance du gain :** le gain d'une
-pratique est une fonction strictement décroissante du Niveau courant.
-À Niveau 0, le gain est maximal (valeur du facteur de gain en
-paramètre) ; à Niveau 100, le gain est nul ou infinitésimal. La forme
-exacte de cette décroissance (linéaire, exponentielle inverse, etc.)
-est un paramètre d'implémentation, mais le comportement qualitatif est
-fixé : chaque point de Niveau supplémentaire rend la progression
-marginalement plus difficile que le précédent, jamais plus facile.
+- facteur de gain par pratique ;
+- seuil d'inactivité ;
+- taux de déclin.
 
-## 4.3 Héritage
+Le gain d'une pratique est strictement décroissant en fonction du Niveau
+courant.
 
-`HeritageSystem` ne définit aucun type propre --- il opère sur
-`RelationComponent` et sur le `Lifecycle` déjà défini par le Kernel
-(ENGINE-002). Le résultat d'une transmission (patrimoine redistribué,
-Compétence perdue ou reconstruite --- GDB-004J, CAS D'ÉCHEC) reste hors
-périmètre de ce document tant que le patrimoine matériel lui-même n'a
-pas de représentation dans le Kernel --- ne pas anticiper (MASTER-006).
-Ce que ce document fixe est uniquement la désignation de l'héritier et
-la production d'un événement observable pour chacun des trois cas
-d'échec.
+À Niveau `0`, le gain est maximal.
 
-**Cas limite verrouillé — refus de l'héritier :** GDB-004J (CAS
-D'ÉCHEC, « Refus du successeur ») dit que l'héritier peut rejeter
-l'héritage en tout ou partie. Ce document fixe le mécanisme déclencheur
-sans anticiper le patrimoine matériel : le refus est déclenché par un
-Intent de l'héritier (via le pipeline d'Actions, ENGINE-006) qui
-produit un Effect de type `HeritageRefusalEffect`. `HeritageSystem`
-traite cet Effect en appliquant le même chemin que l'absence de
-successeur pour la part refusée. L'Intent lui-même est créé par le
-modèle comportemental de l'héritier --- hors périmètre de ce document,
-relevant de la psychologie des habitants (Phase 3, MASTER-005). En
-Phase 1, le refus peut être déclenché manuellement par le joueur si
-son personnage est l'héritier désigné.
+À mesure que le Niveau approche `100`, le gain marginal approche `0`.
+
+La forme mathématique précise peut évoluer sans remettre en cause le
+contrat si les propriétés suivantes restent respectées :
+
+```text
+gain(Niveau A) > gain(Niveau B)
+si Niveau A < Niveau B
+```
+
+et :
+
+```text
+0 <= Niveau <= 100
+```
+
+---
+
+## 4.4 Héritage
+
+`HeritageSystem` utilise le `Lifecycle` défini par ENGINE-002.
+
+La détection repose uniquement sur l'état de l'Entity :
+
+```text
+Lifecycle
+↓
+State = "mort"
+↓
+HeritageSystem
+```
+
+et non sur :
+
+```text
+World.Events
+```
+
+L'algorithme de désignation suit :
+
+```text
+Relations disponibles
+↓
+Relations Familiales ?
+    │
+    ├── oui → garder uniquement les Familiales
+    │
+    └── non → utiliser les autres relations
+↓
+Force la plus élevée
+↓
+égalité ?
+↓
+relation la plus ancienne
+```
+
+Si aucune Entity valide ne peut être désignée :
+
+```text
+heritage.absence-successeur
+```
+
+est publié.
+
+---
+
+## 4.5 Refus d'héritage
+
+GDB-004J autorise un héritier à refuser tout ou partie de l'héritage.
+
+Le chemin architectural retenu est :
+
+```text
+Intent
+↓
+Action Pipeline
+↓
+HeritageRefusalEffect
+↓
+PopulationEffectApplicator
+↓
+HeritageSystem.RefuserHeritage
+↓
+GameEvent observable
+```
+
+`PopulationEffectApplicator` ne possède aucune logique métier
+d'héritage.
+
+Il se contente de router :
+
+```text
+HeritageRefusalEffect
+```
+
+vers :
+
+```text
+HeritageSystem
+```
+
+qui constitue l'unique source de vérité de cette logique.
+
+En Phase 1, le moteur ne représentant pas encore le patrimoine matériel,
+le refus produit l'événement observable :
+
+```text
+heritage.refus
+```
+
+La redistribution réelle de la part refusée est différée jusqu'à
+l'existence d'un système de patrimoine.
+
+---
+
+## 4.6 Transmission incomplète
+
+GDB-004J définit également le cas :
+
+```text
+Transmission incomplète
+```
+
+Ce cas est **spécifié conceptuellement mais non implémenté dans le lot
+ENGINE-008 actuel**.
+
+Sa réalisation nécessite notamment des représentations qui n'existent
+pas encore dans le moteur :
+
+- patrimoine matériel ;
+- éléments transmissibles ;
+- règles de redistribution ;
+- éventuellement connaissances ou compétences héritables.
+
+Conformément à MASTER-006, ENGINE-008 n'anticipe pas ces structures.
+
+La transmission incomplète reste donc :
+
+```text
+SPÉCIFIÉE PAR GDB
+↓
+DIFFÉRÉE
+↓
+NON TESTÉE DANS ENGINE-008 ACTUEL
+```
+
+Elle devra faire l'objet d'une extension de spécification avant son
+implémentation.
 
 ---
 
 # 5. Flux
 
+## 5.1 Flux temporel
+
 ```mermaid
 flowchart LR
-Scheduler[Scheduler.Tick] --> Needs[NeedsDecaySystem]
-Needs --> Aging[AgingSystem]
-Aging --> Rel[RelationSystem : érosion]
-Rel --> Skill[SkillSystem : déclin]
-Skill --> Her[HeritageSystem : inspecte Lifecycle de chaque Entity]
-Her --> Pub[World.Publish]
+
+Scheduler[Scheduler.Tick]
+    --> Needs[NeedsDecaySystem]
+
+Needs
+    --> Aging[AgingSystem]
+
+Aging
+    --> Relation[RelationSystem : érosion]
+
+Relation
+    --> Skill[SkillSystem : déclin]
+
+Skill
+    --> Heritage[HeritageSystem : inspecte Lifecycle]
+
+Heritage
+    --> Publish[World.Publish]
 ```
 
-L'ordre place `HeritageSystem` après `AgingSystem` dans l'enregistrement
-Scheduler --- condition nécessaire pour que le `Lifecycle` d'une Entity
-décédée ce même Tick soit déjà à l'état `"mort"` quand
-`HeritageSystem.Update` s'exécute.
+`HeritageSystem` doit être enregistré après `AgingSystem`.
 
-En dehors du Tick, un second flux existe, indépendant du Scheduler :
-l'application des Effects d'une Action Instance résolue (ENGINE-006,
-section 5) passe par un mécanisme de résolution d'Effects (voir section
-5.1 ci-dessous) --- le pipeline ne connaît jamais les Systems concrets,
-il produit des Effects typés qu'un résolveur dispatche vers le
-composant responsable.
+Ainsi, lorsqu'une Entity meurt pendant le Tick :
 
-## 5.1 Résolution des Effects
+```text
+AgingSystem
+↓
+Lifecycle = mort
+↓
+HeritageSystem
+```
 
-Le pipeline d'Actions (ENGINE-006) produit des Effects (données) à la
-résolution d'une Action Instance. Il ne sait pas quel System les
-traitera --- il ne dépend d'aucun System concret.
+peut constater immédiatement ce nouvel état.
 
-La traduction d'un Effect en mutation du World passe par un résolveur
-(`EffectApplicator` ou équivalent), qui dispatche chaque Effect typé
-vers le composant responsable :
+---
+
+## 5.2 Flux déclenché par une Action
+
+Les mutations provoquées par une Action ne passent pas directement du
+pipeline vers un System concret.
+
+Le flux est :
 
 ```text
 Action Instance
 ↓
 Execution Engine
 ↓
-Effects (données typées)
+Effects typés
 ↓
 EffectApplicator / Resolver
 ↓
-World mutation via le service métier dédié
+System métier responsable
+↓
+World
 ```
 
-Exemples d'Effects typés introduits par ce document :
+Le pipeline d'Actions ne connaît donc aucun System d'ENGINE-008.
 
-- `RelationInteractionEffect` --- dispatché vers `RelationSystem`, qui
-  applique l'effet d'interaction et crée éventuellement un Épisode
-  (GDB-004C) ;
-- `SkillPracticeEffect` --- dispatché vers `SkillSystem`, qui applique
-  le gain de Niveau (GDB-004H).
+---
 
-Ce mécanisme préserve deux séparations fondamentales :
+## 5.3 Effects de population
 
-1. **ENGINE-006 ne connaît pas ENGINE-008.** Le pipeline produit des
-   Effects, jamais des appels directs à des Systems concrets. Ajouter un
-   nouveau type d'Effect ne modifie pas ENGINE-006.
-2. **Le flux temporel (Update) reste distinct du flux déclenché par une
-   Action.** `RelationSystem.Update` fait l'érosion naturelle ;
-   `RelationSystem` traite un `RelationInteractionEffect` quand le
-   résolveur le lui dispatche --- deux chemins d'entrée, une seule
-   source de vérité sur l'état de la relation.
+Les Effects actuellement représentés comprennent :
 
-Le résolveur lui-même est un composant d'infrastructure dont la
-spécification complète dépend d'ENGINE-006 --- ce document ne le définit
-pas en détail, seulement les types d'Effects qu'ENGINE-008 introduit et
-les Systems qui en sont responsables. Si ENGINE-006 ne prévoit pas
-encore ce résolveur, c'est un enrichissement à y apporter au moment de
-l'implémentation, pas une anticipation (le besoin est concret dès
-qu'ENGINE-008 est implémenté).
+```text
+RelationInteractionEffect
+SkillPracticeEffect
+HeritageRefusalEffect
+```
+
+Le dispatch est :
+
+```text
+RelationInteractionEffect
+↓
+RelationSystem.EnregistrerInteraction
+```
+
+```text
+SkillPracticeEffect
+↓
+SkillSystem.Pratiquer
+```
+
+```text
+HeritageRefusalEffect
+↓
+HeritageSystem.RefuserHeritage
+```
+
+`PopulationEffectApplicator` constitue le mécanisme de résolution
+actuellement spécialisé pour ces Effects de population.
 
 ---
 
@@ -268,139 +532,185 @@ qu'ENGINE-008 est implémenté).
 
 ## RelationSystem
 
-- La Force reste toujours bornée entre 0 et 100.
-- Une relation Familiale ne descend jamais sous son plancher par la
-  seule érosion --- seul un effet d'interaction négatif suffisamment
-  fort peut l'y amener.
-- Un Épisode n'est créé que si l'ampleur de l'interaction franchit le
-  seuil d'importance --- jamais pour une interaction ordinaire.
-- Au-delà de la capacité, le plus ancien Épisode est retiré en
-  priorité, jamais le plus marquant.
+- La Force reste toujours comprise entre `0` et `100`.
+- Une relation Familiale située au-dessus de son plancher ne descend
+  jamais sous celui-ci par la seule érosion.
+- Une relation Familiale déjà sous son plancher n'est jamais remontée
+  artificiellement par l'érosion.
+- Une interaction négative peut faire passer une relation Familiale sous
+  son plancher.
+- Une interaction négative peut faire atteindre `0` et supprimer une
+  relation Familiale.
+- Un Épisode n'est créé que lorsque l'impact franchit le seuil
+  d'importance.
+- Lorsque la capacité d'Épisodes est dépassée, le plus ancien est retiré.
+
+---
 
 ## SkillSystem
 
-- Le Niveau reste toujours borné entre 0 et 100.
-- Le gain d'une pratique décroît strictement à mesure que le Niveau
-  approche 100.
-- Le déclin ne s'applique qu'après le seuil d'inactivité, jamais avant.
+- Le Niveau reste compris entre `0` et `100`.
+- Le gain d'une pratique décroît strictement lorsque le Niveau augmente.
+- Le gain tend vers zéro à proximité du Niveau `100`.
+- Le déclin n'est jamais appliqué avant le seuil d'inactivité.
+- Une pratique met à jour la dernière date de pratique.
+
+---
 
 ## HeritageSystem
 
-- Une Entity morte déjà traitée par `HeritageSystem` n'est jamais
-  retraitée --- chaque transmission n'est déclenchée qu'une seule fois
-  pour une même Entity.
-- La désignation de l'héritier suit exactement l'algorithme de GDB-004J
-  --- aucune Entity ne peut être désignée héritière par un autre chemin.
-- L'un des trois cas d'échec de GDB-004J s'applique systématiquement
-  quand la désignation ou la transmission n'aboutit pas normalement ---
-  jamais de sortie silencieuse.
+- Une Entity morte déjà traitée n'est jamais retraitée.
+- La mort est détectée par `Lifecycle`, jamais par lecture de
+  `World.Events`.
+- La désignation de l'héritier est déterministe.
+- Les relations Familiales ont priorité.
+- À type prioritaire identique, la Force la plus élevée gagne.
+- À Force identique, la relation la plus ancienne gagne.
+- L'absence de successeur produit un événement observable.
+- Le refus d'héritage est traité par `HeritageSystem`.
+- `PopulationEffectApplicator` ne contient aucune règle métier
+  d'héritage.
+- La transmission incomplète reste différée jusqu'à la représentation
+  du patrimoine.
 
 ---
 
 # 7. Invariants
 
-- Un Component absent n'est jamais une erreur pour le System qui le
-  cherche --- l'Entity est ignorée, silencieusement (même invariant
-  qu'ENGINE-004).
-- `HeritageSystem` ne modifie jamais directement `RelationComponent` ---
-  il le lit pour désigner l'héritier, seul `RelationSystem` le modifie.
-- Aucun des trois Systems ne publie d'événement sans qu'un changement
-  d'état réel se soit produit.
-- Aucun System ne lit `World.Events` pour décider d'agir ---
-  `World.Events` reste un journal d'observabilité (ENGINE-001), jamais
-  un canal de coordination entre Systems. `HeritageSystem` détecte la
-  mort par inspection directe du `Lifecycle`.
-- Le pipeline d'Actions (ENGINE-006) ne connaît aucun System concret
-  d'ENGINE-008. Les mutations déclenchées par une Action passent par
-  des Effects typés et un résolveur (section 5.1), jamais par un appel
-  direct du pipeline vers `RelationSystem` ou `SkillSystem`.
+- Un Component absent n'est jamais une erreur pour un System :
+  l'Entity est ignorée silencieusement lorsque le contrat le permet.
+- `HeritageSystem` ne modifie jamais directement `RelationComponent`.
+- Seul `RelationSystem` possède la logique de mutation des relations.
+- Seul `SkillSystem` possède la logique de progression et de déclin des
+  Compétences.
+- `HeritageSystem` constitue la source de vérité de la logique
+  d'héritage actuellement implémentée.
+- Aucun System ne lit `World.Events` afin de décider d'agir.
+- `World.Events` reste un journal d'observabilité.
+- ENGINE-006 ne dépend d'aucun System concret d'ENGINE-008.
+- Les mutations déclenchées par une Action passent par des Effects
+  typés et leur mécanisme de résolution.
+- Aucun événement n'est publié sans événement métier réel correspondant.
 
 ---
 
 # 8. Validation
 
-✓ `RelationSystemTests` --- érosion, plancher familial, création,
-  disparition à Force 0, création d'Épisode au-dessus du seuil, absence
-  d'Épisode en dessous, éviction du plus ancien au-delà de la capacité,
-  traitement correct d'un `RelationInteractionEffect` dispatché par le
-  résolveur ;
+L'implémentation associée a été compilée et validée dans
+`CHRONIQUES-ENGINE`.
 
-✓ `SkillSystemTests` --- gain décroissant en approchant 100, absence de
-  déclin avant le seuil d'inactivité, déclin après, traitement correct
-  d'un `SkillPracticeEffect` dispatché par le résolveur ;
+Résultat courant :
 
-✓ `HeritageSystemTests` --- désignation priorisant Familiale, tie-break
-  par ancienneté, absence de successeur, refus, transmission
-  incomplète, détection de la mort par inspection du Lifecycle (jamais
-  par lecture de `World.Events`), non-retraitement d'une Entity déjà
-  traitée pour l'héritage.
+```text
+dotnet build
+→ succès
+
+dotnet test
+→ 122 / 122 tests réussis
+→ 0 échec
+```
+
+## RelationSystemTests
+
+Couvrent notamment :
+
+- érosion naturelle ;
+- plancher familial ;
+- relation Familiale au-dessus du plancher descendant jusqu'au plancher ;
+- relation Familiale sous le plancher ne remontant jamais artificiellement ;
+- rupture d'une relation Familiale par interaction négative ;
+- création d'une relation ;
+- disparition à Force 0 ;
+- création d'un Épisode au-dessus du seuil ;
+- absence d'Épisode sous le seuil ;
+- éviction du plus ancien Épisode ;
+- `RelationInteractionEffect`.
+
+---
+
+## SkillSystemTests
+
+Couvrent notamment :
+
+- gain maximal depuis Niveau 0 ;
+- gain décroissant avec le Niveau ;
+- saturation à proximité de Niveau 100 ;
+- absence de déclin avant le seuil d'inactivité ;
+- déclin après le seuil ;
+- `SkillPracticeEffect`.
+
+---
+
+## HeritageSystemTests
+
+Couvrent notamment :
+
+- priorité Familiale ;
+- tie-break par ancienneté ;
+- transmission observable lorsqu'un héritier existe ;
+- absence de successeur ;
+- absence de `RelationComponent` ;
+- non-retraitement d'une Entity morte déjà traitée ;
+- refus d'héritage ;
+- absence de publication pour des Entities invalides ;
+- dispatch de `HeritageRefusalEffect` vers `HeritageSystem`.
+
+Ne couvre volontairement pas encore :
+
+```text
+Transmission incomplète
+```
+
+car le patrimoine transmissible n'a pas encore de représentation
+implémentée.
 
 ---
 
 # 9. Historique
 
+## Version 1.4
+
+- Passage à **Maturité 4** après implémentation et validation.
+- Compilation du moteur confirmée.
+- **122 / 122 tests réussis, 0 échec.**
+- Correction du bug de plancher familial :
+  une relation Familiale passée sous le plancher par interaction négative
+  n'est plus remontée artificiellement par l'érosion naturelle.
+- Ajout de deux tests de non-régression sur le plancher familial.
+- `HeritageRefusalEffect` est désormais dispatché par
+  `PopulationEffectApplicator` vers `HeritageSystem.RefuserHeritage`.
+- `HeritageSystem` devient l'unique source de vérité pour la logique de
+  refus d'héritage.
+- Tests du refus enrichis.
+- Correction de la Validation :
+  la « transmission incomplète » n'est plus présentée comme implémentée
+  ou testée. Elle reste différée jusqu'à l'existence du patrimoine
+  transmissible.
+- Objectif actualisé : le document a précédé l'implémentation mais
+  constitue désormais son contrat architectural validé.
+
 ## Version 1.3
 
-- Corrigé l'en-tête (Version 1.0 → 1.2, erreur de copie persistante
-  depuis la création du document).
-- Corrigé le contrat `HeritageSystem` : « au Tick où l'événement est
-  publié » supprimé --- la détection repose désormais exclusivement sur
-  l'inspection du `Lifecycle`, plus sur `vie.mort`. Formulé comme
-  « une Entity morte déjà traitée n'est jamais retraitée », sans
-  référence à un journal d'événements.
-- Ajouté trois cas limites verrouillés, identifiés par revue externe
-  comme insuffisamment précis avant implémentation :
-  1. Plancher familial : la Force d'une relation Familiale est immune
-     à la seule érosion, pas à un effet d'interaction négatif suffisant.
-     Une relation Familiale peut donc disparaître par acte délibéré,
-     pas par le seul écoulement du temps (cohérent avec GDB-009C).
-  2. Décroissance du gain de Compétence : strictement décroissante en
-     fonction du Niveau, sans préciser la forme exacte (paramètre
-     d'implémentation), mais en fixant le comportement qualitatif.
-  3. Mécanisme du refus d'héritage : déclenché par un
-     `HeritageRefusalEffect` produit par un Intent de l'héritier
-     (pipeline ENGINE-006). En Phase 1, déclenché manuellement par le
-     joueur si son personnage est l'héritier désigné.
-- Statut : **Proposition → Validée**, Maturité 2 → 3, sur verdict de
-  revue externe (« ENGINE-008 est maintenant architecturalement sain »).
+- Passage du statut Proposition à Validée.
+- Cas limite du plancher familial spécifié.
+- Décroissance du gain de Compétence verrouillée.
+- Mécanisme conceptuel de refus d'héritage introduit.
+- Contrat de non-retraitement d'une Entity morte clarifié.
 
 ## Version 1.2
 
-- Corrigé deux erreurs d'architecture introduites en v1.0-v1.1, toutes
-  deux identifiées par revue externe :
-  1. `HeritageSystem` détecte désormais la mort par inspection directe
-     du `Lifecycle` de chaque Entity, plus par lecture de `World.Events`
-     --- `World.Events` reste un journal d'observabilité (ENGINE-001),
-     jamais un canal de coordination entre Systems.
-  2. Le pipeline d'Actions ne connaît plus aucun System concret
-     d'ENGINE-008. Les mutations déclenchées par une Action passent par
-     des Effects typés (`RelationInteractionEffect`,
-     `SkillPracticeEffect`) et un résolveur (`EffectApplicator`,
-     section 5.1), jamais par un appel direct du pipeline vers
-     `RelationSystem` ou `SkillSystem`. Cette architecture préserve la
-     séparation entre flux temporel (`Update`) et mutation déclenchée
-     par une Action, sans coupler ENGINE-006 aux Systems.
-- Tests de validation enrichis en conséquence.
+- `HeritageSystem` cesse de lire `World.Events` pour détecter la mort.
+- La mort est désormais détectée directement via `Lifecycle`.
+- Introduction des Effects typés et du mécanisme de résolution afin de
+  découpler ENGINE-006 des Systems de population.
 
 ## Version 1.1
 
-- Corrigé le mécanisme de détection des événements `vie.mort` par
-  `HeritageSystem` : traitement dans son propre `Update`, après
-  `AgingSystem` dans l'ordre du Scheduler, pas via un bus de réaction
-  --- la proposition initiale était juste sur ce point, c'est sa
-  première rédaction en v1.0 qui avait introduit l'erreur.
-- Ajouté le flux Effects → `RelationSystem.EnregistrerInteraction` /
-  `SkillSystem.Pratiquer`, distinct de la boucle de Tick --- autre
-  correction d'une hypothèse erronée en v1.0, le code réel a bien
-  besoin de ces deux chemins d'invocation.
-- Précisé qu'`HeritageSystem` ne retraite jamais un `vie.mort` survenu
-  à un Tick antérieur --- même engagement que `GameEventTests` vérifie
-  déjà pour le journal d'événements dans `AgingSystemTests`.
+- Clarification initiale du flux d'héritage.
+- Ajout des chemins d'interaction et de pratique hors `Update`.
 
 ## Version 1.0
 
-- Création du document. Traduit GDB-004C, GDB-004H et GDB-004J en
-  architecture concrète --- types, Systems, formules --- prête à guider
-  l'implémentation dans `CHRONIQUES-ENGINE`. Statut Proposition,
-  Maturité 2 (Spécification) : précède toute implémentation,
-  conformément à ENGINE-000, section 3.
+- Création du document.
+- Traduction initiale de GDB-004C, GDB-004H et GDB-004J en architecture
+  ENGINE.

@@ -1,6 +1,6 @@
 # PATTERNS — Catalogue des Patterns d'Actions
 
-> Version : 1.1
+> Version : 1.2
 > Statut : Active
 > Type : Sous-bibliothèque ACT
 > Maturité : 2
@@ -63,8 +63,6 @@ Maturité : 4.
 
 Validation de référence : `161 / 161` tests réussis.
 
-Chaîne :
-
 ```text
 Principe Entretien
 ↓
@@ -79,13 +77,13 @@ PAT-001 formalise la récupération du besoin de repos sans consommation de prod
 
 ## PAT-002 — Alimentation
 
-Statut : Proposition.
+Statut : Officiel.
 
-Maturité : 2.
+Maturité : 4.
+
+Validation de référence : `178 / 178` tests réussis.
 
 Origine métier : GDB-004B v1.2 et GDB-005E v1.1.
-
-Chaîne proposée :
 
 ```text
 Principe Entretien
@@ -115,7 +113,7 @@ VERBE
 = spécialisation exprimable
 ```
 
-Un Pattern ne doit jamais contenir les règles propres à un Verbe concret si elles ne sont pas partagées par toute sa famille.
+Un Pattern ne doit jamais contenir les règles propres à un Verbe concret si celles-ci ne sont pas partagées par toute sa famille.
 
 ---
 
@@ -123,8 +121,10 @@ Un Pattern ne doit jamais contenir les règles propres à un Verbe concret si el
 
 ```text
 PAT-001  Repos         Officiel / Maturité 4
-PAT-002  Alimentation  Proposition / Maturité 2
+PAT-002  Alimentation  Officiel / Maturité 4
 ```
+
+La sous-bibliothèque PATTERNS reste ouverte : la validation de ses deux premiers Patterns ne constitue pas sa clôture.
 
 ---
 
@@ -137,6 +137,12 @@ Si la réponse est non, le Pattern doit être corrigé ou supprimé avant valida
 ---
 
 # Historique
+
+## Version 1.2
+
+- `PAT-002 — Alimentation` passe à **Officiel / Maturité 4** ;
+- validation locale portée à **178 / 178 tests réussis** ;
+- PATTERNS reste ouverte, sans clôture globale de bibliothèque.
 
 ## Version 1.1
 

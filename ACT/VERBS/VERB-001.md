@@ -1,11 +1,13 @@
 # VERB-001 — Se reposer
 
-> Version : 1.0
-> Statut : Proposition
+> Version : 1.1
+> Statut : Officiel
 > Type : Verbe d'Action
-> Maturité : 2
+> Maturité : 4
 > Bibliothèque : ACT
 > Dépendances : GDB-004B, ACT-002-B, ACT-002-C, ACT-002-E, ACT-008-A, PAT-001
+> Implémentation de référence : `CHRONIQUES-ENGINE`
+> Validation : 161 / 161 tests réussis
 
 ---
 
@@ -170,7 +172,7 @@ Résultat : non couvert.
 
 ## 3. Pattern existant
 
-PAT-001 est créé pour la mécanique générique de Repos et VERB-001 en constitue la première spécialisation.
+PAT-001 est le Pattern de la mécanique générique de Repos et VERB-001 en constitue la première spécialisation.
 
 Résultat : VERB-001 appartient à PAT-001.
 
@@ -243,7 +245,7 @@ Ces concepts ne doivent pas être ajoutés par extension implicite du mot « rep
 
 # 12. Contrat QA
 
-La validation devra pouvoir démontrer au minimum :
+La validation démontre :
 
 1. la traçabilité complète `Principe → PAT-001 → VERB-001 → Action` ;
 2. l'appartenance de VERB-001 à un seul Pattern ;
@@ -251,11 +253,38 @@ La validation devra pouvoir démontrer au minimum :
 4. l'exécution d'un Intent `se_reposer` jusqu'à un Outcome résolu ;
 5. la restauration effective de Fatigue après réussite ;
 6. la publication du fait observable attendu ;
-7. l'absence de mutation avant passage dans le pipeline d'Actions.
+7. l'absence de mutation par la couche de décision avant passage dans le pipeline d'Actions.
 
 ---
 
-# 13. Critère de validation
+# 13. Validation
+
+Validation technique communiquée par le porteur du projet le 11 août 2026 :
+
+```text
+dotnet build
+→ succès
+
+dotnet test
+→ 161 / 161 tests réussis
+→ 0 échec
+```
+
+Les trois tests `ActionTaxonomyTests` verrouillent spécifiquement :
+
+- `Entretien → Repos → SeReposer` ;
+- la structure contractuelle de VERB-001 ;
+- la résolution de l'Intent `se_reposer` par le Planner vers l'Action Definition correspondante.
+
+Les tests antérieurs d'ENGINE-006, ENGINE-010 et ENGINE-011 couvrent l'exécution réelle, l'Outcome, la restauration de Fatigue, l'Event et l'absence de mutation directe par la source d'Intent.
+
+VERB-001 atteint donc la Maturité 4 comme premier Verbe concret validé de Chroniques.
+
+Cette validation ne clôt pas la sous-bibliothèque VERBS : elle ne valide que VERB-001.
+
+---
+
+# 14. Critère de validation
 
 VERB-001 permet-il de représenter sans ambiguïté la capacité « Se reposer » conformément à GDB-004B, PAT-001 et ACT, tout en restant distinct de la décision autonome qui choisit de l'utiliser ?
 
@@ -264,6 +293,14 @@ Si la réponse est non, le Verbe doit être corrigé avant validation.
 ---
 
 # Historique
+
+## Version 1.1
+
+- VERB-001 passe à **Officiel / Maturité 4** ;
+- validation locale portée à **161 / 161 tests réussis** ;
+- chaîne canonique et structure contractuelle confirmées ;
+- résolution `Intent se_reposer → SeReposerDefinition` confirmée ;
+- distinction maintenue entre validation de VERB-001 et clôture future de la bibliothèque VERBS.
 
 ## Version 1.0
 

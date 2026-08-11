@@ -1,6 +1,6 @@
 # MASTER
 
-> Version : 1.2
+> Version : 1.3
 > Statut : Officiel
 > Type : Bibliothèque
 > Maturité : 1
@@ -91,14 +91,22 @@ Les MASTER constituent le niveau le plus élevé de la documentation.
 
 Ils servent de référence aux autres bibliothèques.
 
-```
+```text
 MASTER
-    ↓
+↓
+CORE
+↓
 GDB
-    ↓
+↓
+ACT
+↓
+ENGINE
+↓
+CHRONIQUES-ENGINE
+↓
+Tests
+↓
 TECH
-    ↓
-Code
 ```
 
 Aucun niveau inférieur ne peut contredire un MASTER.
@@ -114,12 +122,33 @@ Aucun niveau inférieur ne peut contredire un MASTER.
 | MASTER-003 | Architecture officielle |
 | MASTER-004 | Conventions de documentation |
 | MASTER-005 | Roadmap |
-| MASTER-006 | Gouvernance des décisions |
+| MASTER-006 | Gouvernance des décisions, validations et consolidations |
 | MASTER-007 | Standards de qualité |
 | MASTER-008 | Méthodologie d'audit et de correction documentaire |
 | MASTER-009 | Contraintes du projet (plateforme, technique, commerciale, légale) |
 
 Ce tableau est maintenu à la main, contrairement à GDB/CATALOG.md. Toute création ou suppression d'un document MASTER doit mettre à jour cette table dans le même lot de correction, jamais après coup.
+
+---
+
+# Gouvernance de consolidation
+
+MASTER-006 v1.1 distingue désormais :
+
+```text
+validation courante
+≠
+consolidation documentaire
+```
+
+Les sources directement concernées sont synchronisées à chaque validation.
+
+Les documents transverses sont consolidés à un jalon significatif : capacité majeure, fin de bloc cohérent, fermeture de bibliothèque/sous-ensemble, changement de phase/version ou audit critique.
+
+Cette règle évite à la fois :
+
+- la dette documentaire silencieuse ;
+- la régénération de toute la documentation après chaque petit incrément.
 
 ---
 
@@ -140,6 +169,13 @@ Chaque information officielle ne possède qu'une seule source de vérité.
 
 # Historique
 
+## Version 1.3
+
+- MASTER-006 v1.1 formalise la distinction entre validation courante et consolidation documentaire ;
+- ajout de cette responsabilité à la description de MASTER-006 ;
+- rappel du seuil événementiel de consolidation dans l'index MASTER ;
+- hiérarchie documentaire de travail alignée sur l'état courant du projet.
+
 ## Version 1.2
 
 - ajout de MASTER-009 (Contraintes du projet) au tableau, dans le même lot que sa création. Voir [réf: ADR-005].
@@ -147,10 +183,8 @@ Chaque information officielle ne possède qu'une seule source de vérité.
 ## Version 1.1
 
 - en-tête mis en conformité avec MASTER-004 (Version, Statut, Type, Maturité, Bibliothèque) ;
-- correction de la description de MASTER-007 (indiquée à tort comme « Gestion des dépendances documentaires », alors qu'il s'agit de « Standards de qualité ») ;
+- correction de la description de MASTER-007 ;
 - ajout de MASTER-008, absent du tableau.
-
-Constat découvert lors de l'analyse d'impact de la création de MASTER-008 (ADR-004) ; corrige MASTER-C03.
 
 ## Version 1.0
 

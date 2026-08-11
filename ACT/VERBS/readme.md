@@ -1,6 +1,6 @@
 # VERBS — Catalogue des Verbes d'Actions
 
-> Version : 1.0
+> Version : 1.1
 > Statut : Active
 > Type : Sous-bibliothèque ACT
 > Maturité : 2
@@ -60,11 +60,11 @@ Les anciens exemples du catalogue ACT n'étaient pas des réservations numériqu
 
 ## VERB-001 — Se reposer
 
-Statut : Proposition.
+Statut : Officiel.
 
-Maturité : 2.
+Maturité : 4.
 
-Premier Verbe concret officiellement catalogué.
+Validation de référence : `161 / 161` tests réussis.
 
 Chaîne :
 
@@ -80,11 +80,43 @@ Action exécutée
 
 Origine métier : GDB-004B.
 
-Intent actuellement associé :
+Intent associé :
 
 ```text
 se_reposer
 ```
+
+---
+
+## VERB-002 — Manger
+
+Statut : Proposition.
+
+Maturité : 2.
+
+Origine métier : GDB-004B v1.2 et GDB-005E v1.1.
+
+Chaîne proposée :
+
+```text
+Principe Entretien
+↓
+PAT-002 Alimentation
+↓
+VERB-002 Manger
+↓
+Action exécutée
+```
+
+Intent associé :
+
+```text
+manger
+```
+
+VERB-002 exige une Cible-produit alimentaire accessible. Une réussite réduit réellement la disponibilité du produit et augmente la satisfaction de Faim de l'Acteur.
+
+La Cible concrète appartient au Plan/Action, jamais à l'Intent.
 
 ---
 
@@ -96,12 +128,15 @@ Le moteur peut utiliser un identifiant technique compatible, mais l'implémentat
 
 Une valeur de tuning présente dans le code n'est pas automatiquement une règle VERBS.
 
+VERB-002 n'impose notamment aucun système technique d'inventaire : il exige uniquement qu'une future implémentation puisse résoudre une nourriture réellement accessible conformément à GDB-005E.
+
 ---
 
 # État actuel
 
 ```text
-VERB-001  Se reposer  Proposition / Maturité 2
+VERB-001  Se reposer  Officiel / Maturité 4
+VERB-002  Manger      Proposition / Maturité 2
 ```
 
 ---
@@ -115,6 +150,13 @@ Si la réponse est non, le Verbe doit être corrigé avant validation.
 ---
 
 # Historique
+
+## Version 1.1
+
+- synchronisation de VERB-001 avec sa validation Officiel / Maturité 4 ;
+- création et enregistrement de VERB-002 — Manger en Proposition / Maturité 2 ;
+- rattachement à PAT-002 — Alimentation ;
+- exigence d'une Cible alimentaire accessible et réellement consommée.
 
 ## Version 1.0
 

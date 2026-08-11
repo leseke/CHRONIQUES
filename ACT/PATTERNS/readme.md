@@ -1,6 +1,6 @@
 # PATTERNS — Catalogue des Patterns d'Actions
 
-> Version : 1.4
+> Version : 1.5
 > Statut : Active
 > Type : Sous-bibliothèque ACT
 > Maturité : 2
@@ -49,97 +49,77 @@ Un Pattern :
 
 Un identifiant `PAT-xxx` n'est attribué qu'à l'apparition d'un besoin concret.
 
-Les exemples historiques présents dans `ACT/CATALOG.md` avant la création de cette sous-bibliothèque n'étaient pas des réservations d'identifiants.
-
 ---
 
 # Patterns actuels
 
 ## PAT-001 — Repos
 
-Statut : Officiel.
-
-Maturité : 4.
-
-Validation de référence : `161 / 161` tests réussis.
+Statut : Officiel.  
+Maturité : 4.  
+Validation de référence : `161 / 161`.
 
 ```text
-Principe Entretien
-↓
-PAT-001 Repos
-↓
-VERB-001 Se reposer
+Entretien → PAT-001 Repos → VERB-001 Se reposer
 ```
 
 ---
 
 ## PAT-002 — Alimentation
 
-Statut : Officiel.
-
-Maturité : 4.
-
-Validation de référence : `178 / 178` tests réussis.
+Statut : Officiel.  
+Maturité : 4.  
+Validation de référence : `178 / 178`.
 
 ```text
-Principe Entretien
-↓
-PAT-002 Alimentation
-↓
-VERB-002 Manger
+Entretien → PAT-002 Alimentation → VERB-002 Manger
 ```
-
-PAT-002 formalise la consommation réelle d'un produit alimentaire accessible afin de contribuer au besoin de nourriture.
 
 ---
 
 ## PAT-003 — Production
 
-Statut : Officiel.
-
-Maturité : 4.
-
-Validation de référence : `201 / 201` tests réussis.
-
-Origine métier : GDB-004A v1.1, GDB-005C v1.2, GDB-012B v1.1 et GDB-012E v1.1.
+Statut : Officiel.  
+Maturité : 4.  
+Validation de référence : `201 / 201`.
 
 ```text
-Principe Transformation
+Transformation
 ↓
 PAT-003 Production
 ↓
 VERB-003 Produire une denrée
 ```
 
-PAT-003 formalise une transformation productive réelle :
-
-```text
-entrées accessibles consommées
-↓
-sorties produites
-+
-provenance conservée
-```
-
-Il est distinct de PAT-001 et PAT-002 par sa structure de contrat entrée → sortie.
+Contrat : entrées consommées → sortie produite + provenance.
 
 ---
 
-# Frontière avec VERBS
+## PAT-004 — Transfert
 
-PATTERNS définit la mécanique commune.
+Statut : Proposition.  
+Maturité : 2.
 
-VERBS définit la capacité concrète.
+Origine métier : GDB-005E v1.2 et GDB-005F v1.1.
 
 ```text
-PATTERN
-= structure réutilisable
-
-VERBE
-= spécialisation exprimable
+Échange
+↓
+PAT-004 Transfert
+↓
+VERB-004 Donner une denrée
 ```
 
-Un Pattern ne doit jamais contenir les règles propres à un Verbe concret si celles-ci ne sont pas partagées par toute sa famille.
+PAT-004 formalise un déplacement conservatif de valeur :
+
+```text
+stock source P -= q
+stock destination P += q
+```
+
+Il est distinct d'Alimentation, qui consomme un produit, et de Production, qui transforme des entrées en sorties.
+
+PAT-004 ne définit ni prix, ni paiement, ni contrepartie.
 
 ---
 
@@ -149,6 +129,7 @@ Un Pattern ne doit jamais contenir les règles propres à un Verbe concret si ce
 PAT-001  Repos         Officiel / Maturité 4
 PAT-002  Alimentation  Officiel / Maturité 4
 PAT-003  Production    Officiel / Maturité 4
+PAT-004  Transfert     Proposition / Maturité 2
 ```
 
 La sous-bibliothèque PATTERNS reste ouverte.
@@ -165,33 +146,22 @@ Si la réponse est non, le Pattern doit être corrigé ou supprimé avant valida
 
 # Historique
 
+## Version 1.5
+
+- création et enregistrement de `PAT-004 — Transfert` en Proposition / Maturité 2 ;
+- rattachement au Principe `Échange` ;
+- conservation stricte des quantités entre deux stocks compatibles ;
+- séparation explicite avec prix, monnaie et marché.
+
 ## Version 1.4
 
-- `PAT-003 — Production` passe à **Officiel / Maturité 4** ;
-- validation locale portée à **201 / 201 tests réussis** ;
-- production réelle et provenance persistante confirmées ;
-- PATTERNS reste ouverte.
+- `PAT-003 — Production` passe à Officiel / Maturité 4 ;
+- validation locale portée à 201 / 201.
 
-## Version 1.3
+## Versions 1.0 à 1.3
 
-- création et enregistrement de `PAT-003 — Production` en Proposition / Maturité 2 ;
-- rattachement au Principe `Transformation` ;
-- provenance et transformation entrée → sortie explicitées.
-
-## Version 1.2
-
-- `PAT-002 — Alimentation` passe à Officiel / Maturité 4 ;
-- validation locale portée à 178 / 178.
-
-## Version 1.1
-
-- synchronisation de PAT-001 avec sa validation Officiel / Maturité 4 ;
-- création de PAT-002.
-
-## Version 1.0
-
-- création de la sous-bibliothèque PATTERNS ;
-- attribution du premier identifiant réel `PAT-001`.
+- création de PATTERNS ;
+- création et validation progressive de PAT-001 à PAT-003.
 
 ---
 

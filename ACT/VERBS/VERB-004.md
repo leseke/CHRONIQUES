@@ -1,11 +1,11 @@
 # VERB-004 — Donner une denrée
 
-> Version : 1.0
+> Version : 1.1
 > Statut : Proposition
 > Type : Verbe d'Action
 > Maturité : 2
 > Bibliothèque : ACT
-> Dépendances : GDB-004A v1.2, GDB-005E v1.2, GDB-005F v1.1, ACT-002-B, ACT-002-C, ACT-002-E, ACT-005-A, ACT-008-A, PAT-004
+> Dépendances : GDB-004A v1.2, GDB-005E v1.3, GDB-005F v1.2, ACT-002-B, ACT-002-C, ACT-002-E, ACT-005-A, ACT-008-A, PAT-004 v1.1
 
 ---
 
@@ -13,7 +13,7 @@
 
 Définir le premier Verbe concret de circulation économique entre habitants : `Donner une denrée`.
 
-VERB-004 spécialise PAT-004 afin de déplacer volontairement un nombre de portions d'un produit alimentaire depuis un stock source vers un stock destination compatible rattaché au contexte du destinataire.
+VERB-004 spécialise PAT-004 afin de déplacer volontairement un nombre de portions d'un produit alimentaire depuis un stock source vers un stock destination distinct et compatible rattaché au contexte du destinataire.
 
 ---
 
@@ -37,9 +37,9 @@ VERB-004 n'appartient à aucun autre Pattern.
 
 GDB-004A v1.2 autorise un transfert autonome seulement lorsqu'une opportunité volontaire réellement disponible existe.
 
-GDB-005F v1.1 définit le transfert volontaire minimal entre deux parties.
+GDB-005F v1.2 définit le transfert volontaire minimal entre deux parties et exige des stocks source/destination distincts.
 
-GDB-005E v1.2 impose l'identité de produit et la conservation des quantités entre stocks compatibles.
+GDB-005E v1.3 impose l'identité de produit, la conservation des quantités et l'interdiction d'un auto-transfert de stock.
 
 ---
 
@@ -78,7 +78,7 @@ VERB-004 resserre PAT-004 à :
 +
 1 stock FoodProduct source
 +
-1 stock FoodProduct destination compatible
+1 stock FoodProduct destination distinct et compatible
 +
 q portions entières > 0
 ```
@@ -117,7 +117,7 @@ Avant Validation :
 - le destinataire existe et est distinct de l'Acteur ;
 - l'opportunité de transfert est encore disponible et volontaire ;
 - le stock source existe ;
-- le stock destination existe ;
+- le stock destination existe et est distinct du stock source ;
 - les deux stocks sont des produits alimentaires ;
 - ils portent la même identité de produit explicite ;
 - la quantité à transférer est strictement positive ;
@@ -204,7 +204,7 @@ Il démontre seulement la circulation réelle d'un produit entre deux habitants.
 
 ## 1. Paramétrage
 
-Aucun Verbe existant ne déplace un produit intact entre deux stocks.
+Aucun Verbe existant ne déplace un produit intact entre deux stocks distincts.
 
 Résultat : non couvert.
 
@@ -232,6 +232,7 @@ PAT-004 — Transfert est justifié et VERB-004 en est le premier Verbe.
 - L'Intent `donner_denree` ne contient aucune Cible ni quantité concrète.
 - Le Planner sélectionne l'opportunité et matérialise les Cibles.
 - Le donneur et le destinataire sont distincts.
+- Le stock source et le stock destination sont distincts.
 - Source et destination portent la même identité de produit.
 - Une réussite soustrait et ajoute exactement la même quantité.
 - Aucun stock ne devient négatif.
@@ -249,25 +250,32 @@ La validation devra démontrer au minimum :
 3. l'absence d'Intent sans opportunité volontaire ;
 4. la sélection du destinataire, des stocks et de la quantité par le contexte/Planner ;
 5. le refus d'un destinataire absent ou identique au donneur ;
-6. le refus d'une source insuffisante ;
-7. le refus de produits d'identités différentes ;
-8. la conservation exacte des portions ;
-9. l'absence de mutation après échec ;
-10. le déterminisme ;
-11. l'intégration avec l'ordre `entretien → échange → production` ;
-12. un scénario autonome où une denrée produite circule vers un autre habitant puis est consommée normalement par celui-ci.
+6. le refus d'un stock source identique au stock destination ;
+7. le refus d'une source insuffisante ;
+8. le refus de produits d'identités différentes ;
+9. la conservation exacte des portions ;
+10. l'absence de mutation après échec ;
+11. le déterminisme ;
+12. l'intégration avec l'ordre `entretien → échange → production` ;
+13. un scénario autonome où une denrée produite circule vers un autre habitant puis est consommée normalement par celui-ci.
 
 ---
 
 # 15. Critère de validation
 
-VERB-004 permet-il à un habitant de mettre volontairement une denrée réellement existante à disposition d'un autre habitant par transfert conservatif entre stocks compatibles, sans inventer de paiement, prix ou marché ?
+VERB-004 permet-il à un habitant de mettre volontairement une denrée réellement existante à disposition d'un autre habitant par transfert conservatif entre deux stocks distincts et compatibles, sans inventer de paiement, prix ou marché ?
 
 Si la réponse est non, le Verbe doit être corrigé avant validation.
 
 ---
 
 # HISTORIQUE
+
+## Version 1.1
+
+- alignement sur GDB-005E v1.3 / GDB-005F v1.2 et PAT-004 v1.1 ;
+- explicitation du refus `stock source == stock destination` ;
+- contrat QA complété pour cet invariant.
 
 ## Version 1.0
 

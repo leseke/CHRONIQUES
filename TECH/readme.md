@@ -1,6 +1,6 @@
 # TECH
 
-> Version : 1.3  
+> Version : 1.4  
 > Statut : Active  
 > Type : Bibliothèque  
 > Maturité : 2  
@@ -79,6 +79,10 @@ prescrit pas une nouvelle règle métier
 ```
 
 Toute nouvelle règle doit d'abord être définie dans sa bibliothèque d'autorité.
+
+Conformément à MASTER-006 v1.1, TECH n'est pas nécessairement régénéré après chaque incrément validé.
+
+Un document TECH peut consolider plusieurs lots ENGINE lorsque ceux-ci forment une capacité technique cohérente et qu'un point de consolidation documentaire significatif est atteint.
 
 ---
 
@@ -168,13 +172,56 @@ Validation initiale :
 
 ---
 
+### TECH-004 — Décision autonome par besoins
+
+Statut : Validé.
+
+Spécifications :
+
+```text
+ENGINE-011
+ENGINE-012
+```
+
+TECH-004 consolide le premier bloc de décision autonome réellement exploitable :
+
+```text
+Fatigue → se_reposer
+Faim + nourriture accessible → manger
+```
+
+Il documente notamment :
+
+- `NeedsIntentSource` ;
+- seuils configurables de Fatigue et Faim ;
+- arbitrage déterministe entre besoins actionnables ;
+- `FoodProductComponent` ;
+- `IAccessibleFoodResolver` ;
+- Cibles portées par `PlanStep` ;
+- `NeedsPlanner` ;
+- `NeedsExecutionEngine` ;
+- `MangerDefinition` ;
+- séparation du `PipelineRunner` et des applicateurs d'Effects ;
+- consommation réelle d'une portion alimentaire ;
+- restauration de Faim ;
+- persistance du produit alimentaire ;
+- conservation de la compatibilité avec `VERB-001 — Se reposer`.
+
+Validation de consolidation :
+
+```text
+178 / 178 tests réussis
+```
+
+---
+
 ## Contenu futur
 
 Les prochains documents TECH seront créés lorsqu'un ensemble technique suffisamment stable nécessite une documentation d'implémentation.
 
 ```text
-TECH-004
 TECH-005
+TECH-006
 ...
 ```
 
@@ -223,15 +270,17 @@ Chaque document utilise un identifiant unique.
 TECH-001
 TECH-002
 TECH-003
+TECH-004
 ...
 ```
 
-Exemples actuels :
+Documents actuels :
 
 ```text
 TECH-001 — Systems de population.md
 TECH-002 — Boucle de vie minimale.md
 TECH-003 — Orchestration des habitants autonomes.md
+TECH-004 — Décision autonome par besoins.md
 ```
 
 ---
@@ -250,20 +299,20 @@ Tests concernés
 TECH
 ```
 
-Exemple courant :
+Exemple de consolidation courant :
 
 ```text
-MASTER-005 Phase 3
+GDB-004B / GDB-005E
 ↓
-ENGINE-010
+PAT/VERB 001-002
 ↓
-AutonomousActionSystem.cs
+ENGINE-011 / ENGINE-012
 ↓
-AutonomousActionSystemTests.cs
+CHRONIQUES-ENGINE
 ↓
-146 / 146
+178 / 178
 ↓
-TECH-003
+TECH-004
 ```
 
 ---
@@ -271,7 +320,7 @@ TECH-003
 # État actuel
 
 ```text
-Documents numérotés : 3
+Documents numérotés : 4
 
 TECH-001
 → Systems de population
@@ -284,11 +333,23 @@ TECH-002
 TECH-003
 → Orchestration des habitants autonomes
 → Validé
+
+TECH-004
+→ Décision autonome par besoins
+→ Validé
 ```
 
 ---
 
 # Historique
+
+## Version 1.4
+
+- ajout de `TECH-004 — Décision autonome par besoins` au premier point de consolidation suivant ENGINE-011 et ENGINE-012 ;
+- documentation consolidée des comportements autonomes `se_reposer` et `manger` ;
+- validation moteur portée à **178 / 178 tests réussis** ;
+- prise en compte de MASTER-006 v1.1 : TECH peut consolider plusieurs incréments cohérents au lieu d'être généré après chaque petite validation ;
+- nombre de documents numérotés porté à 4.
 
 ## Version 1.3
 

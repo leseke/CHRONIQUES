@@ -1,6 +1,6 @@
 # VERBS — Catalogue des Verbes d'Actions
 
-> Version : 1.4
+> Version : 1.5
 > Statut : Active
 > Type : Sous-bibliothèque ACT
 > Maturité : 2
@@ -13,16 +13,6 @@
 Référencer les Verbes concrets réellement nécessaires aux mécaniques de Chroniques.
 
 Un Verbe représente une capacité exprimable située entre un Pattern et une Action exécutée conformément à [réf: ACT-002-B] et [réf: ACT-002-C].
-
-```text
-Pattern
-↓
-Verbe
-↓
-Action
-```
-
-VERBS est pilotée par les besoins GDB et respecte les critères de création définis par [réf: ACT-008-A].
 
 ---
 
@@ -43,77 +33,64 @@ Un Verbe n'existe que lorsqu'un besoin réel :
 
 ## VERB-001 — Se reposer
 
-Statut : Officiel.
-
-Maturité : 4.
-
-Validation de référence : `161 / 161`.
-
-```text
-Entretien → Repos → Se reposer
-```
-
+Officiel / Maturité 4 — validation `161 / 161`.  
 Intent : `se_reposer`.
 
 ---
 
 ## VERB-002 — Manger
 
-Statut : Officiel.
-
-Maturité : 4.
-
-Validation de référence : `178 / 178`.
-
-```text
-Entretien → Alimentation → Manger
-```
-
+Officiel / Maturité 4 — validation `178 / 178`.  
 Intent : `manger`.
-
-Une réussite consomme un produit alimentaire accessible et restaure Faim.
 
 ---
 
 ## VERB-003 — Produire une denrée
 
-Statut : Officiel.
-
-Maturité : 4.
-
-Validation de référence : `201 / 201`.
-
-Origine métier : GDB-004A v1.1, GDB-005C v1.2, GDB-012B v1.1 et GDB-012E v1.1.
+Officiel / Maturité 4 — validation `201 / 201`.  
+Intent : `produire_denree`.
 
 ```text
-Transformation
+Transformation → PAT-003 Production → VERB-003 Produire une denrée
+```
+
+Une réussite consomme une entrée matérielle, produit une sortie alimentaire et conserve une provenance.
+
+---
+
+## VERB-004 — Donner une denrée
+
+Statut : Proposition.  
+Maturité : 2.
+
+Origine métier : GDB-004A v1.2, GDB-005E v1.2 et GDB-005F v1.1.
+
+```text
+Échange
 ↓
-PAT-003 Production
+PAT-004 Transfert
 ↓
-VERB-003 Produire une denrée
-↓
-Action exécutée
+VERB-004 Donner une denrée
 ```
 
 Intent associé :
 
 ```text
-produire_denree
+donner_denree
 ```
 
-Le contrat validé utilise une entrée matérielle et une sortie alimentaire. Une réussite diminue réellement l'entrée, augmente réellement les portions de sortie et conserve une provenance.
+Le premier contrat resserré déplace un nombre entier positif de portions entre deux stocks alimentaires distincts et compatibles du même produit.
 
-VERB-003 ne définit ni métier, ni salaire, ni prix, ni marché.
+Une réussite :
 
----
+```text
+source -= q
+destination += q
+```
 
-# Frontière avec le moteur
+Le destinataire est explicite. Aucun besoin n'est restauré directement et aucune contrepartie n'est créée.
 
-VERBS décrit les capacités et leurs contrats conceptuels.
-
-Le moteur peut utiliser des identifiants techniques compatibles, mais l'implémentation ne devient jamais l'autorité sur leur sens.
-
-Les valeurs de tuning et opérations concrètes restent configurables selon les autorités GDB/ENGINE applicables.
+VERB-004 ne définit ni prix, ni monnaie, ni vente, ni troc réciproque, ni effet relationnel implicite.
 
 ---
 
@@ -123,6 +100,7 @@ Les valeurs de tuning et opérations concrètes restent configurables selon les 
 VERB-001  Se reposer            Officiel / Maturité 4
 VERB-002  Manger                Officiel / Maturité 4
 VERB-003  Produire une denrée   Officiel / Maturité 4
+VERB-004  Donner une denrée     Proposition / Maturité 2
 ```
 
 La sous-bibliothèque VERBS reste ouverte.
@@ -139,34 +117,23 @@ Si la réponse est non, le Verbe doit être corrigé avant validation.
 
 # Historique
 
+## Version 1.5
+
+- création et enregistrement de `VERB-004 — Donner une denrée` en Proposition / Maturité 2 ;
+- rattachement unique à PAT-004 — Transfert ;
+- objectif d'Intent `donner_denree` ;
+- circulation conservatrice d'un produit entre deux habitants ;
+- séparation explicite avec commerce monétaire et troc.
+
 ## Version 1.4
 
-- `VERB-003 — Produire une denrée` passe à **Officiel / Maturité 4** ;
-- validation locale portée à **201 / 201 tests réussis** ;
-- scénario production → alimentation sans entrée joueur confirmé ;
-- VERBS reste ouverte.
+- VERB-003 passe à Officiel / Maturité 4 ;
+- validation locale portée à 201 / 201.
 
-## Version 1.3
+## Versions 1.0 à 1.3
 
-- création et enregistrement de `VERB-003 — Produire une denrée` en Proposition / Maturité 2 ;
-- rattachement unique à PAT-003 — Production ;
-- objectif d'Intent `produire_denree` ;
-- séparation explicite avec métier, salaire et marché.
-
-## Version 1.2
-
-- `VERB-002 — Manger` passe à Officiel / Maturité 4 ;
-- validation locale portée à 178 / 178.
-
-## Version 1.1
-
-- synchronisation de VERB-001 avec sa validation ;
-- création de VERB-002.
-
-## Version 1.0
-
-- création de la sous-bibliothèque VERBS ;
-- attribution du premier identifiant réel `VERB-001`.
+- création de VERBS ;
+- création et validation progressive de VERB-001 à VERB-003.
 
 ---
 

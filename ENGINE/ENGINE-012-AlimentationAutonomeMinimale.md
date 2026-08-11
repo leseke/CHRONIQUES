@@ -1,10 +1,12 @@
 # ENGINE-012 — Alimentation autonome minimale
 
-> Version : 1.0
-> Statut : Proposition
-> Maturité : 2
+> Version : 1.1
+> Statut : Validée
+> Maturité : 4
 > Bibliothèque : ENGINE
 > Dépendances : GDB-004B v1.2, GDB-005E v1.1, ACT-002-I, ACT-005-A, PAT-002, VERB-002, ENGINE-006, ENGINE-010, ENGINE-011
+> Implémentation : `CHRONIQUES-ENGINE`
+> Validation : 178 / 178 tests réussis
 
 ---
 
@@ -12,7 +14,7 @@
 
 Définir l'implémentation minimale permettant à un habitant autonome de répondre à son besoin de nourriture par `VERB-002 — Manger`, sans inventer un système d'inventaire ni contourner le pipeline ACT.
 
-Flux cible :
+Flux validé :
 
 ```text
 NeedsComponent.Faim
@@ -120,11 +122,9 @@ Pour mêmes Actor, World, Tick et configuration, la résolution doit être déte
 
 # 5. Cible portée par le Plan
 
-ACT-005-A établit que l'Intent ne porte pas de Cible concrète et que le Plan peut matérialiser les Actions et leurs Cibles.
+ACT-005-A établit que l'Intent ne porte pas de Cible concrète et que le Plan matérialise les Actions et leurs Cibles.
 
-Le type `PlanStep` actuel ne stocke pourtant aucune Cible.
-
-ENGINE-012 ajoute :
+ENGINE-012 ajoute à `PlanStep` :
 
 ```csharp
 public IReadOnlyList<CibleRef> Cibles { get; init; }
@@ -132,13 +132,13 @@ public IReadOnlyList<CibleRef> Cibles { get; init; }
 
 avec une valeur vide par défaut afin de préserver la compatibilité des constructions historiques.
 
-Tout Plan destiné à être exécuté par le runner générique doit toutefois fournir exactement une Cible principale, conformément à `ActionInstance`.
+Tout Plan destiné à être exécuté par le runner générique fournit exactement une Cible principale, conformément à `ActionInstance`.
 
 ---
 
 # 6. Planification des besoins
 
-Une nouvelle implémentation de `IPlanner` peut prendre en charge les deux objectifs autonomes validés :
+`NeedsPlanner` prend en charge exactement les deux objectifs autonomes validés :
 
 ```text
 se_reposer
@@ -174,7 +174,7 @@ Cible principale = produit alimentaire
 Cible secondaire = Acteur
 ```
 
-La Cible alimentaire est donc choisie par le Planner et jamais encodée dans l'Intent.
+La Cible alimentaire est choisie par le Planner et jamais encodée dans l'Intent.
 
 ---
 
@@ -209,7 +209,7 @@ satisfaction la plus basse
 → candidat retenu
 ```
 
-En cas d'égalité stricte, ENGINE-012 utilise un ordre technique stable :
+En cas d'égalité stricte, ENGINE-012 utilise l'ordre technique stable :
 
 ```text
 Faim
@@ -238,7 +238,7 @@ Structure minimale :
 - Effects : consommation d'une portion + restauration de Faim ;
 - Events : faits observables de consommation et de restauration.
 
-Identifiants d'Events retenus pour ce lot :
+Identifiants d'Events validés :
 
 ```text
 produit.alimentaire.consomme
@@ -249,7 +249,7 @@ besoin.faim.restauree
 
 # 9. Validation d'exécution
 
-L'Execution Engine utilisé par ce lot doit rejeter `Manger` si :
+L'Execution Engine utilisé par ce lot rejette `Manger` si :
 
 - l'Acteur n'existe plus ;
 - l'Acteur ne possède aucun `NeedsComponent` ;
@@ -264,9 +264,7 @@ Aucun Effect n'est appliqué après un Outcome en échec.
 
 # 10. Application des Effects
 
-Le runner historique applique aujourd'hui directement l'effet de `Se reposer`.
-
-ENGINE-012 introduit une frontière d'application d'Effects afin que le runner n'accumule pas un `switch` métier par Verbe :
+ENGINE-012 introduit la frontière :
 
 ```csharp
 public interface IActionEffectApplicator
@@ -278,7 +276,7 @@ public interface IActionEffectApplicator
 
 Un dispatcher ordonné applique exactement un applicateur compatible.
 
-Applicateurs minimaux :
+Applicateurs validés :
 
 ```text
 RestActionEffectApplicator
@@ -299,7 +297,7 @@ FoodActionEffectApplicator
 
 `PipelineRunner` reçoit le Plan, construit l'Action Instance depuis les `Cibles` du `PlanStep`, exécute l'Outcome puis délègue les Effects.
 
-Nouvelle entrée générique :
+Entrée générique :
 
 ```csharp
 public ActionInstance Execute(Intent intent, World world);
@@ -310,21 +308,23 @@ Le runner :
 - ne connaît pas les seuils de besoins ;
 - ne résout pas la nourriture ;
 - ne contient pas les règles de consommation ;
-- ne contient pas de `switch` sur les Verbes.
+- ne contient pas de `switch` métier sur les Verbes.
 
-L'ancienne méthode `ExecuterSeReposer` peut être conservée temporairement comme compatibilité, mais doit déléguer au chemin commun dès que possible.
+L'ancienne méthode `ExecuterSeReposer` reste conservée pour compatibilité et délègue au chemin commun lorsque le Plan le permet.
 
 ---
 
 # 12. Persistance
 
-`FoodProductComponent` doit survivre à `WorldRepository.Save/Load`.
+`FoodProductComponent` survit à `WorldRepository.Save/Load`.
 
 `EntitySnapshot` est étendu explicitement avec :
 
 ```csharp
 FoodProductComponent? FoodProduct
 ```
+
+Le champ nullable est omis lorsqu'il est absent afin de préserver la forme des sauvegardes historiques ne contenant aucun produit alimentaire.
 
 Cette extension reste cohérente avec l'approche de persistance actuelle, volontairement explicite tant que peu de Components existent.
 
@@ -368,42 +368,54 @@ Le dispatcher d'Effects est une extension minimale pour deux Verbes réels, pas 
 
 ---
 
-# 15. Contrat QA
+# 15. Contrat QA validé
 
-Les tests doivent vérifier au minimum :
+La validation couvre :
 
-1. `FoodProductComponent` est sauvegardé/rechargé ;
-2. `PlanStep` peut porter une Cible principale et une Cible secondaire ;
-3. `se_reposer` est planifié avec l'Acteur comme Cible principale ;
-4. `manger` est planifié avec la nourriture comme Cible principale ;
+1. `FoodProductComponent` sauvegardé/rechargé ;
+2. `PlanStep` portant Cible principale et Cible secondaire ;
+3. `se_reposer` planifié avec l'Acteur comme Cible principale ;
+4. `manger` planifié avec la nourriture comme Cible principale ;
 5. aucun Intent `manger` sans nourriture accessible ;
 6. Faim sous seuil + nourriture accessible → Intent `manger` ;
 7. Fatigue et Faim actionnables → satisfaction la plus basse retenue ;
 8. égalité Faim/Fatigue → résultat stable défini ;
-9. nourriture absente → Outcome échec ou planification impossible sans mutation ;
+9. nourriture absente → aucune mutation indue ;
 10. nourriture épuisée → aucun succès ;
 11. nourriture inaccessible → aucun succès ;
 12. réussite → une portion consommée ;
 13. réussite → Faim restaurée et bornée à `100` ;
 14. Events de consommation et restauration publiés ;
-15. pipeline générique exécute encore `Se reposer` ;
-16. pipeline générique exécute `Manger` ;
+15. pipeline générique exécutant encore `Se reposer` ;
+16. pipeline générique exécutant `Manger` ;
 17. mêmes entrées → même nourriture sélectionnée et même résultat.
 
 ---
 
-# 16. Critères de validation
+# 16. Validation
 
-ENGINE-012 pourra passer en Validée / Maturité 4 lorsque :
+Validation technique communiquée par le porteur du projet le 11 août 2026 :
+
+```text
+dotnet build
+→ succès
+
+dotnet test
+→ 178 / 178 tests réussis
+→ 0 échec
+```
+
+Les critères de sortie sont satisfaits :
 
 - l'implémentation existe ;
-- le build réussit ;
-- la suite existante reste verte ;
-- les nouveaux tests sont verts ;
-- `VERB-001` reste fonctionnel ;
-- `VERB-002` fonctionne de bout en bout ;
-- aucun inventaire ou système de propriété implicite n'est créé ;
-- aucune ressource alimentaire n'est matérialisée gratuitement.
+- la suite antérieure reste verte ;
+- VERB-001 reste fonctionnel ;
+- VERB-002 fonctionne de bout en bout ;
+- l'alimentation consomme une ressource réelle ;
+- aucun inventaire ou système de propriété implicite n'a été créé ;
+- aucun produit alimentaire n'est matérialisé gratuitement.
+
+ENGINE-012 passe donc à **Validée / Maturité 4**.
 
 ---
 
@@ -422,12 +434,24 @@ ENGINE-012
 ↓
 CHRONIQUES-ENGINE
 ↓
-Tests
+178 / 178 tests
 ```
+
+La consolidation TECH/roadmap/README reste volontairement différée jusqu'à décision explicite de clôture du jalon fonctionnel.
 
 ---
 
 # HISTORIQUE
+
+## Version 1.1
+
+- ENGINE-012 passe à **Validée / Maturité 4** ;
+- validation locale : **178 / 178 tests réussis** ;
+- `Faim → manger` validé de bout en bout ;
+- arbitrage déterministe Faim/Fatigue confirmé ;
+- Cibles dans le Plan et pipeline multi-Verbes validés ;
+- consommation réelle et persistance alimentaire confirmées ;
+- aucune consolidation transverse déclenchée automatiquement.
 
 ## Version 1.0
 

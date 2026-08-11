@@ -1,10 +1,12 @@
 # ENGINE-013 — Production autonome minimale
 
-> Version : 1.0
-> Statut : Proposition
-> Maturité : 2
+> Version : 1.1
+> Statut : Validée
+> Maturité : 4
 > Bibliothèque : ENGINE
 > Dépendances : MASTER-005 Phase 3, GDB-004A v1.1, GDB-005C v1.2, GDB-012B v1.1, GDB-012E v1.1, PAT-003, VERB-003, ENGINE-006, ENGINE-010, ENGINE-011, ENGINE-012
+> Implémentation : `CHRONIQUES-ENGINE`
+> Validation : 201 / 201 tests réussis
 
 ---
 
@@ -12,7 +14,7 @@
 
 Définir le premier socle productif autonome du World : un habitant peut exécuter `VERB-003 — Produire une denrée` lorsqu'aucun Intent d'entretien prioritaire n'est exécutable et qu'une opération productive réelle est disponible.
 
-Flux cible :
+Flux validé :
 
 ```text
 entretien exécutable ?
@@ -270,12 +272,12 @@ Il route une `ActionInstance` vers un `IExecutionEngine` selon son Verbe déclar
 Pour ce lot :
 
 ```text
-SeReposer     → NeedsExecutionEngine
-Manger        → NeedsExecutionEngine
-ProduireDenree→ ProductionExecutionEngine
+SeReposer      → NeedsExecutionEngine
+Manger         → NeedsExecutionEngine
+ProduireDenree → ProductionExecutionEngine
 ```
 
-Une définition non enregistrée produit un Outcome d'échec ou un rejet explicite selon le contrat retenu par l'implémentation ; aucun moteur ne doit être choisi implicitement.
+Une définition non enregistrée produit un Outcome d'échec ; aucun moteur n'est choisi implicitement.
 
 ---
 
@@ -325,21 +327,21 @@ Aucune quantité ne peut devenir négative.
 - reçoit des `IActionEffectApplicator` ;
 - ne connaît aucune règle productive particulière.
 
-La troisième Action réelle doit donc être intégrée par composition/injection, pas par un nouveau `switch` dans le runner.
+La troisième Action réelle est intégrée par composition/injection, pas par un nouveau `switch` dans le runner.
 
 ---
 
 # 16. Persistance
 
-`ResourceStockComponent` et `ProductionProvenanceComponent` doivent survivre à `WorldRepository.Save/Load`.
+`ResourceStockComponent` et `ProductionProvenanceComponent` survivent à `WorldRepository.Save/Load`.
 
 `FoodProductComponent` reste la sortie alimentaire déjà persistée depuis ENGINE-012.
 
 ---
 
-# 17. Intégration multi-Tick ciblée
+# 17. Intégration multi-Tick validée
 
-Le scénario de référence doit pouvoir démontrer :
+Le scénario de référence démontre :
 
 ```text
 Acteur affamé
@@ -362,7 +364,7 @@ portion consommée
 Faim restaurée
 ```
 
-Ce scénario relie pour la première fois autonomie, production et consommation sans intervention du joueur.
+Ce scénario relie autonomie, production et consommation sans intervention du joueur.
 
 ---
 
@@ -409,7 +411,7 @@ ENGINE-013 ne couvre pas :
 
 # 20. Contrat QA
 
-Les tests doivent vérifier au minimum :
+Le fichier `Engine013ProductionTests.cs` contient **23 tests `[Fact]`** couvrant notamment :
 
 1. validation des données `ProductionOperation` ;
 2. persistance de `ResourceStockComponent` ;
@@ -431,13 +433,28 @@ Les tests doivent vérifier au minimum :
 18. pipeline composite continue d'exécuter Repos et Manger ;
 19. pipeline composite exécute ProduireDenree ;
 20. scénario multi-Tick production → manger sans entrée joueur ;
-21. mêmes entrées/configuration → même séquence.
+21. mêmes entrées/configuration → même séquence ;
+22. persistance et composition sont vérifiées par des cas distincts supplémentaires ;
+23. la suite historique complète reste verte.
+
+Base avant ce lot : `178 / 178`.
+
+Validation locale finale :
+
+```text
+dotnet build
+→ succès
+
+dotnet test
+→ 201 / 201 tests réussis
+→ 0 échec
+```
 
 ---
 
 # 21. Critères de validation
 
-ENGINE-013 pourra passer en Validée / Maturité 4 lorsque :
+Les critères sont satisfaits :
 
 - le build réussit ;
 - les tests historiques restent verts ;
@@ -447,6 +464,8 @@ ENGINE-013 pourra passer en Validée / Maturité 4 lorsque :
 - sa provenance survit au reload ;
 - le scénario production → consommation fonctionne sans joueur ;
 - aucun mécanisme commercial non spécifié n'est introduit.
+
+ENGINE-013 est donc **Validée / Maturité 4**.
 
 ---
 
@@ -466,11 +485,23 @@ ENGINE-013
 CHRONIQUES-ENGINE
 ↓
 Tests
+↓
+201 / 201
 ```
 
 ---
 
 # HISTORIQUE
+
+## Version 1.1
+
+- ENGINE-013 passe à **Validée / Maturité 4** ;
+- validation locale enregistrée à **201 / 201 tests réussis** ;
+- correction du comptage : le fichier ENGINE-013 contient 23 nouveaux tests, et non 22 ;
+- scénario autonome production au Tick N → consommation au Tick N+1 confirmé ;
+- persistance des stocks et de la provenance confirmée ;
+- compatibilité des Verbes Repos et Manger maintenue ;
+- économie commerciale laissée hors périmètre.
 
 ## Version 1.0
 

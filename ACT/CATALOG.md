@@ -1,13 +1,9 @@
 # ACT — Catalogue
 
-> Version : 1.12
->
+> Version : 1.13
 > Statut : Foundation
->
 > Bibliothèque : ACT
->
 > Dépendances : MASTER, GDB
->
 > Utilisée par : TECH, QA, UX
 
 ---
@@ -16,125 +12,107 @@
 
 Ce catalogue référence l'ensemble des documents constituant la bibliothèque ACT.
 
-ACT définit le langage universel des actions de Chroniques.
+ACT définit le langage universel des Actions de Chroniques.
 
 ---
 
 # Structure générale
 
+```text
 ACT
+├── ACT-001 Fondements
+├── ACT-002 Modèle universel
+├── ACT-003 retiré
+├── ACT-004 à ACT-010 créés
+├── PATTERNS
+│   ├── PAT-001 Repos         M4
+│   ├── PAT-002 Alimentation  M4
+│   ├── PAT-003 Production    M4
+│   └── PAT-004 Transfert     M2
+└── VERBS
+    ├── VERB-001 Se reposer           M4
+    ├── VERB-002 Manger               M4
+    ├── VERB-003 Produire une denrée  M4
+    └── VERB-004 Donner une denrée    M2
+```
 
-├── Fondements                (ACT-001)
-├── Modèle universel          (ACT-002)
-├── Cycle de vie              (ACT-003 retiré)
-├── Acteurs                   (ACT-004, Proposition)
-├── Cibles                    (ACT-005, Proposition)
-├── Conditions                (ACT-006-A, audité)
-├── Conséquences              (ACT-007-A, audité)
-├── Taxonomie                 (ACT-008-A, audité)
-├── Composition               (ACT-009-A, audité)
-├── Événements                (ACT-010-A, audité)
-├── Patterns                  (PAT-001 M4 ; PAT-002 M4 ; PAT-003 M4 ; PAT-004 M2)
-└── Verbes                    (VERB-001 M4 ; VERB-002 M4 ; VERB-003 M4 ; VERB-004 M2)
+ACT-003 reste retiré et son identifiant n'est pas réattribué.
 
 ---
 
-# Bibliothèque PATTERNS
+# Couples Pattern / Verbe validés
 
-Statut : créée et ouverte.
-
-## PAT-001 — Repos
+## Entretien
 
 ```text
-Officiel / Maturité 4
+PAT-001 Repos
+↓
+VERB-001 Se reposer
 Validation : 161 / 161
-Principe : Entretien
-Verbe : VERB-001 Se reposer
 ```
 
-## PAT-002 — Alimentation
-
 ```text
-Officiel / Maturité 4
+PAT-002 Alimentation
+↓
+VERB-002 Manger
 Validation : 178 / 178
-Principe : Entretien
-Verbe : VERB-002 Manger
 ```
 
-## PAT-003 — Production
+## Transformation
 
 ```text
-Officiel / Maturité 4
+PAT-003 Production
+↓
+VERB-003 Produire une denrée
 Validation : 201 / 201
-Principe : Transformation
-Verbe : VERB-003 Produire une denrée
 ```
 
-## PAT-004 — Transfert
+---
+
+# Couple en cours — Circulation économique
+
+Autorités métier courantes :
 
 ```text
-Proposition / Maturité 2
-Principe : Échange
-Verbe proposé : VERB-004 Donner une denrée
+GDB-004A v1.2
+GDB-005E v1.3
+GDB-005F v1.2
 ```
 
-Origine : GDB-005E v1.2 + GDB-005F v1.1.
+Chaîne proposée :
 
-Structure proposée :
+```text
+Échange
+↓
+PAT-004 Transfert v1.1 — Proposition / M2
+↓
+VERB-004 Donner une denrée v1.1 — Proposition / M2
+```
+
+Contrat :
 
 ```text
 source P -= q
 destination P += q
 ```
 
-La quantité totale est conservée. Aucun prix, paiement ou marché n'est inclus.
+avec :
 
-PATTERNS reste ouverte.
+- `q > 0` ;
+- donneur et destinataire distincts ;
+- source et destination distinctes ;
+- même identité de produit ;
+- conservation de la quantité ;
+- opportunité volontaire contextuelle ;
+- aucun prix, monnaie ou paiement implicite.
 
----
-
-# Bibliothèque VERBS
-
-Statut : créée et ouverte.
-
-## VERB-001 — Se reposer
-
-```text
-Officiel / Maturité 4
-Validation : 161 / 161
-Intent : se_reposer
-```
-
-## VERB-002 — Manger
+Intent moteur :
 
 ```text
-Officiel / Maturité 4
-Validation : 178 / 178
-Intent : manger
+donner_denree
 ```
 
-## VERB-003 — Produire une denrée
-
-```text
-Officiel / Maturité 4
-Validation : 201 / 201
-Intent : produire_denree
-Pattern : PAT-003 Production
-```
-
-## VERB-004 — Donner une denrée
-
-```text
-Proposition / Maturité 2
-Intent : donner_denree
-Pattern : PAT-004 Transfert
-```
-
-Le premier contrat resserré transfère une denrée existante d'un habitant à un autre entre deux stocks alimentaires distincts et compatibles.
-
-VERB-004 ne constitue ni une vente, ni un troc réciproque, ni un système de prix.
-
-VERBS reste ouverte.
+PAT-004 et VERB-004 ne passent pas M4 avant validation locale d'ENGINE-014.
 
 ---
 
@@ -142,11 +120,12 @@ VERBS reste ouverte.
 
 Toute nouvelle mécanique doit :
 
-- éviter la duplication d'un Pattern existant ;
+- respecter ses autorités GDB ;
 - passer les quatre tests d'ACT-008-A ;
-- rattacher tout Verbe à exactement un Pattern ;
+- éviter la duplication d'un Pattern existant ;
+- rattacher chaque Verbe à exactement un Pattern ;
 - documenter ses impacts QA ;
-- ne consolider TECH/roadmap/README qu'à un point de clôture significatif conformément à MASTER-006.
+- ne déclencher TECH/roadmap/README qu'à un point de consolidation significatif conformément à MASTER-006.
 
 ---
 
@@ -168,21 +147,21 @@ CODE
 
 # Historique
 
+## Version 1.13
+
+- PAT-004 / VERB-004 synchronisés avec GDB-005E v1.3 et GDB-005F v1.2 ;
+- invariant `stock source ≠ stock destination` propagé jusqu'à ACT ;
+- PAT-004 et VERB-004 restent Proposition / M2 ;
+- aucune consolidation transverse déclenchée.
+
 ## Version 1.12
 
-- création de `PAT-004 — Transfert` en Proposition / Maturité 2 ;
-- création de `VERB-004 — Donner une denrée` en Proposition / Maturité 2 ;
-- rattachement `Échange → PAT-004 → VERB-004` ;
-- transfert conservatif de denrée entre habitants ;
-- prix, monnaie, vente et troc réciproque maintenus hors périmètre ;
-- aucune validation M4 anticipée ;
-- aucune consolidation TECH/roadmap/README déclenchée.
+- création de PAT-004 — Transfert et VERB-004 — Donner une denrée.
 
 ## Version 1.11
 
-- PAT-003 et VERB-003 validés / Maturité 4 ;
-- validation portée à 201 / 201.
+- PAT-003 / VERB-003 validés à 201 / 201.
 
 ## Versions 1.0 à 1.10
 
-- création et consolidation des fondations ACT et des trois premiers couples Pattern/Verbe.
+- fondations ACT, retrait d'ACT-003, ouverture des sous-bibliothèques et validation progressive des premiers couples Pattern/Verbe.

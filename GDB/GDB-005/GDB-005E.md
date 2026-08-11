@@ -1,6 +1,6 @@
 # GDB-005E --- Les Produits
 
-> Version : 1.2
+> Version : 1.3
 > Statut : Officiel
 > Type : Économie & Progression
 > Maturité : 2
@@ -162,7 +162,8 @@ stock destination du même produit P += q
 Un transfert réussi exige donc :
 
 - une source existante et suffisamment disponible ;
-- une destination compatible ;
+- une destination existante et compatible ;
+- une source et une destination **distinctes** : transférer un stock vers lui-même n'est pas un transfert ;
 - la même identité de produit de part et d'autre ;
 - une accessibilité/autorisation conforme au contexte de l'échange ;
 - aucune quantité négative après résolution.
@@ -228,6 +229,7 @@ Les produits alimentaires créent en particulier un lien réel entre les besoins
 - La restauration alimentaire n'a pas de valeur universelle imposée par cette version.
 - L'accessibilité métier n'impose pas encore un système technique d'inventaire.
 - Deux stocks ne sont fusionnables ou transférables l'un vers l'autre que si leur identité de produit est compatible.
+- La source et la destination d'un transfert sont deux stocks distincts.
 - Un transfert conserve la quantité : ce qui quitte la source apparaît dans la destination, sauf règle distincte explicitement documentée.
 
 ---
@@ -243,7 +245,8 @@ Tout produit devra :
 5. enrichir l'économie du monde ;
 6. ne jamais être consommé sans réduction correspondante de sa disponibilité ;
 7. respecter l'accessibilité de l'Acteur lorsqu'il sert de Cible à une Action ;
-8. posséder une identité explicite lorsqu'une mécanique doit comparer ou transférer plusieurs stocks.
+8. posséder une identité explicite lorsqu'une mécanique doit comparer ou transférer plusieurs stocks ;
+9. ne jamais présenter comme transfert une opération dont la source et la destination désignent le même stock.
 
 ---
 
@@ -256,6 +259,11 @@ Si la réponse est non, il devra être repensé.
 ---
 
 # HISTORIQUE
+
+## Version 1.3
+
+- explicitation de l'invariant `stock source ≠ stock destination` pour tout transfert ;
+- interdiction de présenter un auto-transfert comme une circulation réelle de produit.
 
 ## Version 1.2
 

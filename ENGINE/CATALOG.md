@@ -1,6 +1,6 @@
 # ENGINE — Catalogue
 
-> Version : 1.15
+> Version : 1.16
 > Statut : Foundation
 > Maturité : 1
 > Bibliothèque : ENGINE
@@ -34,204 +34,184 @@ ENGINE-010  Orchestration habitants autonomes        Validée / M4
 ENGINE-011  Décision autonome par besoins            Validée / M4
 ENGINE-012  Alimentation autonome minimale           Validée / M4
 ENGINE-013  Production autonome minimale             Validée / M4
+ENGINE-014  Circulation autonome minimale            Proposition / M2
 ```
 
 ---
 
-# ENGINE-006 — Action Pipeline
+# Bloc validé jusqu'à ENGINE-013
 
-Validation acquise.
+La simulation autonome possède déjà :
 
 ```text
-Intent
+entretien
++
+production réelle
++
+consommation réelle
+```
+
+Validation courante avant ENGINE-014 :
+
+```text
+201 / 201 tests réussis
+```
+
+ENGINE-013 démontre qu'un habitant peut produire une denrée à partir d'une ressource réelle puis la consommer ultérieurement.
+
+---
+
+# ENGINE-014 — Circulation autonome minimale
+
+Statut : Proposition.  
+Maturité : 2.
+
+Autorités métier :
+
+```text
+GDB-004A v1.2
+GDB-005E v1.2
+GDB-005F v1.1
+```
+
+Autorités ACT proposées :
+
+```text
+Échange
 ↓
-Planner
+PAT-004 Transfert
 ↓
-Plan
+VERB-004 Donner une denrée
+```
+
+Flux cible :
+
+```text
+NeedsIntentSource
+↓ si aucun entretien exécutable
+VoluntaryFoodTransferIntentSource
+↓ si aucune opportunité
+ProductiveActivityIntentSource
 ↓
-Action Instance
+Intent éventuel
 ↓
-Execution Engine
+CompositePlanner
 ↓
-Outcome
+PipelineRunner inchangé
+↓
+CompositeExecutionEngine
 ↓
 Effects
 ↓
 World
 ```
 
----
+ENGINE-014 introduit notamment :
 
-# ENGINE-010 à ENGINE-012 — Bloc autonomie par besoins consolidé
+- `FoodProductComponent.ProductKindId` ;
+- `FoodTransferOpportunity` ;
+- `IVoluntaryFoodTransferResolver` ;
+- `VoluntaryFoodTransferIntentSource` ;
+- `DonnerDenreeDefinition` ;
+- `FoodTransferPlanner` ;
+- `FoodTransferExecutionEngine` ;
+- `FoodTransferActionEffectApplicator`.
 
-Le bloc déjà consolidé permet :
-
-```text
-Scheduler
-↓
-AutonomousActionSystem
-↓
-Intent autonome
-↓
-Repos ou Alimentation
-↓
-World
-```
-
-Validation de référence du point de consolidation :
-
-```text
-178 / 178 tests réussis
-```
-
-Ce bloc est documenté par TECH-003 et TECH-004.
+Les compositeurs et le `PipelineRunner` restent structurellement inchangés.
 
 ---
 
-# ENGINE-013 — Production autonome minimale
+# Conservation du transfert
 
-Statut : Validée.
-
-Maturité : 4.
-
-ENGINE-013 ouvre le premier socle productif réel de v0.4.
-
-Autorités métier :
+VERB-004 vise :
 
 ```text
-GDB-004A v1.1
-GDB-005C v1.2
-GDB-012B v1.1
-GDB-012E v1.1
+source P -= q
+destination P += q
 ```
 
-Autorités ACT validées :
+Contraintes du premier lot :
 
-```text
-Transformation
-↓
-PAT-003 Production
-↓
-VERB-003 Produire une denrée
-```
-
-Flux validé :
-
-```text
-NeedsIntentSource
-↓ si aucun entretien exécutable
-ProductiveActivityIntentSource
-↓
-Intent produire_denree
-↓
-ProductionPlanner
-↓
-entrée ResourceStock
-+
-sortie FoodProduct
-↓
-ProductionExecutionEngine
-↓
-ProductionActionEffectApplicator
-↓
-stock entrée ↓
-portions sortie ↑
-provenance persistante
-```
-
-ENGINE-013 introduit notamment :
-
-- `ResourceStockComponent` ;
-- `ProductionOperation` ;
-- `ProductionProvenanceComponent` ;
-- `IProductiveActivityResolver` ;
-- `ProductiveActivityIntentSource` ;
-- `CompositeAutonomousIntentSource` ;
-- `ProduireDenreeDefinition` ;
-- `ProductionPlanner` ;
-- `CompositePlanner` ;
-- `ProductionExecutionEngine` ;
-- `CompositeExecutionEngine` ;
-- `ProductionActionEffectApplicator` ;
-- persistance des stocks et de la provenance.
-
-Le `PipelineRunner` n'est pas spécialisé pour VERB-003 : la nouvelle capacité entre par les interfaces déjà présentes.
+- `q > 0` ;
+- donneur et destinataire distincts ;
+- source et destination distinctes ;
+- source suffisamment disponible ;
+- `ProductKindId` non vide et identique ;
+- même valeur `FaimRestauree` pour éviter une fusion de représentations incompatibles ;
+- aucun besoin modifié directement ;
+- aucun prix ou paiement créé.
 
 ---
 
-# Scénario d'intégration validé
+# Scénario d'intégration cible
 
 ```text
 Tick N
-Acteur affamé
-+
-aucune nourriture disponible
-+
-opération productive exécutable
+Habitant A
 ↓
 produire_denree
 ↓
-une portion alimentaire apparaît par transformation réelle
+stock alimentaire A = 1
 
 Tick N+1
+A traité avant B
 ↓
-manger
+A → donner_denree → B
 ↓
-portion consommée
-+
-Faim restaurée
+stock A = 0
+stock B = 1
+↓
+B est affamé
+↓
+B → manger
+↓
+stock B = 0
+Faim B ↑
 ```
 
-Ce scénario fonctionne sans entrée joueur.
+Le scénario doit fonctionner sans entrée joueur.
 
 ---
 
-# Validation technique
+# Couverture QA en attente de validation locale
 
-Le fichier ENGINE-013 contient **23 nouveaux tests**.
+`Engine014FoodTransferTests.cs` ajoute **22 `[Fact]`**.
 
 Base validée avant ce lot :
 
 ```text
-178 / 178
+201 / 201
 ```
 
-Validation locale communiquée le 11 août 2026 :
+Total attendu après validation :
 
 ```text
-dotnet build
-→ succès
-
-dotnet test
-→ 201 / 201 tests réussis
-→ 0 échec
+223 tests
 ```
 
-Le précédent total attendu de 200 provenait d'un comptage erroné de 22 nouveaux tests ; le fichier `Engine013ProductionTests.cs` contient bien 23 `[Fact]`.
+Aucun passage M4 n'est enregistré avant résultat local confirmé.
 
 ---
 
 # Frontière avec l'économie commerciale
 
-ENGINE-013 ne simule pas encore :
+L'audit `AUDIT-CIRCULATION-ECONOMIQUE-Minimale.md` conclut :
 
-- monnaie ;
-- prix ;
-- salaire ;
-- vente ;
-- marché ;
-- offre et demande ;
-- entreprise.
+```text
+transfert volontaire de denrée
+→ autorisé
 
-GDB-019 reste l'autorité sur ces mécanismes, mais ses documents actuels demeurent trop principiels pour justifier une formule de marché dans le moteur.
+prix / monnaie / vente / troc réciproque / marché
+→ toujours bloqués
+```
 
-Le socle productif peut donc progresser indépendamment sans inventer ces règles.
+ENGINE-014 ne doit donc introduire aucun coefficient de prix, solde monétaire ou négociation implicite.
 
 ---
 
 # ENGINE-007 — Resource Manager
 
-ENGINE-007 reste réservé aux ressources **techniques** du moteur. Il ne désigne pas les ressources économiques de GDB-005 et ne doit pas être réutilisé pour ENGINE-013.
+ENGINE-007 reste réservé aux ressources techniques du moteur et n'a aucun lien avec les stocks économiques de ce lot.
 
 ---
 
@@ -247,45 +227,24 @@ ENGINE/CATALOG.md
 
 # Historique
 
+## Version 1.16
+
+- création d'ENGINE-014 — Circulation autonome minimale en Proposition / Maturité 2 ;
+- ouverture de PAT-004 / VERB-004 ;
+- identité de produit transférable ajoutée ;
+- opportunité volontaire injectable ;
+- ordre autonome `entretien → transfert → production` ;
+- transfert conservatif entre deux habitants ;
+- 22 nouveaux tests ajoutés, total attendu 223 ;
+- scénario cible production → transfert → consommation ;
+- prix, monnaie et marché maintenus hors périmètre ;
+- aucune consolidation TECH/roadmap/README avant validation.
+
 ## Version 1.15
 
-- ENGINE-013 passe à **Validée / Maturité 4** ;
-- PAT-003 / VERB-003 confirmés comme autorités ACT validées ;
-- suite globale portée à **201 / 201 tests réussis** ;
-- correction du comptage ENGINE-013 : 23 nouveaux tests, et non 22 ;
-- scénario autonome production au Tick N → alimentation au Tick N+1 confirmé ;
-- stocks et provenance persistante validés ;
-- économie commerciale maintenue hors périmètre ;
-- aucune consolidation TECH/roadmap/README déclenchée automatiquement.
+- ENGINE-013 validée / Maturité 4 ;
+- suite portée à 201 / 201.
 
-## Version 1.14
+## Versions 1.0 à 1.14
 
-- création d'ENGINE-013 — Production autonome minimale en Proposition / Maturité 2 ;
-- ouverture de PAT-003 / VERB-003 dans le chemin ENGINE ;
-- ajout du stock matériel et de la provenance minimale ;
-- composition ordonnée entretien → production ;
-- composition des Planners et Execution Engines ;
-- scénario cible production au Tick N → alimentation au Tick N+1 ;
-- couverture QA ajoutée ;
-- économie commerciale explicitement laissée hors périmètre.
-
-## Version 1.13
-
-- ENGINE-012 validée / Maturité 4 ;
-- suite portée à 178 / 178.
-
-## Version 1.12
-
-- création d'ENGINE-012.
-
-## Versions 1.9 à 1.11
-
-- création, validation et renforcement multi-Tick d'ENGINE-011.
-
-## Version 1.8
-
-- ENGINE-010 validée ; 146 / 146 ; ENGINE-C06 résolue.
-
-## Versions 1.0 à 1.7
-
-- création et consolidation des fondations ENGINE jusqu'à ENGINE-010.
+- création et consolidation progressive des fondations moteur jusqu'à la production autonome minimale.

@@ -1,179 +1,458 @@
-# Chroniques
+Chroniques
 
-> *Chaque vie raconte une Chronique.*
+Chaque vie raconte une Chronique.
 
----
+Présentation
 
-# Présentation
+Bienvenue dans le dépôt documentaire officiel de Chroniques.
 
-Bienvenue dans le dépôt officiel de **Chroniques**.
-
-Ce dépôt constitue la **base de connaissances centrale** du projet. Il regroupe l'ensemble des documents définissant la vision, les principes, les systèmes, l'architecture et les spécifications de développement.
+Ce dépôt constitue la base de connaissances centrale du projet. Il regroupe les documents définissant la vision, les principes, les règles de simulation, les contrats d'Actions, l'architecture du moteur, la documentation technique, la validation, la production et les autres disciplines du projet.
 
 Il est conçu pour être utilisé aussi bien par des développeurs que par des intelligences artificielles participant au développement.
 
----
+Le code exécutable du moteur vit dans un dépôt séparé :
 
-# Philosophie
+CHRONIQUES-ENGINE
 
-Chroniques est développé selon une approche **Documentation First**.
+Philosophie
 
-Chaque décision importante est documentée avant son implémentation.
+Chroniques est développé selon une approche Documentation First.
 
-Cette méthode garantit :
+Une règle ou une architecture structurante doit être définie dans sa bibliothèque d'autorité avant d'être implémentée, sauf lorsqu'un document ENGINE est explicitement rédigé rétroactivement pour décrire du code historique déjà existant.
 
-- une vision cohérente ;
-- une architecture évolutive ;
-- une documentation durable ;
-- une réduction des incohérences ;
-- une meilleure collaboration entre humains et IA.
+Cette méthode vise à garantir :
 
-La documentation constitue la **source officielle de vérité** du projet.
+une vision cohérente ;
 
----
+une architecture évolutive ;
 
-# Architecture du dépôt
+une documentation durable ;
 
-```
-chroniques-/
+une réduction des incohérences ;
 
-MASTER/
-GDB/
-TECH/
-README.md
-```
+une meilleure collaboration entre humains et IA ;
 
-Chaque dossier possède une responsabilité précise.
+une traçabilité entre règle, architecture, code, tests et documentation technique.
 
----
+La documentation constitue la source officielle de vérité conceptuelle et architecturale du projet.
 
-# Les bibliothèques
+Le code constitue la vérité de l'implémentation réellement exécutable.
 
-## MASTER
+TECH documente cette implémentation après validation.
 
-Les documents MASTER définissent les règles fondamentales du projet.
+Architecture du dépôt
 
-Ils décrivent notamment :
+CHRONIQUES/
+│
+├── MASTER/
+├── CORE/
+├── GDB/
+├── ACT/
+├── ENGINE/
+├── TECH/
+├── QA/
+├── UX/
+├── LORE/
+├── PROD/
+├── ART/
+├── AUDIO/
+├── MKT/
+├── ADR/
+├── AUDIT/
+└── README.md
 
-- la gouvernance ;
-- les standards ;
-- les conventions ;
-- les méthodes de travail ;
-- l'organisation documentaire.
+Chaque bibliothèque ou registre possède une responsabilité précise.
 
-Ils évoluent rarement.
+Hiérarchie de travail
 
----
+Le workflow de référence est :
 
-## GDB
-
-La bibliothèque GDB (Game Design Bible) décrit l'intégralité de Chroniques.
-
-Chaque GDB répond à une question précise concernant le fonctionnement du jeu.
-
-Exemples :
-
-- le joueur ;
-- le monde ;
-- les entreprises ;
-- l'économie ;
-- les systèmes ;
-- les événements ;
-- etc.
-
-Les GDB décrivent **ce que le jeu est**.
-
----
-
-## TECH
-
-Les documents TECH définissent l'architecture technique.
-
-Ils expliquent notamment :
-
-- comment les systèmes sont implémentés ;
-- comment ils communiquent ;
-- comment ils sont organisés.
-
-Les documents TECH décrivent **comment le jeu fonctionne**.
-
----
-
-# Hiérarchie documentaire
-
-Toutes les informations suivent la hiérarchie suivante.
-
-```
 MASTER
-    ↓
+↓
+CORE
+↓
 GDB
-    ↓
+↓
+ACT
+↓
+ENGINE
+↓
+CHRONIQUES-ENGINE
+↓
+Tests
+↓
 TECH
-    ↓
-Code
-```
 
-Un niveau inférieur ne peut jamais contredire un niveau supérieur.
+Cette chaîne décrit le passage d'une règle à son implémentation documentée.
 
----
+Toutes les fonctionnalités ne dépendent pas nécessairement de chaque bibliothèque intermédiaire, mais aucune couche aval ne doit contredire une autorité amont applicable.
 
-# Principe de responsabilité unique
+MASTER
 
-Chaque information officielle possède une seule source de vérité.
+MASTER définit la gouvernance du projet.
 
-Une information ne doit jamais être dupliquée dans plusieurs documents.
+Il décrit notamment :
 
-Lorsqu'un document dépend d'un autre, il doit y faire référence au lieu de recopier son contenu.
+les principes généraux ;
 
----
+les standards documentaires ;
 
-# Ordre de lecture recommandé
+les niveaux de maturité ;
 
-Pour découvrir le projet :
+les méthodes de travail ;
 
-1. MASTER
-2. GDB
-3. TECH
-4. Code
+la gestion des dépendances ;
 
----
+les critères de qualité ;
 
-# Organisation documentaire
+les règles de cohérence.
 
-Chaque dossier possède son propre README.
+MASTER évolue rarement et possède une autorité élevée sur l'organisation du projet.
 
-Celui-ci explique :
+CORE
 
-- son objectif ;
-- son organisation ;
-- ses conventions ;
-- son contenu.
+CORE définit les primitives conceptuelles fondamentales utilisées par l'ensemble de Chroniques.
 
----
+Il couvre notamment des notions comme :
 
-# Évolution du projet
+Entity ;
 
-La structure du dépôt est volontairement stable.
+Component ;
 
-Les évolutions concernent principalement le contenu des documents.
+Value ;
 
-Toute modification importante doit préserver :
+State ;
 
-- la cohérence globale ;
-- la modularité ;
-- la non-redondance ;
-- la maintenabilité.
+Relation ;
 
----
+Event ;
 
-# Objectif
+Time ;
+
+Lifecycle.
+
+CORE décrit les concepts fondamentaux indépendamment de leur implémentation concrète dans le moteur.
+
+GDB
+
+La bibliothèque GDB — Game Design Bible définit les règles de simulation et le fonctionnement du monde de Chroniques.
+
+Elle couvre notamment :
+
+le monde ;
+
+les habitants ;
+
+les besoins ;
+
+les relations ;
+
+les compétences ;
+
+l'économie ;
+
+la réputation ;
+
+la transmission ;
+
+les systèmes sociaux ;
+
+les événements émergents.
+
+Les documents GDB décrivent principalement ce que le monde simulé doit faire.
+
+ACT
+
+ACT définit les contrats génériques liés aux Actions.
+
+Il couvre notamment :
+
+Intent
+Plan
+Action
+Outcome
+Effects
+
+ACT ne décide pas des règles métier particulières d'une relation, d'une compétence ou d'un héritage.
+
+Il définit le langage commun permettant d'exprimer et de résoudre les Actions.
+
+ENGINE
+
+ENGINE décrit l'architecture attendue du moteur de simulation.
+
+Il traduit les contrats conceptuels de MASTER, CORE, GDB et ACT en responsabilités techniques suffisamment précises pour guider CHRONIQUES-ENGINE.
+
+ENGINE couvre actuellement notamment :
+
+ENGINE-000  Principes d'architecture
+ENGINE-001  Journal d'événements du World
+ENGINE-002  Kernel
+ENGINE-003  Scheduler et boucle de simulation
+ENGINE-004  Systems
+ENGINE-005  Persistence / Serialization
+ENGINE-006  Action Pipeline
+ENGINE-007  Resource Manager — réservé, non créé
+ENGINE-008  Systems de population
+
+ENGINE peut contenir des esquisses de types ou de signatures lorsqu'elles sont nécessaires pour exprimer un contrat avec précision.
+
+Ces esquisses restent des spécifications, pas du code à copier automatiquement dans le moteur.
+
+CHRONIQUES-ENGINE
+
+Le dépôt séparé :
+
+CHRONIQUES-ENGINE
+
+contient l'implémentation exécutable du moteur.
+
+Le moteur est actuellement développé en C#/.NET autour d'une simulation déterministe.
+
+À l'état documenté courant, il contient notamment :
+
+Kernel ;
+
+World / Entity ;
+
+Components ;
+
+Lifecycle ;
+
+Scheduler ;
+
+Persistence ;
+
+Action Pipeline ;
+
+Relations ;
+
+Compétences ;
+
+Héritage minimal ;
+
+Effects de population.
+
+Le dernier état validé du lot ENGINE-008 est :
+
+dotnet build
+→ succès
+
+dotnet test
+→ 122 / 122 tests réussis
+→ 0 échec
+
+TECH
+
+TECH documente l'implémentation réellement obtenue et validée.
+
+TECH n'est pas l'autorité sur les règles métier et ne remplace pas ENGINE.
+
+La distinction est :
+
+ENGINE
+→ comportement et architecture attendus
+
+CHRONIQUES-ENGINE
+→ implémentation réelle
+
+TECH
+→ documentation de cette implémentation après validation
+
+La bibliothèque TECH est désormais active.
+
+Son premier document numéroté est :
+
+TECH-001 — Systems de population
+
+Il documente l'implémentation d'ENGINE-008 :
+
+RelationComponent / RelationSystem ;
+
+SkillComponent / SkillSystem ;
+
+HeritageSystem ;
+
+Effects de population ;
+
+PopulationEffectApplicator.
+
+QA
+
+QA regroupe les documents consacrés à la validation du projet.
+
+Cette bibliothèque peut notamment documenter :
+
+stratégies de tests ;
+
+campagnes de validation ;
+
+critères de sortie ;
+
+non-régressions ;
+
+scénarios de contrôle.
+
+Les tests exécutables restent dans le dépôt moteur lorsque leur nature l'exige.
+
+UX
+
+UX documente l'expérience utilisateur et les interactions avec les interfaces de Chroniques.
+
+LORE
+
+LORE documente les éléments de monde et de fiction qui ne relèvent pas directement des règles systémiques de la GDB.
+
+PROD
+
+PROD documente la production et la feuille de route.
+
+Il décrit notamment :
+
+les phases ;
+
+les versions cibles ;
+
+les priorités de développement ;
+
+l'ordre de construction des grands ensembles.
+
+ART
+
+ART regroupe les règles et documents relatifs à la direction artistique et aux assets visuels.
+
+AUDIO
+
+AUDIO regroupe les règles et documents relatifs au son, à la musique et au design audio.
+
+MKT
+
+MKT regroupe la documentation liée au marketing et à la communication du projet lorsque ces sujets deviennent nécessaires.
+
+ADR
+
+ADR constitue le registre des Architecture Decision Records.
+
+Un ADR conserve la trace d'une décision structurante, de son contexte et de sa justification.
+
+ADR complète les bibliothèques d'autorité mais ne les remplace pas.
+
+AUDIT
+
+AUDIT conserve les contrôles de cohérence et les constats documentaires transverses.
+
+Il permet notamment de suivre :
+
+les divergences ;
+
+les dettes documentaires ;
+
+les corrections ;
+
+les vérifications de concordance entre documentation et code.
+
+Principe de responsabilité unique
+
+Chaque information officielle doit posséder une source d'autorité identifiable.
+
+Une règle ne doit pas être redéfinie dans plusieurs bibliothèques.
+
+Lorsqu'un document dépend d'un autre, il doit privilégier la référence et la traçabilité plutôt qu'une duplication normative.
+
+Exemple :
+
+GDB-004C
+↓
+ENGINE-008
+↓
+RelationSystem.cs
+↓
+RelationSystemTests.cs
+↓
+TECH-001
+
+Chaque niveau possède ici un rôle différent.
+
+Ordre de lecture recommandé
+
+Pour comprendre l'ensemble du projet :
+
+README.md ;
+
+MASTER/ ;
+
+CORE/ ;
+
+GDB/ ;
+
+ACT/ ;
+
+ENGINE/ ;
+
+TECH/ ;
+
+PROD/ selon le besoin ;
+
+CHRONIQUES-ENGINE pour l'implémentation.
+
+Pour travailler sur une fonctionnalité particulière, il est préférable de suivre directement sa chaîne de traçabilité plutôt que de lire tout le dépôt.
+
+Validation
+
+Une fonctionnalité structurante suit idéalement :
+
+Spécification
+↓
+Implémentation
+↓
+Build
+↓
+Tests
+↓
+Validation
+↓
+TECH
+
+Une fonctionnalité n'est pas considérée comme implémentée uniquement parce qu'un document la décrit.
+
+Inversement, du code historique peut nécessiter une documentation ENGINE rétroactive lorsque le projet découvre qu'une infrastructure existe sans contrat architectural explicite.
+
+Toute exception doit être documentée.
+
+Évolution du projet
+
+La structure du dépôt est conçue pour rester stable tandis que son contenu gagne progressivement en profondeur.
+
+Toute évolution importante doit préserver :
+
+la cohérence globale ;
+
+la modularité ;
+
+le déterminisme du moteur lorsque applicable ;
+
+la non-redondance ;
+
+la traçabilité ;
+
+la maintenabilité ;
+
+la séparation entre règles, architecture et implémentation.
+
+Objectif
 
 Construire une base documentaire suffisamment claire, structurée et durable pour accompagner le développement de Chroniques sur plusieurs années.
 
-Cette documentation doit permettre à tout nouveau contributeur — humain ou IA — de comprendre rapidement le projet, son organisation et ses règles de fonctionnement.
+Cette base doit permettre à tout nouveau contributeur — humain ou IA — de comprendre rapidement :
 
----
+ce qui fait autorité ;
 
-Version : 1.0
+où se trouve une règle ;
 
-Statut : Officiel
+comment elle est traduite dans le moteur ;
+
+comment son implémentation est validée ;
+
+quelles parties restent encore à construire.
+
+Version : 1.1Statut : OfficielBibliothèque racine : CHRONIQUES

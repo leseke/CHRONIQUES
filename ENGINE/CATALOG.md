@@ -1,6 +1,6 @@
 # ENGINE — Catalogue
 
-> Version : 1.6
+> Version : 1.7
 > Statut : Foundation
 > Maturité : 1
 > Bibliothèque : ENGINE
@@ -257,6 +257,54 @@ Cette validation prouve l'assemblage architectural minimal de la v0.3 ; elle ne 
 
 ---
 
+## ENGINE-010 — Orchestration des habitants autonomes
+
+Statut : Proposition.
+
+Maturité : 2.
+
+Première spécification ENGINE ouverte pour v0.4 — Le monde vivant.
+
+Elle répond au besoin conservé par `ENGINE-C06`, dont la réouverture était explicitement différée jusqu'à l'entrée en Phase 3 de MASTER-005.
+
+Objectif minimal : permettre à un habitant explicitement enregistré comme autonome d'initier un Intent pendant un Tick, sans intervention du joueur, puis remettre cet Intent à un exécuteur conforme à ENGINE-006.
+
+```text
+Scheduler
+↓
+AutonomousActionSystem
+↓
+IAutonomousIntentSource
+↓
+Intent
+↓
+IAutonomousIntentExecutor
+↓
+ENGINE-006
+↓
+World
+```
+
+ENGINE-010 sépare strictement :
+
+- orchestration ;
+- décision métier ;
+- exécution d'Action.
+
+Il n'introduit :
+
+- ni IA complète ;
+- ni règle de priorité des besoins ;
+- ni Habitudes ou Ambitions implémentées ;
+- ni catalogue de Verbes ;
+- ni économie autonome ;
+- ni Mémoire du Monde ;
+- ni règle `1 Action = 1 Tick`.
+
+Le test d'intégration cible utilise « Se reposer » uniquement comme Verbe déjà exécutable afin de prouver le raccordement Scheduler → autonomie → ENGINE-006.
+
+---
+
 # Documents planifiés mais non créés
 
 ## ENGINE-007 — Resource Manager
@@ -323,6 +371,7 @@ ENGINE-006  Validée / Maturité 4
 ENGINE-007  Réservé / non créé
 ENGINE-008  Validée / Maturité 4
 ENGINE-009  Validée / Maturité 4
+ENGINE-010  Proposition / Maturité 2
 ```
 
 ---
@@ -340,6 +389,15 @@ Tout ancien fichier alternatif de catalogue doit uniquement rediriger vers ce fi
 ---
 
 # Historique
+
+## Version 1.7
+
+- création de `ENGINE-010 — Orchestration des habitants autonomes` ;
+- entrée documentaire dans v0.4 — Le monde vivant ;
+- réouverture ciblée du besoin architectural conservé par ENGINE-C06 ;
+- séparation entre orchestration autonome, source d'Intent et exécution ENGINE-006 ;
+- absence volontaire de politique de décision métier tant que la GDB n'en fournit pas une suffisamment précise ;
+- test d'intégration cible Scheduler → autonomie → Pipeline d'Actions.
 
 ## Version 1.6
 

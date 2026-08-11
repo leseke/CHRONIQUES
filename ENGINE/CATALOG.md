@@ -1,6 +1,6 @@
 # ENGINE — Catalogue
 
-> Version : 1.16
+> Version : 1.17
 > Statut : Foundation
 > Maturité : 1
 > Bibliothèque : ENGINE
@@ -56,8 +56,6 @@ Validation courante avant ENGINE-014 :
 ```text
 201 / 201 tests réussis
 ```
-
-ENGINE-013 démontre qu'un habitant peut produire une denrée à partir d'une ressource réelle puis la consommer ultérieurement.
 
 ---
 
@@ -175,7 +173,21 @@ Le scénario doit fonctionner sans entrée joueur.
 
 # Couverture QA en attente de validation locale
 
-`Engine014FoodTransferTests.cs` ajoute **22 `[Fact]`**.
+ENGINE-014 ajoute :
+
+```text
+Engine014FoodTransferTests.cs
+→ 22 [Fact]
+
+Engine014ActClassificationTests.cs
+→ 1 [Fact]
+```
+
+Total nouveau :
+
+```text
+23 tests
+```
 
 Base validée avant ce lot :
 
@@ -186,7 +198,7 @@ Base validée avant ce lot :
 Total attendu après validation :
 
 ```text
-223 tests
+224 tests
 ```
 
 Aucun passage M4 n'est enregistré avant résultat local confirmé.
@@ -227,6 +239,13 @@ ENGINE/CATALOG.md
 
 # Historique
 
+## Version 1.17
+
+- couverture QA ENGINE-014 complétée par un test de classification ACT ;
+- lot ENGINE-014 porté à **23 nouveaux tests** ;
+- total attendu corrigé à **224 tests** ;
+- aucune validation M4 anticipée.
+
 ## Version 1.16
 
 - création d'ENGINE-014 — Circulation autonome minimale en Proposition / Maturité 2 ;
@@ -235,10 +254,8 @@ ENGINE/CATALOG.md
 - opportunité volontaire injectable ;
 - ordre autonome `entretien → transfert → production` ;
 - transfert conservatif entre deux habitants ;
-- 22 nouveaux tests ajoutés, total attendu 223 ;
 - scénario cible production → transfert → consommation ;
-- prix, monnaie et marché maintenus hors périmètre ;
-- aucune consolidation TECH/roadmap/README avant validation.
+- prix, monnaie et marché maintenus hors périmètre.
 
 ## Version 1.15
 

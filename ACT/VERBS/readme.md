@@ -1,6 +1,6 @@
 # VERBS — Catalogue des Verbes d'Actions
 
-> Version : 1.3
+> Version : 1.4
 > Statut : Active
 > Type : Sous-bibliothèque ACT
 > Maturité : 2
@@ -77,9 +77,11 @@ Une réussite consomme un produit alimentaire accessible et restaure Faim.
 
 ## VERB-003 — Produire une denrée
 
-Statut : Proposition.
+Statut : Officiel.
 
-Maturité : 2.
+Maturité : 4.
+
+Validation de référence : `201 / 201`.
 
 Origine métier : GDB-004A v1.1, GDB-005C v1.2, GDB-012B v1.1 et GDB-012E v1.1.
 
@@ -99,7 +101,7 @@ Intent associé :
 produire_denree
 ```
 
-Le premier contrat resserré utilise une entrée matérielle et une sortie alimentaire. Une réussite diminue réellement l'entrée, augmente réellement les portions de sortie et conserve une provenance.
+Le contrat validé utilise une entrée matérielle et une sortie alimentaire. Une réussite diminue réellement l'entrée, augmente réellement les portions de sortie et conserve une provenance.
 
 VERB-003 ne définit ni métier, ni salaire, ni prix, ni marché.
 
@@ -120,7 +122,7 @@ Les valeurs de tuning et opérations concrètes restent configurables selon les 
 ```text
 VERB-001  Se reposer            Officiel / Maturité 4
 VERB-002  Manger                Officiel / Maturité 4
-VERB-003  Produire une denrée   Proposition / Maturité 2
+VERB-003  Produire une denrée   Officiel / Maturité 4
 ```
 
 La sous-bibliothèque VERBS reste ouverte.
@@ -136,6 +138,13 @@ Si la réponse est non, le Verbe doit être corrigé avant validation.
 ---
 
 # Historique
+
+## Version 1.4
+
+- `VERB-003 — Produire une denrée` passe à **Officiel / Maturité 4** ;
+- validation locale portée à **201 / 201 tests réussis** ;
+- scénario production → alimentation sans entrée joueur confirmé ;
+- VERBS reste ouverte.
 
 ## Version 1.3
 

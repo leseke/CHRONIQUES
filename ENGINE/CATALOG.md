@@ -1,6 +1,6 @@
 # ENGINE — Catalogue
 
-> Version : 1.5
+> Version : 1.6
 > Statut : Foundation
 > Maturité : 1
 > Bibliothèque : ENGINE
@@ -170,7 +170,7 @@ Couvre :
 - `HeritageRefusalEffect` ;
 - `PopulationEffectApplicator`.
 
-Validation de référence :
+Validation de référence du lot ENGINE-008 :
 
 ```text
 dotnet build
@@ -197,11 +197,11 @@ La Mémoire du Monde n'appartient pas à ENGINE-008 et relève de la phase du mo
 
 ## ENGINE-009 — Boucle de vie minimale
 
-Statut : Proposition.
+Statut : Validée.
 
-Maturité : 2.
+Maturité : 4.
 
-Rédigé avant implémentation conformément au workflow Documentation First.
+Rédigé avant implémentation conformément au workflow Documentation First, puis implémenté et validé dans `CHRONIQUES-ENGINE`.
 
 Objectif : relier les briques déjà présentes de la v0.3 afin de démontrer la continuité minimale :
 
@@ -231,14 +231,29 @@ ENGINE-009 :
 - autorise la couche de session à lire `World.Events` uniquement comme journal d'observabilité ;
 - ne ferme pas ENGINE-C06, qui concerne l'orchestration future des habitants autonomes.
 
-Critère cible de validation :
+Validation de référence :
 
 ```text
-personnage actif
-→ mort
-→ héritier
-→ continuité
+dotnet build
+→ succès
+
+dotnet test
+→ 134 / 134 tests réussis
+→ 0 échec
 ```
+
+Le test d'intégration de référence démontre :
+
+```text
+Action joueur
+→ progression temporelle
+→ vieillissement
+→ mort
+→ héritage
+→ continuité avec l'héritier
+```
+
+Cette validation prouve l'assemblage architectural minimal de la v0.3 ; elle ne prétend pas à elle seule représenter toute la richesse finale d'une vie jouable.
 
 ---
 
@@ -307,7 +322,7 @@ ENGINE-005  Stable
 ENGINE-006  Validée / Maturité 4
 ENGINE-007  Réservé / non créé
 ENGINE-008  Validée / Maturité 4
-ENGINE-009  Proposition / Maturité 2
+ENGINE-009  Validée / Maturité 4
 ```
 
 ---
@@ -325,6 +340,14 @@ Tout ancien fichier alternatif de catalogue doit uniquement rediriger vers ce fi
 ---
 
 # Historique
+
+## Version 1.6
+
+- ENGINE-009 passe à **Validée / Maturité 4** ;
+- `LifeSession` et sa couverture QA sont confirmés dans `CHRONIQUES-ENGINE` ;
+- test d'intégration de continuité v0.3 confirmé ;
+- validation globale portée à **134 / 134 tests réussis** ;
+- distinction conservée entre validation de l'assemblage minimal et richesse finale d'une vie jouable.
 
 ## Version 1.5
 

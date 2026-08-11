@@ -1,6 +1,6 @@
 # GDB-005E --- Les Produits
 
-> Version : 1.1
+> Version : 1.2
 > Statut : Officiel
 > Type : Économie & Progression
 > Maturité : 2
@@ -23,6 +23,30 @@ Tout produit doit avoir une origine identifiable, une utilité crédible et une 
 Un produit n'existe jamais uniquement comme récompense de gameplay.
 
 Un produit utilisé par une Action doit exister comme élément réellement disponible dans le monde ou dans le contexte de l'Acteur. Une Action ne peut jamais matérialiser gratuitement le produit dont elle a besoin.
+
+---
+
+# IDENTITÉ DE PRODUIT
+
+Lorsqu'une mécanique doit transférer, regrouper ou comparer plusieurs stocks de produits, leur nature ne peut pas être déduite d'une simple quantité ou d'un même type technique de Component.
+
+Le contexte doit donc pouvoir fournir une **identité de produit stable**.
+
+```text
+même identité de produit
+→ stocks compatibles pour un transfert ou regroupement
+
+identités différentes
+→ stocks non fusionnables implicitement
+```
+
+Cette identité décrit la nature du produit, pas l'Entity particulière qui porte un stock.
+
+Deux Entities différentes peuvent donc représenter deux stocks du même produit.
+
+Inversement, deux produits possédant par hasard la même valeur alimentaire ne deviennent jamais le même produit pour cette seule raison.
+
+GDB-005E n'impose pas le format technique de l'identifiant. Il doit seulement être explicite, stable dans le contexte concerné et comparable de manière déterministe.
 
 ---
 
@@ -124,6 +148,29 @@ L'architecture moteur devra représenter ou résoudre cette accessibilité avant
 
 ---
 
+# TRANSFERT ENTRE STOCKS
+
+Un transfert de produit ne crée ni ne détruit implicitement la quantité transférée.
+
+Pour une quantité `q > 0` :
+
+```text
+stock source du produit P -= q
+stock destination du même produit P += q
+```
+
+Un transfert réussi exige donc :
+
+- une source existante et suffisamment disponible ;
+- une destination compatible ;
+- la même identité de produit de part et d'autre ;
+- une accessibilité/autorisation conforme au contexte de l'échange ;
+- aucune quantité négative après résolution.
+
+Le transfert peut modifier l'accessibilité du produit pour les parties sans créer un système général d'inventaire dans cette version.
+
+---
+
 # CONSOMMATION ALIMENTAIRE
 
 Une consommation alimentaire valide relie trois faits :
@@ -167,7 +214,7 @@ Les produits alimentent les échanges, les métiers, les projets et les histoire
 
 Ils participent à l'identité économique du monde.
 
-Les produits alimentaires créent en particulier un lien réel entre les besoins des habitants [réf: GDB-004B], les ressources [réf: GDB-005B], la production et la consommation.
+Les produits alimentaires créent en particulier un lien réel entre les besoins des habitants [réf: GDB-004B], les ressources [réf: GDB-005B], la production, la distribution et la consommation.
 
 ---
 
@@ -180,6 +227,8 @@ Les produits alimentaires créent en particulier un lien réel entre les besoins
 - Un produit alimentaire peut contribuer à restaurer le besoin de nourriture.
 - La restauration alimentaire n'a pas de valeur universelle imposée par cette version.
 - L'accessibilité métier n'impose pas encore un système technique d'inventaire.
+- Deux stocks ne sont fusionnables ou transférables l'un vers l'autre que si leur identité de produit est compatible.
+- Un transfert conserve la quantité : ce qui quitte la source apparaît dans la destination, sauf règle distincte explicitement documentée.
 
 ---
 
@@ -193,19 +242,27 @@ Tout produit devra :
 4. interagir avec d'autres systèmes ;
 5. enrichir l'économie du monde ;
 6. ne jamais être consommé sans réduction correspondante de sa disponibilité ;
-7. respecter l'accessibilité de l'Acteur lorsqu'il sert de Cible à une Action.
+7. respecter l'accessibilité de l'Acteur lorsqu'il sert de Cible à une Action ;
+8. posséder une identité explicite lorsqu'une mécanique doit comparer ou transférer plusieurs stocks.
 
 ---
 
 # CRITÈRE DE VALIDATION
 
-Ce produit apporte-t-il une véritable valeur au monde, avec une origine, une disponibilité et des usages cohérents, plutôt que d'être un objet abstrait créé ou consommé gratuitement pour les besoins du gameplay ?
+Ce produit apporte-t-il une véritable valeur au monde, avec une origine, une identité, une disponibilité et des usages cohérents, plutôt que d'être un objet abstrait créé, fusionné ou consommé gratuitement pour les besoins du gameplay ?
 
 Si la réponse est non, il devra être repensé.
 
 ---
 
 # HISTORIQUE
+
+## Version 1.2
+
+- ajout de l'identité de produit stable pour les mécaniques de transfert/regroupement ;
+- interdiction de déduire l'identité d'un produit de sa seule valeur alimentaire ou de son type technique ;
+- formalisation de la conservation lors d'un transfert entre stocks compatibles ;
+- maintien de la frontière avec un futur système général d'inventaire.
 
 ## Version 1.1
 

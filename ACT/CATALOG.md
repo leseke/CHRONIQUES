@@ -1,6 +1,6 @@
 # ACT — Catalogue
 
-> Version : 1.10
+> Version : 1.11
 >
 > Statut : Foundation
 >
@@ -36,8 +36,8 @@ ACT
 ├── Taxonomie                 (ACT-008-A, audité)
 ├── Composition               (ACT-009-A, audité)
 ├── Événements                (ACT-010-A, audité)
-├── Patterns                  (PAT-001 M4 ; PAT-002 M4 ; PAT-003 M2)
-└── Verbes                    (VERB-001 M4 ; VERB-002 M4 ; VERB-003 M2)
+├── Patterns                  (PAT-001 M4 ; PAT-002 M4 ; PAT-003 M4)
+└── Verbes                    (VERB-001 M4 ; VERB-002 M4 ; VERB-003 M4)
 
 ---
 
@@ -88,14 +88,15 @@ Verbe : VERB-002 Manger
 ## PAT-003 — Production
 
 ```text
-Proposition / Maturité 2
+Officiel / Maturité 4
+Validation : 201 / 201
 Principe : Transformation
-Verbe proposé : VERB-003 Produire une denrée
+Verbe : VERB-003 Produire une denrée
 ```
 
 Origine : GDB-004A v1.1, GDB-005C v1.2, GDB-012B v1.1 et GDB-012E v1.1.
 
-Structure proposée :
+Structure validée :
 
 ```text
 entrées accessibles consommées
@@ -136,12 +137,13 @@ Intent : manger
 ## VERB-003 — Produire une denrée
 
 ```text
-Proposition / Maturité 2
+Officiel / Maturité 4
+Validation : 201 / 201
 Intent : produire_denree
 Pattern : PAT-003 Production
 ```
 
-Le premier contrat resserré transforme une entrée matérielle en sortie alimentaire selon une opération explicite, sans métier, salaire, prix ni marché implicites.
+Le contrat validé transforme une entrée matérielle en sortie alimentaire selon une opération explicite, sans métier, salaire, prix ni marché implicites.
 
 VERBS reste ouverte.
 
@@ -177,14 +179,23 @@ CODE
 
 # Historique
 
+## Version 1.11
+
+- `PAT-003 — Production` passe à **Officiel / Maturité 4** ;
+- `VERB-003 — Produire une denrée` passe à **Officiel / Maturité 4** ;
+- validation locale portée à **201 / 201 tests réussis** ;
+- chaîne `Transformation → PAT-003 → VERB-003 → Action` confirmée ;
+- production autonome puis alimentation au Tick suivant confirmées sans entrée joueur ;
+- PATTERNS et VERBS restent ouvertes ;
+- aucune consolidation TECH/roadmap/README déclenchée automatiquement.
+
 ## Version 1.10
 
 - création de `PAT-003 — Production` en Proposition / Maturité 2 ;
 - création de `VERB-003 — Produire une denrée` en Proposition / Maturité 2 ;
 - rattachement `Transformation → PAT-003 → VERB-003` ;
 - origine métier fixée par GDB-004A v1.1, GDB-005C v1.2, GDB-012B v1.1 et GDB-012E v1.1 ;
-- aucune validation M4 anticipée ;
-- aucune consolidation TECH/roadmap/README déclenchée.
+- aucune validation M4 anticipée.
 
 ## Version 1.9
 

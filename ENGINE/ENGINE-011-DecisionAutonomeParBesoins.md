@@ -1,12 +1,12 @@
 # ENGINE-011 — Décision autonome par besoins
 
-> Version : 1.1
+> Version : 1.2
 > Statut : Validée
 > Maturité : 4
 > Bibliothèque : ENGINE
 > Dépendances : MASTER-005, GDB-004B v1.1, ACT-002-H, ENGINE-006, ENGINE-010
 > Implémentation : `CHRONIQUES-ENGINE`
-> Validation : 156 / 156 tests réussis
+> Validation : 158 / 158 tests réussis
 
 ---
 
@@ -318,7 +318,37 @@ ENGINE-011 ne généralise pas `PipelineRunner`.
 
 ---
 
-# 15. Frontière avec les futures politiques
+# 15. Validation multi-Tick
+
+La couverture QA valide également l'intégration temporelle réelle avec `NeedsDecaySystem` lorsque celui-ci est enregistré avant `AutonomousActionSystem`.
+
+Scénario de seuil :
+
+```text
+Fatigue initiale = 62
+Déclin = 1 / Tick
+Seuil = 60
+
+Tick 1 → 61 → aucune Action
+Tick 2 → 60 → aucune Action
+Tick 3 → 59 → Intent se_reposer → Fatigue 79
+```
+
+Ce scénario confirme que l'égalité au seuil ne déclenche pas d'Intent et que le franchissement strict intervient après l'évolution du besoin lorsque l'ordre des Systems est :
+
+```text
+NeedsDecaySystem
+↓
+AutonomousActionSystem
+```
+
+Un second scénario valide vingt Ticks sans entrée joueur avec déclin de Fatigue et repos autonomes répétés.
+
+Cette preuve confirme une régulation autonome minimale dans le temps ; elle ne crée aucune règle nouvelle de fréquence d'Action et ne transforme pas `1 Tick` en durée universelle d'une Action.
+
+---
+
+# 16. Frontière avec les futures politiques
 
 ENGINE-011 ne couvre pas :
 
@@ -337,7 +367,7 @@ Ces sujets nécessiteront leurs propres règles amont avant code.
 
 ---
 
-# 16. Invariants
+# 17. Invariants
 
 - Une Fatigue égale au seuil ne déclenche rien.
 - Une Fatigue strictement inférieure au seuil produit `se_reposer`.
@@ -349,10 +379,11 @@ Ces sujets nécessiteront leurs propres règles amont avant code.
 - La source n'utilise aucun hasard.
 - L'Acteur de l'Intent est toujours l'Entity reçue.
 - Aucun Intent n'est inventé pour Faim, Sante ou Moral dans ce lot.
+- L'ordre des Systems reste une donnée explicite du comportement déterministe.
 
 ---
 
-# 17. Contrat QA
+# 18. Contrat QA
 
 La couverture validée vérifie notamment :
 
@@ -366,11 +397,13 @@ La couverture validée vérifie notamment :
 8. la source ne modifie pas `NeedsComponent` ;
 9. mêmes entrées → même décision ;
 10. intégration réelle ENGINE-010 → ENGINE-006 → World ;
-11. un besoin non actionnable ne produit pas de faux Intent.
+11. un besoin non actionnable ne produit pas de faux Intent ;
+12. le franchissement du seuil sur plusieurs Ticks déclenche le repos au moment exact attendu ;
+13. vingt Ticks sans entrée joueur produisent une régulation autonome déterministe de la Fatigue.
 
 ---
 
-# 18. Validation
+# 19. Validation
 
 Validation technique communiquée par le porteur du projet le 11 août 2026 :
 
@@ -379,17 +412,17 @@ dotnet build
 → succès
 
 dotnet test
-→ 156 / 156 tests réussis
+→ 158 / 158 tests réussis
 → 0 échec
 ```
 
-Les critères ENGINE-011 sont donc satisfaits et le document atteint la Maturité 4 conformément à MASTER-004.
+Les critères ENGINE-011 restent satisfaits et le document conserve la Maturité 4 conformément à MASTER-004.
 
-Cette validation porte sur la première décision autonome réelle `Fatigue → se_reposer`. Elle ne vaut pas validation d'une politique multi-besoins.
+Cette validation étendue couvre désormais la première décision autonome réelle `Fatigue → se_reposer` ainsi que son comportement multi-Tick minimal. Elle ne vaut pas validation d'une politique multi-besoins.
 
 ---
 
-# 19. Traçabilité
+# 20. Traçabilité
 
 ```text
 MASTER-005 Phase 3
@@ -409,7 +442,15 @@ La consolidation TECH/roadmap/README est volontairement différée jusqu'à un p
 
 ---
 
-# 20. Historique
+# 21. Historique
+
+## Version 1.2
+
+- validation globale étendue à **158 / 158 tests réussis** ;
+- ajout de la preuve multi-Tick `NeedsDecaySystem → AutonomousActionSystem` ;
+- validation du franchissement strict du seuil après décroissance ;
+- validation d'une régulation de Fatigue sur vingt Ticks sans entrée joueur ;
+- aucune consolidation transverse déclenchée, le jalon fonctionnel global n'étant pas encore atteint.
 
 ## Version 1.1
 

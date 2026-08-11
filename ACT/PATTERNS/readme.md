@@ -1,6 +1,6 @@
 # PATTERNS — Catalogue des Patterns d'Actions
 
-> Version : 1.5
+> Version : 1.6
 > Statut : Active
 > Type : Sous-bibliothèque ACT
 > Maturité : 2
@@ -12,8 +12,6 @@
 
 Référencer les Patterns réellement nécessaires aux Actions de Chroniques.
 
-Un Pattern représente une mécanique réutilisable située entre un Principe et un Verbe conformément à [réf: ACT-002-B] et [réf: ACT-002-C].
-
 ```text
 Principe
 ↓
@@ -24,30 +22,7 @@ Verbe
 Action
 ```
 
-PATTERNS ne définit aucune règle métier de GDB et n'énumère aucun comportement qui n'est pas encore justifié par un besoin réel.
-
----
-
-# Autorité
-
-La création et l'organisation des Patterns respectent notamment :
-
-- [réf: ACT-002-B] pour les niveaux d'abstraction ;
-- [réf: ACT-002-C] pour les relations de spécialisation ;
-- [réf: ACT-008-A] pour les familles de Verbes et le critère de création.
-
-Un Pattern :
-
-- spécialise un Principe ;
-- reste indépendant des acteurs particuliers, objets particuliers et contextes particuliers ;
-- peut être spécialisé par zéro, un ou plusieurs Verbes ;
-- ne dépend jamais d'une Action exécutée.
-
----
-
-# Règle d'attribution
-
-Un identifiant `PAT-xxx` n'est attribué qu'à l'apparition d'un besoin concret.
+PATTERNS ne définit aucune règle métier GDB et n'ajoute aucun Pattern théorique sans besoin réel.
 
 ---
 
@@ -55,81 +30,66 @@ Un identifiant `PAT-xxx` n'est attribué qu'à l'apparition d'un besoin concret.
 
 ## PAT-001 — Repos
 
-Statut : Officiel.  
-Maturité : 4.  
-Validation de référence : `161 / 161`.
-
 ```text
-Entretien → PAT-001 Repos → VERB-001 Se reposer
+Officiel / Maturité 4
+Validation : 161 / 161
+Entretien → Repos → VERB-001 Se reposer
 ```
-
----
 
 ## PAT-002 — Alimentation
 
-Statut : Officiel.  
-Maturité : 4.  
-Validation de référence : `178 / 178`.
-
 ```text
-Entretien → PAT-002 Alimentation → VERB-002 Manger
+Officiel / Maturité 4
+Validation : 178 / 178
+Entretien → Alimentation → VERB-002 Manger
 ```
-
----
 
 ## PAT-003 — Production
 
-Statut : Officiel.  
-Maturité : 4.  
-Validation de référence : `201 / 201`.
-
 ```text
-Transformation
-↓
-PAT-003 Production
-↓
-VERB-003 Produire une denrée
+Officiel / Maturité 4
+Validation : 201 / 201
+Transformation → Production → VERB-003 Produire une denrée
 ```
 
 Contrat : entrées consommées → sortie produite + provenance.
 
----
-
 ## PAT-004 — Transfert
 
-Statut : Proposition.  
-Maturité : 2.
-
-Origine métier : GDB-005E v1.2 et GDB-005F v1.1.
-
 ```text
-Échange
-↓
-PAT-004 Transfert
-↓
-VERB-004 Donner une denrée
+Proposition / Maturité 2
+Échange → Transfert → VERB-004 Donner une denrée
 ```
 
-PAT-004 formalise un déplacement conservatif de valeur :
+Origine métier : GDB-005E v1.3 et GDB-005F v1.2.
+
+Contrat :
 
 ```text
 stock source P -= q
 stock destination P += q
 ```
 
-Il est distinct d'Alimentation, qui consomme un produit, et de Production, qui transforme des entrées en sorties.
+avec :
 
-PAT-004 ne définit ni prix, ni paiement, ni contrepartie.
+- `q > 0` ;
+- source et destination distinctes ;
+- même identité de produit ;
+- conservation de la quantité totale ;
+- opportunité contextuelle autorisée ;
+- aucun prix ni paiement implicite.
+
+PAT-004 reste Proposition/M2 jusqu'à validation moteur.
 
 ---
 
 # État actuel
 
 ```text
-PAT-001  Repos         Officiel / Maturité 4
-PAT-002  Alimentation  Officiel / Maturité 4
-PAT-003  Production    Officiel / Maturité 4
-PAT-004  Transfert     Proposition / Maturité 2
+PAT-001  Repos         Officiel / M4
+PAT-002  Alimentation  Officiel / M4
+PAT-003  Production    Officiel / M4
+PAT-004  Transfert     Proposition / M2
 ```
 
 La sous-bibliothèque PATTERNS reste ouverte.
@@ -140,28 +100,28 @@ La sous-bibliothèque PATTERNS reste ouverte.
 
 Chaque Pattern catalogué représente-t-il une mécanique réellement distincte, réutilisable et nécessaire, sans dupliquer un Pattern existant ni absorber les règles propres à un Verbe ?
 
-Si la réponse est non, le Pattern doit être corrigé ou supprimé avant validation.
-
 ---
 
 # Historique
 
+## Version 1.6
+
+- PAT-004 synchronisé avec GDB-005E v1.3 / GDB-005F v1.2 ;
+- invariant `stock source ≠ stock destination` enregistré ;
+- PAT-004 reste Proposition / Maturité 2 avant validation locale.
+
 ## Version 1.5
 
-- création et enregistrement de `PAT-004 — Transfert` en Proposition / Maturité 2 ;
-- rattachement au Principe `Échange` ;
-- conservation stricte des quantités entre deux stocks compatibles ;
-- séparation explicite avec prix, monnaie et marché.
+- création de PAT-004 — Transfert.
 
 ## Version 1.4
 
-- `PAT-003 — Production` passe à Officiel / Maturité 4 ;
-- validation locale portée à 201 / 201.
+- PAT-003 validé à 201 / 201.
 
 ## Versions 1.0 à 1.3
 
-- création de PATTERNS ;
-- création et validation progressive de PAT-001 à PAT-003.
+- création de PATTERNS et validation progressive de PAT-001 à PAT-002 ;
+- ouverture de PAT-003.
 
 ---
 

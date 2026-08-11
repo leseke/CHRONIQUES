@@ -1,6 +1,6 @@
 # ENGINE — Catalogue
 
-> Version : 1.12
+> Version : 1.13
 > Statut : Foundation
 > Maturité : 1
 > Bibliothèque : ENGINE
@@ -72,20 +72,6 @@ Documente `WorldRepository`, snapshots, sérialisation JSON et restauration du W
 Statut : Validée.
 
 Maturité : 4.
-
-Première spécification ENGINE à avoir parcouru le cycle complet :
-
-```text
-Spécification
-↓
-Implémentation
-↓
-Tests
-↓
-Validation
-```
-
-Traduit ACT en architecture concrète :
 
 ```text
 Intent
@@ -181,9 +167,9 @@ La couverture comprend le franchissement strict du seuil et une régulation auto
 
 ## ENGINE-012 — Alimentation autonome minimale
 
-Statut : Proposition.
+Statut : Validée.
 
-Maturité : 2.
+Maturité : 4.
 
 Deuxième comportement autonome réel, fondé sur :
 
@@ -197,7 +183,7 @@ PAT-002 Alimentation
 VERB-002 Manger
 ```
 
-Flux cible :
+Flux validé :
 
 ```text
 Faim sous seuil
@@ -231,13 +217,18 @@ ENGINE-012 introduit uniquement ce qui devient nécessaire avec le deuxième Ver
 - entrée générique `PipelineRunner.Execute` ;
 - persistance de `FoodProductComponent`.
 
-Le contrat QA ajoute 17 tests ciblés. La suite attendue avant validation locale est :
+Validation technique communiquée le 11 août 2026 :
 
 ```text
-178 tests
+dotnet build
+→ succès
+
+dotnet test
+→ 178 / 178 tests réussis
+→ 0 échec
 ```
 
-ENGINE-012 ne crée ni inventaire, ni propriété, ni achat, ni cuisine, ni moteur universel d'Effects.
+La suite confirme le maintien de VERB-001, le fonctionnement de VERB-002 de bout en bout, la consommation d'une ressource réelle, l'arbitrage déterministe et l'absence d'inventaire implicite.
 
 ---
 
@@ -282,7 +273,7 @@ ENGINE-008  Validée / Maturité 4
 ENGINE-009  Validée / Maturité 4
 ENGINE-010  Validée / Maturité 4
 ENGINE-011  Validée / Maturité 4
-ENGINE-012  Proposition / Maturité 2
+ENGINE-012  Validée / Maturité 4
 ```
 
 ---
@@ -299,6 +290,16 @@ ENGINE/CATALOG.md
 
 # Historique
 
+## Version 1.13
+
+- ENGINE-012 passe à **Validée / Maturité 4** ;
+- validation locale portée à **178 / 178 tests réussis** ;
+- second besoin autonome `Faim → manger` confirmé de bout en bout ;
+- arbitrage déterministe Faim/Fatigue validé ;
+- Cibles dans le Plan, pipeline multi-Verbes et applicateurs d'Effects confirmés ;
+- produit alimentaire consommable et persistance validés ;
+- aucune consolidation TECH/roadmap/README déclenchée automatiquement.
+
 ## Version 1.12
 
 - création d'ENGINE-012 — Alimentation autonome minimale ;
@@ -308,8 +309,7 @@ ENGINE/CATALOG.md
 - Cibles matérialisées dans le Plan ;
 - séparation du runner et des applicateurs d'Effects ;
 - produit alimentaire minimal et persistance ajoutés ;
-- couverture QA cible portée à 17 nouveaux tests, soit 178 attendus ;
-- aucune consolidation TECH/roadmap/README déclenchée.
+- couverture QA cible portée à 17 nouveaux tests, soit 178 attendus.
 
 ## Version 1.11
 

@@ -1,6 +1,6 @@
 # TECH
 
-> Version : 1.1  
+> Version : 1.2  
 > Statut : Active  
 > Type : Bibliothèque  
 > Maturité : 2  
@@ -139,6 +139,42 @@ dotnet test
 → 122 / 122 réussis
 ```
 
+### TECH-002 — Boucle de vie minimale
+
+Statut :
+
+```text
+Validé
+```
+
+Documente l'implémentation de :
+
+- `LifeSession` ;
+- `LifeSessionState` ;
+- orchestration de `Scheduler.Tick(World)` ;
+- détection de la mort via `Lifecycle` ;
+- lecture observable de `heritage.transmission` ;
+- passage du contrôle à l'héritier ;
+- terminaison sans successeur ;
+- invariants QA et déterminisme de la séquence de contrôle ;
+- test d'intégration de continuité v0.3.
+
+Spécification d'origine :
+
+```text
+ENGINE-009
+```
+
+État de validation initial :
+
+```text
+dotnet build
+→ succès
+
+dotnet test
+→ 134 / 134 réussis
+```
+
 ---
 
 ## Contenu futur
@@ -148,9 +184,9 @@ Les prochains documents TECH devront être créés lorsqu'un ensemble technique 
 Exemples possibles :
 
 ```text
-TECH-002
 TECH-003
 TECH-004
+TECH-005
 ```
 
 Leur sujet n'est pas réservé à l'avance.
@@ -206,10 +242,11 @@ TECH-003
 
 Le nom doit décrire l'implémentation couverte.
 
-Exemple actuel :
+Exemples actuels :
 
 ```text
-TECH-001-SystemsDePopulation.md
+TECH-001 — Systems de population.md
+TECH-002 — Boucle de vie minimale.md
 ```
 
 ---
@@ -229,15 +266,13 @@ Tests concernés
 Exemple :
 
 ```text
-GDB-004C
+ENGINE-009
 ↓
-ENGINE-008
+LifeSession.cs
 ↓
-RelationSystem.cs
+LifeSessionTests.cs
 ↓
-RelationSystemTests.cs
-↓
-TECH-001
+TECH-002
 ```
 
 ---
@@ -260,19 +295,30 @@ TECH ne remplace aucune de ces sources.
 
 # État actuel
 
-La bibliothèque est désormais active.
+La bibliothèque est active.
 
 ```text
-Documents numérotés : 1
+Documents numérotés : 2
 
 TECH-001
 → Systems de population
+→ Validé
+
+TECH-002
+→ Boucle de vie minimale
 → Validé
 ```
 
 ---
 
 # Historique
+
+## Version 1.2
+
+- ajout de `TECH-002 — Boucle de vie minimale` ;
+- enregistrement de la validation ENGINE-009 ;
+- état de validation du moteur porté à **134 / 134 tests réussis** pour le lot ENGINE-009 ;
+- nombre de documents numérotés porté à 2.
 
 ## Version 1.1
 

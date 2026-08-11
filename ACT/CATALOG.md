@@ -1,6 +1,6 @@
 # ACT — Catalogue
 
-> Version : 1.8
+> Version : 1.9
 >
 > Statut : Foundation
 >
@@ -38,8 +38,8 @@ ACT
 ├── Taxonomie                 (créé --- ACT-008-A, v1.0 audité --- voir note sur le périmètre restreint)
 ├── Composition               (créé --- ACT-009-A, v1.1 audité --- voir note sur la frontière avec le Plan)
 ├── Événements                (créé --- ACT-010-A, v1.0 audité --- voir note sur le périmètre restreint)
-├── Patterns                  (PAT-001 Officiel/M4 ; PAT-002 Proposition/M2)
-└── Verbes                    (VERB-001 Officiel/M4 ; VERB-002 Proposition/M2)
+├── Patterns                  (PAT-001 Officiel/M4 ; PAT-002 Officiel/M4)
+└── Verbes                    (VERB-001 Officiel/M4 ; VERB-002 Officiel/M4)
 
 ---
 
@@ -142,12 +142,13 @@ VERB-001 Se reposer
 ## PAT-002 — Alimentation
 
 ```text
-Proposition / Maturité 2
+Officiel / Maturité 4
+Validation : 178 / 178
 ```
 
 Origine : GDB-004B v1.2 + GDB-005E v1.1.
 
-Chaîne proposée :
+Chaîne validée :
 
 ```text
 Principe Entretien
@@ -184,13 +185,14 @@ Intent : se_reposer
 ## VERB-002 — Manger
 
 ```text
-Proposition / Maturité 2
+Officiel / Maturité 4
+Validation : 178 / 178
 Intent : manger
 ```
 
 VERB-002 spécialise exactement PAT-002.
 
-Son contrat exige :
+Son contrat validé exige :
 
 ```text
 Acteur
@@ -261,14 +263,21 @@ UX
 
 # Historique
 
+## Version 1.9
+
+- `PAT-002 — Alimentation` passe à **Officiel / Maturité 4** ;
+- `VERB-002 — Manger` passe à **Officiel / Maturité 4** ;
+- validation locale portée à **178 / 178 tests réussis** ;
+- consommation d'une ressource réelle, ciblage par le Plan et restauration de Faim confirmés ;
+- PATTERNS et VERBS restent ouvertes ;
+- aucune consolidation TECH/roadmap/README déclenchée automatiquement.
+
 ## Version 1.8
 
 - création de `PAT-002 — Alimentation` en Proposition / Maturité 2 ;
 - création de `VERB-002 — Manger` en Proposition / Maturité 2 ;
 - origine métier fixée par GDB-004B v1.2 et GDB-005E v1.1 ;
-- distinction contractuelle avec PAT-001 / VERB-001 confirmée par les quatre tests d'ACT-008-A ;
-- PATTERNS et VERBS restent ouvertes ;
-- aucune consolidation TECH/roadmap/README déclenchée.
+- distinction contractuelle avec PAT-001 / VERB-001 confirmée par les quatre tests d'ACT-008-A.
 
 ## Version 1.7
 

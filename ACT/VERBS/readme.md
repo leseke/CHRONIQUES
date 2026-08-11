@@ -1,6 +1,6 @@
 # VERBS — Catalogue des Verbes d'Actions
 
-> Version : 1.2
+> Version : 1.3
 > Statut : Active
 > Type : Sous-bibliothèque ACT
 > Maturité : 2
@@ -39,23 +39,6 @@ Un Verbe n'existe que lorsqu'un besoin réel :
 
 ---
 
-# Identifiants
-
-Les Verbes utilisent des identifiants :
-
-```text
-VERB-001
-VERB-002
-VERB-003
-...
-```
-
-Un identifiant est attribué uniquement à la création effective d'un Verbe.
-
-Les anciens exemples du catalogue ACT n'étaient pas des réservations numériques.
-
----
-
 # Verbes actuels
 
 ## VERB-001 — Se reposer
@@ -64,25 +47,13 @@ Statut : Officiel.
 
 Maturité : 4.
 
-Validation de référence : `161 / 161` tests réussis.
+Validation de référence : `161 / 161`.
 
 ```text
-Principe Entretien
-↓
-PAT-001 Repos
-↓
-VERB-001 Se reposer
-↓
-Action exécutée
+Entretien → Repos → Se reposer
 ```
 
-Origine métier : GDB-004B.
-
-Intent associé :
-
-```text
-se_reposer
-```
+Intent : `se_reposer`.
 
 ---
 
@@ -92,16 +63,32 @@ Statut : Officiel.
 
 Maturité : 4.
 
-Validation de référence : `178 / 178` tests réussis.
-
-Origine métier : GDB-004B v1.2 et GDB-005E v1.1.
+Validation de référence : `178 / 178`.
 
 ```text
-Principe Entretien
+Entretien → Alimentation → Manger
+```
+
+Intent : `manger`.
+
+Une réussite consomme un produit alimentaire accessible et restaure Faim.
+
+---
+
+## VERB-003 — Produire une denrée
+
+Statut : Proposition.
+
+Maturité : 2.
+
+Origine métier : GDB-004A v1.1, GDB-005C v1.2, GDB-012B v1.1 et GDB-012E v1.1.
+
+```text
+Transformation
 ↓
-PAT-002 Alimentation
+PAT-003 Production
 ↓
-VERB-002 Manger
+VERB-003 Produire une denrée
 ↓
 Action exécutée
 ```
@@ -109,35 +96,34 @@ Action exécutée
 Intent associé :
 
 ```text
-manger
+produire_denree
 ```
 
-VERB-002 exige une Cible-produit alimentaire accessible. Une réussite réduit réellement la disponibilité du produit et augmente la satisfaction de Faim de l'Acteur.
+Le premier contrat resserré utilise une entrée matérielle et une sortie alimentaire. Une réussite diminue réellement l'entrée, augmente réellement les portions de sortie et conserve une provenance.
 
-La Cible concrète appartient au Plan/Action, jamais à l'Intent.
+VERB-003 ne définit ni métier, ni salaire, ni prix, ni marché.
 
 ---
 
 # Frontière avec le moteur
 
-VERBS décrit la capacité et son contrat conceptuel.
+VERBS décrit les capacités et leurs contrats conceptuels.
 
-Le moteur peut utiliser un identifiant technique compatible, mais l'implémentation ne devient pas l'autorité sur le sens du Verbe.
+Le moteur peut utiliser des identifiants techniques compatibles, mais l'implémentation ne devient jamais l'autorité sur leur sens.
 
-Une valeur de tuning présente dans le code n'est pas automatiquement une règle VERBS.
-
-VERB-002 n'impose aucun système technique d'inventaire : il exige uniquement qu'une implémentation puisse résoudre une nourriture réellement accessible conformément à GDB-005E.
+Les valeurs de tuning et opérations concrètes restent configurables selon les autorités GDB/ENGINE applicables.
 
 ---
 
 # État actuel
 
 ```text
-VERB-001  Se reposer  Officiel / Maturité 4
-VERB-002  Manger      Officiel / Maturité 4
+VERB-001  Se reposer            Officiel / Maturité 4
+VERB-002  Manger                Officiel / Maturité 4
+VERB-003  Produire une denrée   Proposition / Maturité 2
 ```
 
-La sous-bibliothèque VERBS reste ouverte : la validation de ses deux premiers Verbes ne constitue pas sa clôture.
+La sous-bibliothèque VERBS reste ouverte.
 
 ---
 
@@ -151,25 +137,27 @@ Si la réponse est non, le Verbe doit être corrigé avant validation.
 
 # Historique
 
+## Version 1.3
+
+- création et enregistrement de `VERB-003 — Produire une denrée` en Proposition / Maturité 2 ;
+- rattachement unique à PAT-003 — Production ;
+- objectif d'Intent `produire_denree` ;
+- séparation explicite avec métier, salaire et marché.
+
 ## Version 1.2
 
-- `VERB-002 — Manger` passe à **Officiel / Maturité 4** ;
-- validation locale portée à **178 / 178 tests réussis** ;
-- ciblage par le Plan, consommation réelle et restauration de Faim confirmés ;
-- VERBS reste ouverte, sans clôture globale de bibliothèque.
+- `VERB-002 — Manger` passe à Officiel / Maturité 4 ;
+- validation locale portée à 178 / 178.
 
 ## Version 1.1
 
-- synchronisation de VERB-001 avec sa validation Officiel / Maturité 4 ;
-- création et enregistrement de VERB-002 — Manger en Proposition / Maturité 2 ;
-- rattachement à PAT-002 — Alimentation ;
-- exigence d'une Cible alimentaire accessible et réellement consommée.
+- synchronisation de VERB-001 avec sa validation ;
+- création de VERB-002.
 
 ## Version 1.0
 
 - création de la sous-bibliothèque VERBS ;
-- attribution du premier identifiant réel `VERB-001` ;
-- enregistrement de `VERB-001 — Se reposer`.
+- attribution du premier identifiant réel `VERB-001`.
 
 ---
 

@@ -1,8 +1,8 @@
 # ENGINE-009 — Boucle de vie minimale
 
-> Version : 1.0
-> Statut : Proposition
-> Maturité : 2
+> Version : 1.1
+> Statut : Validée
+> Maturité : 4
 > Bibliothèque : ENGINE
 > Dépendances : ENGINE-001, ENGINE-003, ENGINE-006, ENGINE-008, PROD/FeuilleDeRoute.md v2.3
 
@@ -468,11 +468,11 @@ Il prouve la continuité architecturale minimale exigée pour relier les briques
 
 # 19. Critères de validation
 
-ENGINE-009 pourra passer à Maturité 4 lorsque :
+ENGINE-009 peut passer à Maturité 4 lorsque :
 
-- l'implémentation correspondra identifiant pour identifiant au contrat retenu ;
-- les tests unitaires de session seront passants ;
-- un test d'intégration démontrera réellement le passage :
+- l'implémentation correspond identifiant pour identifiant au contrat retenu ;
+- les tests unitaires de session sont passants ;
+- un test d'intégration démontre réellement le passage :
 
 ```text
 personnage actif
@@ -481,8 +481,35 @@ personnage actif
 → continuité
 ```
 
-- aucun System n'aura été couplé à `World.Events` ;
-- aucune nouvelle règle métier n'aura été introduite par la couche d'orchestration.
+- aucun System n'est couplé à `World.Events` ;
+- aucune nouvelle règle métier n'est introduite par la couche d'orchestration.
+
+## État de validation
+
+Ces critères ont été validés le 11 août 2026.
+
+```text
+dotnet build
+→ succès
+
+dotnet test
+→ 134 / 134 tests réussis
+→ 0 échec
+```
+
+La couverture comprend les tests unitaires de `LifeSession`, les invariants QA du présent document et le test d'intégration v0.3 :
+
+```text
+Action joueur
+→ progression temporelle
+→ vieillissement
+→ mort
+→ HeritageSystem
+→ transmission
+→ bascule du contrôle vers l'héritier
+```
+
+ENGINE-009 est donc **Validée / Maturité 4**.
 
 ---
 
@@ -507,6 +534,14 @@ Ces sujets restent attachés à leurs phases et bibliothèques d'autorité respe
 ---
 
 # 21. Historique
+
+## Version 1.1
+
+- ENGINE-009 passe à **Validée / Maturité 4** ;
+- implémentation `LifeSession` confirmée dans `CHRONIQUES-ENGINE` ;
+- contrat QA complété et validé ;
+- test d'intégration v0.3 confirmé ;
+- validation technique portée à **134 / 134 tests réussis**.
 
 ## Version 1.0
 

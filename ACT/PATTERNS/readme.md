@@ -1,6 +1,6 @@
 # PATTERNS — Catalogue des Patterns d'Actions
 
-> Version : 1.0
+> Version : 1.1
 > Statut : Active
 > Type : Sous-bibliothèque ACT
 > Maturité : 2
@@ -51,29 +51,53 @@ Un identifiant `PAT-xxx` n'est attribué qu'à l'apparition d'un besoin concret.
 
 Les exemples historiques présents dans `ACT/CATALOG.md` avant la création de cette sous-bibliothèque n'étaient pas des réservations d'identifiants.
 
-La numérotation réelle commence donc avec le premier Pattern effectivement requis par le moteur validé.
-
 ---
 
 # Patterns actuels
 
 ## PAT-001 — Repos
 
-Statut : Proposition.
+Statut : Officiel.
 
-Maturité : 2.
+Maturité : 4.
 
-Premier Pattern concret de Chroniques.
+Validation de référence : `161 / 161` tests réussis.
 
-Il formalise la mécanique générique permettant à un Acteur de restaurer la satisfaction de son besoin de repos, sans imposer la manière particulière de se reposer.
-
-Spécialisation actuelle :
+Chaîne :
 
 ```text
+Principe Entretien
+↓
 PAT-001 Repos
 ↓
 VERB-001 Se reposer
 ```
+
+PAT-001 formalise la récupération du besoin de repos sans consommation de produit alimentaire.
+
+---
+
+## PAT-002 — Alimentation
+
+Statut : Proposition.
+
+Maturité : 2.
+
+Origine métier : GDB-004B v1.2 et GDB-005E v1.1.
+
+Chaîne proposée :
+
+```text
+Principe Entretien
+↓
+PAT-002 Alimentation
+↓
+VERB-002 Manger
+```
+
+PAT-002 formalise la consommation réelle d'un produit alimentaire accessible afin de contribuer au besoin de nourriture.
+
+Il est distinct de PAT-001 car sa structure de contrat exige une Cible-produit, une accessibilité et une diminution de disponibilité.
 
 ---
 
@@ -91,14 +115,15 @@ VERBE
 = spécialisation exprimable
 ```
 
-Un Pattern ne doit jamais contenir les règles propres à un Verbe concret si celles-ci ne sont pas partagées par toute sa famille.
+Un Pattern ne doit jamais contenir les règles propres à un Verbe concret si elles ne sont pas partagées par toute sa famille.
 
 ---
 
 # État actuel
 
 ```text
-PAT-001  Repos  Proposition / Maturité 2
+PAT-001  Repos         Officiel / Maturité 4
+PAT-002  Alimentation  Proposition / Maturité 2
 ```
 
 ---
@@ -112,6 +137,12 @@ Si la réponse est non, le Pattern doit être corrigé ou supprimé avant valida
 ---
 
 # Historique
+
+## Version 1.1
+
+- synchronisation de PAT-001 avec sa validation Officiel / Maturité 4 ;
+- création et enregistrement de PAT-002 — Alimentation en Proposition / Maturité 2 ;
+- distinction contractuelle Repos / Alimentation explicitée.
 
 ## Version 1.0
 

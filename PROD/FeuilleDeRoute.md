@@ -1,6 +1,6 @@
-# Chroniques — Feuille de Route V2.4
+# Chroniques — Feuille de Route V2.5
 
-> Version : 2.4
+> Version : 2.5
 > Statut : Officiel
 > Type : Roadmap
 > Maturité : 2
@@ -10,41 +10,32 @@
 
 # Vision
 
-Chroniques n'est pas simplement un jeu.
-
 Chroniques est un moteur de simulation narratif sur lequel un jeu est construit.
 
-Le jeu n'est que la première utilisation de ce moteur.
-
-Le développement suit une approche **Documentation First** où chaque règle ou architecture structurante est définie dans sa bibliothèque d'autorité avant son implémentation, sauf documentation ENGINE explicitement rétroactive d'un code historique déjà existant.
+Le développement suit une approche **Documentation First** : toute règle ou architecture structurante est reliée à une autorité documentaire avant son implémentation, sauf documentation ENGINE explicitement rétroactive d'un code historique existant.
 
 ---
 
-# Ce qui change par rapport à la V2.3
+# Ce qui change par rapport à la V2.4
 
-La V2.4 enregistre la validation de la boucle de vie minimale de v0.3.
+La V2.5 enregistre le premier lot validé de v0.4 — Le monde vivant.
 
 Principales évolutions :
 
-- `ENGINE-009 — Boucle de vie minimale` passe à **Validée / Maturité 4** ;
-- `LifeSession` relie désormais Scheduler, Lifecycle et résultat d'héritage sans introduire de nouvelle règle métier ;
-- le test d'intégration v0.3 démontre le parcours minimal `Action → temps → vieillissement → mort → héritier → continuité` ;
-- la couverture QA d'ENGINE-009 est complète ;
-- validation technique de référence portée à **134 / 134 tests réussis** ;
-- création de `TECH-002 — Boucle de vie minimale` ;
-- l'ouverture de la phase v0.4 — Le monde vivant peut désormais être préparée sans confondre autonomie des PNJ et orchestration joueur de v0.3.
-
-Cette validation prouve l'assemblage architectural minimal de la continuité d'une vie. Elle ne prétend pas à elle seule représenter toute la richesse finale du contenu, du Rendering ou des parcours joueurs.
+- `ENGINE-010 — Orchestration des habitants autonomes` passe à **Validée / Maturité 4** ;
+- `AutonomousActionSystem` permet désormais au Scheduler de conduire indirectement une Action d'habitant sans intervention du joueur ;
+- les frontières `IAutonomousIntentSource` et `IAutonomousIntentExecutor` séparent décision, orchestration et exécution ;
+- le test d'intégration démontre `Scheduler → autonomie → Intent → ENGINE-006 → World` ;
+- validation technique de référence portée à **146 / 146 tests réussis** ;
+- création de `TECH-003 — Orchestration des habitants autonomes` ;
+- `ENGINE-C06` est clôturé sur sa lacune d'orchestration ;
+- la politique de décision des habitants reste volontairement hors du périmètre d'ENGINE-010.
 
 ---
 
-# Les cinq principes
+# Principes de développement
 
 ## 1. Le code suit les spécifications
-
-Aucune fonctionnalité structurante n'est développée sans être reliée à une spécification existante.
-
-La hiérarchie de référence est :
 
 ```text
 MASTER
@@ -64,173 +55,40 @@ Tests
 TECH
 ```
 
-Chaque niveau respecte les autorités des niveaux précédents.
-
----
+Aucune couche aval ne doit contredire une autorité amont applicable.
 
 ## 2. Documentation vivante
 
-Une fonctionnalité n'est considérée comme terminée que lorsqu'elle est :
+Une fonctionnalité structurante n'est terminée que lorsqu'elle est :
 
 - spécifiée ;
 - implémentée ;
 - compilée ;
 - testée ;
 - validée ;
-- documentée dans TECH lorsque le lot est suffisamment stable.
-
----
+- documentée dans TECH lorsque le lot est stable.
 
 ## 3. Data-driven
 
-Le moteur ne doit pas contenir les données métier spécifiques du jeu lorsqu'elles peuvent être externalisées.
-
-Objets, personnages, métiers, bâtiments, événements, villes, compétences, religions ou dialogues ont vocation à être définis par des données externes.
-
-Le moteur connaît leurs structures et leurs contrats, pas leur contenu final.
-
----
+Les données métier spécifiques ont vocation à être externalisées lorsqu'elles peuvent l'être.
 
 ## 4. Déterminisme
 
-À état identique, seed identique, entrées identiques et ordre de Systems identique, la simulation produit le même résultat.
-
-Cette propriété soutient notamment :
-
-- sauvegardes fiables ;
-- replays ;
-- tests reproductibles ;
-- diagnostic ;
-- futur multijoueur déterministe si cette direction est retenue.
-
----
+À état, seed, entrées et ordre identiques, la simulation doit produire le même résultat.
 
 ## 5. Séparation des responsabilités
 
-Chaque bibliothèque possède un rôle distinct.
-
-- **MASTER** : gouvernance et architecture documentaire globale ;
-- **CORE** : primitives conceptuelles fondamentales ;
-- **GDB** : règles et modèles de simulation ;
-- **ACT** : contrats d'Intent, Plan, Action, Outcome et concepts associés ;
-- **ENGINE** : architecture interne attendue du moteur ;
-- **CHRONIQUES-ENGINE** : implémentation exécutable ;
-- **TECH** : documentation de l'implémentation réellement obtenue après validation.
-
-Aucune bibliothèque ne doit redéfinir silencieusement l'autorité d'une autre.
-
----
-
-# Architecture documentaire
-
-```text
-MASTER
-│
-├── Gouvernance
-├── Architecture documentaire
-└── Principes
-
-        │
-        ▼
-
-CORE
-│
-├── Entity
-├── Component
-├── State
-├── Value
-├── Relation
-├── Event
-└── primitives fondamentales
-
-        │
-        ▼
-
-GDB
-│
-├── Monde
-├── Habitants
-├── Relations
-├── Compétences
-├── Économie
-├── Transmission
-└── règles de simulation
-
-        │
-        ▼
-
-ACT
-│
-├── Intent
-├── Planner / Plan
-├── Action
-├── Outcome
-└── contrats d'exécution
-
-        │
-        ▼
-
-ENGINE
-│
-├── Kernel
-├── World.Events
-├── Scheduler / boucle de simulation
-├── Systems
-├── Action Pipeline
-├── Persistence / Serialization
-└── infrastructure
-
-        │
-        ▼
-
-CHRONIQUES-ENGINE
-(Code)
-
-        │
-        ▼
-
-Tests
-
-        │
-        ▼
-
-TECH
-(Documente l'implémentation validée)
-```
-
----
-
-# Architecture générale du moteur
-
-```text
-Chroniques
-│
-├── Simulation
-│      Logique déterministe en C# pur
-│
-├── Content
-│      Données externes
-│
-├── Rendering
-│      Adaptateurs de rendu
-│
-├── Tools
-│      Outils de développement
-│
-├── Documentation
-│
-└── Tests
-```
-
-La couche Simulation ignore la manière dont elle est affichée.
-
-Le rendu représente l'état courant sans devenir une source de vérité métier.
+- MASTER : gouvernance ;
+- CORE : primitives ;
+- GDB : règles et modèles de simulation ;
+- ACT : langage universel des Actions ;
+- ENGINE : architecture attendue ;
+- CHRONIQUES-ENGINE : implémentation exécutable ;
+- TECH : documentation de l'implémentation validée.
 
 ---
 
 # Architecture moteur actuelle
-
-Le moteur se développe autour des responsabilités suivantes :
 
 ```text
 World
@@ -241,55 +99,52 @@ World
 ├── Systems
 ├── Action Pipeline
 ├── Session / boucle de vie minimale
+├── Autonomy / orchestration habitants
 ├── Persistence / Serialization
 └── Resource Management futur
 ```
 
 ## World.Events
 
-`World.Events` est un journal d'observabilité.
+`World.Events` reste un journal d'observabilité, jamais un EventBus entre Systems.
 
-Il ne constitue pas un EventBus Publish/Subscribe entre Systems.
+## Scheduler
 
-Les Systems observent l'état du World pour décider d'agir.
+Le Scheduler reste l'autorité sur l'avancement du Tick et l'ordre des Systems.
 
-## Scheduler / Simulation Loop
+## LifeSession
 
-La boucle de simulation actuellement implémentée est portée par le Scheduler et documentée par ENGINE-003.
+`LifeSession` orchestre le personnage contrôlé et la continuité minimale avec l'héritier.
 
-Aucune séparation artificielle n'est créée tant que le code ne matérialise pas deux responsabilités indépendantes.
+## Autonomy
 
-## Session / boucle de vie minimale
+Le premier lot d'autonomie est maintenant validé :
 
-`LifeSession`, documentée par ENGINE-009 et TECH-002, orchestre la continuité du personnage contrôlé au-dessus du Scheduler.
+```text
+Scheduler
+↓
+AutonomousActionSystem
+↓
+IAutonomousIntentSource
+↓
+Intent?
+↓
+IAutonomousIntentExecutor
+↓
+ENGINE-006
+↓
+World
+```
 
-Elle ne devient ni un System, ni un moteur de règles métier, ni un moteur d'autonomie PNJ.
-
-## Persistence / Serialization
-
-La persistance et la sérialisation sont actuellement documentées ensemble par ENGINE-005 car elles partagent le même ensemble de contrats.
-
-## Resource Management
-
-ENGINE-007 reste réservé à un futur Resource Manager technique.
-
-Le mot « mémoire » dans ce contexte désigne éventuellement la mémoire technique, le cache ou la durée de vie des ressources. Il ne désigne pas la **Mémoire du Monde** définie par la GDB.
+Cette architecture ne constitue pas encore une IA métier complète.
 
 ---
 
 # Feuille de route par versions
 
-L'objectif directeur reste le critère de sortie de la Phase 1 de MASTER-005 :
-
-> Une vie entière jouable, du premier choix au dernier, avec continuité par héritage.
-
----
-
 # v0.1 — Le noyau
 
-Construction des fondations du moteur.
-
-## Infrastructure
+Fondations :
 
 - Entity ;
 - Component ;
@@ -298,109 +153,53 @@ Construction des fondations du moteur.
 - Relation ;
 - World ;
 - Tick ;
-- Time ;
 - Lifecycle ;
 - RNG déterministe ;
-- première sérialisation JSON.
+- première sérialisation.
 
-## Documentation
-
-- MASTER ;
-- CORE.
-
-## Validation
-
-- tests unitaires du Kernel ;
-- sauvegarde/restauration déterministe ;
-- World vide reproductible.
+Statut architectural : ✅
 
 ---
 
 # v0.2 — Infrastructure de simulation
 
-Construction de l'infrastructure permettant au monde de vivre dans le temps.
+Infrastructure :
 
-## ENGINE
-
-- journal `World.Events` ;
-- Scheduler / boucle de simulation ;
+- `World.Events` ;
+- Scheduler ;
 - Systems ;
 - Persistence / Serialization ;
-- Lifecycle du World et des Entities selon les contrats concernés.
-
-## Simulation
-
-- premier personnage ;
 - besoins ;
 - vieillissement ;
-- cycle de vie ;
-- évolution temporelle.
+- cycle de vie.
 
-## Validation
-
-Un personnage peut :
-
-- naître ;
-- vivre ;
-- voir évoluer ses besoins ;
-- vieillir ;
-- mourir ;
-
-sans moteur graphique.
-
-Toute la simulation reste déterministe.
+Statut architectural : ✅
 
 ---
 
 # v0.3 — Une vie entière
 
-Atteint le critère de sortie de la Phase 1 de MASTER-005 sur le plan de l'assemblage moteur minimal.
+Objectif : assembler les briques nécessaires à une continuité minimale d'une vie contrôlée.
 
-## ACT
-
-- Intent ;
-- Planner / Plan ;
-- Action ;
-- Outcome ;
-- Effects ;
-- événements observables associés lorsque nécessaire.
-
-## Simulation
-
-- relations ;
-- compétences ;
-- héritage minimal ;
-- assemblage de ces briques en une boucle de vie continue.
-
-## État courant
-
-Les briques structurantes de v0.3 sont désormais implémentées :
+## État validé
 
 ```text
-Action Pipeline                ✅
-Relations                      ✅
-Compétences                    ✅
-Héritage minimal               ✅
-Boucle de vie / LifeSession    ✅
-Continuité avec héritier       ✅
+Action Pipeline                ✅ ENGINE-006
+Relations                      ✅ ENGINE-008
+Compétences                    ✅ ENGINE-008
+Héritage minimal               ✅ ENGINE-008
+LifeSession                    ✅ ENGINE-009
+Mort → héritier → continuité   ✅ ENGINE-009
 ```
 
-Spécifications ENGINE concernées :
+Documentation TECH :
 
 ```text
-ENGINE-006  Validée / Maturité 4
-ENGINE-008  Validée / Maturité 4
-ENGINE-009  Validée / Maturité 4
+TECH-001 — Systems de population
+TECH-002 — Boucle de vie minimale
 ```
 
-Documentation technique aval :
-
-```text
-TECH-001  Systems de population
-TECH-002  Boucle de vie minimale
-```
-
-Validation technique de référence du moteur :
+Validation de référence :
 
 ```text
 dotnet build
@@ -408,13 +207,12 @@ dotnet build
 
 dotnet test
 → 134 / 134 tests réussis
-→ 0 échec
 ```
 
 Le test d'intégration v0.3 démontre :
 
 ```text
-choix / Action joueur
+Action joueur
 ↓
 évolution temporelle
 ↓
@@ -427,72 +225,135 @@ transmission minimale
 continuité avec héritier
 ```
 
-Ce résultat valide l'assemblage minimal du moteur. La richesse finale d'une vie jouable dépend encore du contenu, du catalogue d'Actions, du Rendering et des systèmes futurs ; elle ne doit pas être inférée du seul nombre de tests.
-
-## Rendering
-
-La boucle de vie minimale du moteur est suffisamment stable pour permettre la construction d'une première interface jouable sans utiliser le Rendering pour compenser une lacune d'orchestration Simulation.
-
-## Validation de sortie
-
-Le moteur sait désormais démontrer techniquement le parcours minimal :
-
-- un personnage contrôlé agit ;
-- le temps progresse ;
-- il peut mourir ;
-- une transmission minimale peut être produite ;
-- le contrôle peut poursuivre avec l'héritier.
-
-La validation produit/jeu complète reste distincte de cette validation architecturale.
+Ce résultat valide l'assemblage moteur minimal. Il ne prétend pas représenter toute la richesse finale du contenu ou du Rendering.
 
 ---
 
 # v0.4 — Le monde vivant
 
-Correspond à la phase où Chroniques dépasse la vie individuelle pour faire évoluer le monde de manière autonome.
+Objectif : donner au monde une existence indépendante de l'intervention permanente du joueur.
 
-Cette phase devient le prochain axe d'architecture moteur après validation d'ENGINE-009.
+Cible de phase :
 
-Ajouts visés :
+- habitants autonomes ;
+- économie qui évolue ;
+- événements du monde ;
+- Mémoire du Monde ;
+- évolution crédible sur plusieurs générations.
 
-- PNJ autonomes ;
-- économie autonome ;
-- **Mémoire du Monde** ;
+## Lot 1 — Orchestration autonome
+
+Statut : ✅ Validé
+
+Spécification :
+
+```text
+ENGINE-010 — Orchestration des habitants autonomes
+```
+
+Implémentation :
+
+```text
+IAutonomousIntentSource
+IAutonomousIntentExecutor
+AutonomousActionSystem
+```
+
+Validation :
+
+```text
+dotnet build
+→ succès
+
+dotnet test
+→ 146 / 146 tests réussis
+→ 0 échec
+```
+
+Test d'intégration :
+
+```text
+Scheduler.Tick
+↓
+AutonomousActionSystem
+↓
+Intent "se_reposer"
+↓
+PipelineRunner
+↓
+Action Archived
+↓
+Outcome réussi
+↓
+World modifié
+```
+
+Documentation technique :
+
+```text
+TECH-003 — Orchestration des habitants autonomes
+```
+
+Constat historique :
+
+```text
+ENGINE-C06
+→ Clos
+```
+
+## Frontière du lot 1
+
+ENGINE-010 valide :
+
+```text
+quand et comment un habitant autonome peut remettre un Intent au pipeline
+```
+
+Il ne définit pas :
+
+```text
+pourquoi cet habitant choisit précisément cet Intent
+```
+
+La politique de décision reste donc la prochaine frontière conceptuelle naturelle.
+
+## Étape suivante de v0.4
+
+Avant tout nouveau code, auditer les autorités GDB qui peuvent justifier une première politique déterministe de décision :
+
+```text
+GDB-004B — Besoins
+GDB-004D — Personnalités
+GDB-004E — Habitudes
+GDB-004F — Ambitions
+GDB-002E — Opportunités
+```
+
+Objectif : déterminer si les règles existantes sont assez précises pour spécifier une politique minimale `Entity + World + Tick → Intent?`.
+
+Si elles ne le sont pas, la GDB doit être précisée avant toute nouvelle spécification ENGINE.
+
+## Autres lots v0.4 à ouvrir seulement au besoin
+
+- Mémoire du Monde ;
 - événements dynamiques ;
-- premières couches de comportement autonome nécessaires à cette simulation.
+- économie autonome minimale ;
+- travail et activités autonomes ;
+- interactions autonomes entre habitants.
 
-## Principe d'ouverture
+Aucun ordre artificiel n'est imposé tant que le besoin concret n'est pas établi.
 
-v0.4 ne doit pas commencer par ajouter arbitrairement une IA générale.
+## Critère de sortie
 
-Le prochain lot doit d'abord identifier dans les documents GDB existants le plus petit besoin d'autonomie concret, puis produire la spécification ENGINE correspondante avant toute implémentation.
+Le monde évolue de façon crédible pendant plusieurs générations sans intervention permanente du joueur.
 
-Le constat historique ENGINE-C06 relatif à l'orchestration future des Actions de PNJ reste ouvert et appartient à cette phase.
-
-## Mémoire du Monde
-
-La Mémoire du Monde est un concept de simulation et de narration persistante défini par la GDB.
-
-Elle ne doit être confondue ni avec :
-
-- `World.Events`, journal technique d'observabilité ;
-- la mémoire RAM ou le cache d'un Resource Manager ;
-- les `Episode` d'une relation sociale ;
-- un hypothétique stockage omniscient de souvenirs individuels.
-
-Elle fera l'objet d'une spécification ENGINE dédiée uniquement lorsqu'un besoin d'implémentation concret sera ouvert pour v0.4.
-
-## Validation
-
-Le monde continue d'évoluer sur plusieurs générations sans intervention permanente du joueur.
+v0.4 n'est donc **pas** terminée avec ENGINE-010 : seul son premier raccordement architectural est validé.
 
 ---
 
 # v0.5 — La profondeur
 
-Correspond à l'approfondissement des systèmes spécialisés.
-
-Ajouts possibles selon les documents d'autorité :
+Ajouts possibles selon les autorités :
 
 - économie avancée ;
 - métiers ;
@@ -501,11 +362,10 @@ Ajouts possibles selon les documents d'autorité :
 - crime ;
 - politique ;
 - religion ;
-- combat.
+- combat ;
+- patrimoine avancé.
 
-## Validation
-
-Trois vies différentes produisent trois histoires profondément différentes sans scripts imposant artificiellement leur déroulement.
+Critère : trois parcours radicalement différents produisent des histoires profondément différentes.
 
 ---
 
@@ -516,14 +376,12 @@ Ajouts visés :
 - éditeur de contenu ;
 - debugger de simulation ;
 - inspection du World ;
-- outils de production ;
-- diagnostics de déterminisme et de performance si nécessaires.
+- diagnostics déterministes ;
+- outils de production.
 
 ---
 
 # v1.0 — Première alpha
-
-Le moteur est considéré suffisamment stable pour une première alpha complète.
 
 Objectifs :
 
@@ -533,13 +391,11 @@ Objectifs :
 - interface aboutie ;
 - direction artistique ;
 - stabilité ;
-- diagnostics suffisants pour reproduire les anomalies de simulation.
+- diagnostics suffisants.
 
 ---
 
 # Workflow de développement
-
-Toute fonctionnalité structurante suit le cycle :
 
 ```text
 MASTER / CORE / GDB / ACT
@@ -569,59 +425,50 @@ Aucun code structurant ne doit introduire une règle sans autorité documentaire
 
 Construire un moteur de simulation capable de faire vivre un monde autonome où :
 
-- chaque personnage peut poursuivre ses propres objectifs ;
+- chaque personnage poursuit ses propres objectifs ;
 - les relations évoluent naturellement ;
 - l'économie fonctionne indépendamment du joueur ;
 - les générations se succèdent ;
-- le monde conserve une mémoire narrative de certains faits ;
+- le monde conserve une mémoire narrative ;
 - les événements émergent de la simulation.
-
-Le jeu est la première utilisation de ce moteur, pas sa seule finalité possible.
 
 ---
 
 # Historique
 
+## Version 2.5
+
+- ENGINE-010 validée / Maturité 4 ;
+- premier raccordement d'habitants autonomes au Scheduler validé ;
+- suite globale portée à **146 / 146 tests réussis** ;
+- création de TECH-003 ;
+- clôture d'ENGINE-C06 ;
+- distinction explicite entre orchestration autonome et politique de décision ;
+- prochaine étape recentrée sur l'audit des autorités GDB avant tout nouveau code.
+
 ## Version 2.4
 
-- validation d'`ENGINE-009 — Boucle de vie minimale` ;
-- ajout de `LifeSession` à l'architecture moteur courante ;
-- validation du test d'intégration `Action → temps → mort → héritier → continuité` ;
-- création de `TECH-002 — Boucle de vie minimale` ;
-- validation moteur portée à **134 / 134 tests réussis** ;
-- état v0.3 mis à jour comme assemblage moteur minimal validé ;
-- v0.4 identifié comme prochain axe d'architecture ;
-- maintien explicite d'ENGINE-C06 dans le périmètre futur des habitants autonomes.
+- ENGINE-009 validée / Maturité 4 ;
+- boucle de vie minimale v0.3 validée ;
+- suite portée à 134 / 134 ;
+- création de TECH-002 ;
+- ouverture de la préparation v0.4.
 
 ## Version 2.3
 
-- ajout de GDB dans la hiérarchie officielle ;
-- remplacement de l'ancien EventBus par le journal `World.Events` réellement implémenté ;
-- consolidation Scheduler / Simulation Loop ;
-- consolidation Persistence / Serialization ;
-- clarification du Resource Manager et de la mémoire technique ;
-- suppression du terme ambigu « mémoire » de v0.3 ;
-- maintien explicite de la Mémoire du Monde en v0.4 ;
-- mise à jour de v0.3 avec Relations, Compétences et Héritage minimal implémentés ;
-- ajout de la boucle de vie complète comme prochain objectif d'intégration de v0.3 ;
-- validation moteur de référence : **122 / 122 tests réussis**.
+- alignement de la roadmap sur l'architecture documentaire et moteur ;
+- ENGINE-008 validée ;
+- cible v0.3 clarifiée.
 
 ## Version 2.2
 
-- création officielle de la bibliothèque ENGINE ;
-- intégration de l'architecture documentaire complète ;
-- formalisation du workflow Documentation → Implémentation → Tests → TECH ;
-- ajout de l'architecture moteur initiale ;
-- restructuration de v0.2 autour de l'infrastructure moteur.
+- introduction de la bibliothèque ENGINE et du workflow Documentation → Code → Tests → TECH.
 
 ## Version 2.1
 
-- suppression de la section « Choix techniques (ADR-002) » au profit de références vers ADR-002 ;
-- inversion des versions v0.4 et v0.5 afin de respecter MASTER-005 ;
-- ajout de l'en-tête conforme à MASTER-004.
+- ordre des phases aligné sur MASTER-005 ;
+- suppression des duplications de décisions techniques.
 
 ## Version 2.0
 
-- remplace la V1 ;
-- intégration des décisions d'ADR-002 ;
-- alignement de la feuille de route sur MASTER-005.
+- remplace la V1 et intègre les décisions architecturales initiales.

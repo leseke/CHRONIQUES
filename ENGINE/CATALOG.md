@@ -1,6 +1,6 @@
 # ENGINE — Catalogue
 
-> Version : 1.17
+> Version : 1.18
 > Statut : Foundation
 > Maturité : 1
 > Bibliothèque : ENGINE
@@ -13,7 +13,7 @@
 
 Ce catalogue est la source canonique pour la bibliothèque ENGINE.
 
-ENGINE décrit l'architecture fonctionnelle et technique attendue du moteur. Les règles métier restent définies dans leurs bibliothèques d'autorité, notamment CORE, GDB et ACT.
+ENGINE décrit l'architecture attendue du moteur. Les règles métier restent définies dans leurs autorités amont.
 
 ---
 
@@ -39,59 +39,63 @@ ENGINE-014  Circulation autonome minimale            Proposition / M2
 
 ---
 
-# Bloc validé jusqu'à ENGINE-013
-
-La simulation autonome possède déjà :
+# État validé avant ENGINE-014
 
 ```text
-entretien
+201 / 201 tests réussis
+```
+
+Le moteur sait déjà relier :
+
+```text
+besoins
 +
 production réelle
 +
 consommation réelle
 ```
 
-Validation courante avant ENGINE-014 :
-
-```text
-201 / 201 tests réussis
-```
-
 ---
 
 # ENGINE-014 — Circulation autonome minimale
 
-Statut : Proposition.  
-Maturité : 2.
+Statut : Proposition / Maturité 2.
+
+Spécification courante : `ENGINE-014 v1.1`.
 
 Autorités métier :
 
 ```text
 GDB-004A v1.2
-GDB-005E v1.2
-GDB-005F v1.1
+GDB-005E v1.3
+GDB-005F v1.2
 ```
 
-Autorités ACT proposées :
+Autorités ACT :
 
 ```text
 Échange
 ↓
-PAT-004 Transfert
+PAT-004 Transfert v1.1 — Proposition / M2
 ↓
-VERB-004 Donner une denrée
+VERB-004 Donner une denrée v1.1 — Proposition / M2
 ```
 
-Flux cible :
+Ordre autonome minimal :
 
 ```text
-NeedsIntentSource
-↓ si aucun entretien exécutable
-VoluntaryFoodTransferIntentSource
-↓ si aucune opportunité
-ProductiveActivityIntentSource
+1. entretien actionnable
+2. transfert volontaire exécutable
+3. production exécutable
+4. aucun Intent
+```
+
+Flux moteur :
+
+```text
+CompositeAutonomousIntentSource
 ↓
-Intent éventuel
+Intent
 ↓
 CompositePlanner
 ↓
@@ -99,12 +103,12 @@ PipelineRunner inchangé
 ↓
 CompositeExecutionEngine
 ↓
-Effects
+IActionEffectApplicator
 ↓
 World
 ```
 
-ENGINE-014 introduit notamment :
+Nouvelles briques :
 
 - `FoodProductComponent.ProductKindId` ;
 - `FoodTransferOpportunity` ;
@@ -115,29 +119,38 @@ ENGINE-014 introduit notamment :
 - `FoodTransferExecutionEngine` ;
 - `FoodTransferActionEffectApplicator`.
 
-Les compositeurs et le `PipelineRunner` restent structurellement inchangés.
-
 ---
 
-# Conservation du transfert
-
-VERB-004 vise :
+# Invariant de transfert
 
 ```text
 source P -= q
 destination P += q
 ```
 
-Contraintes du premier lot :
+avec :
 
 - `q > 0` ;
-- donneur et destinataire distincts ;
-- source et destination distinctes ;
+- donneur ≠ destinataire ;
+- stock source ≠ stock destination ;
+- identité `ProductKindId` non vide et identique ;
+- représentation alimentaire compatible ;
 - source suffisamment disponible ;
-- `ProductKindId` non vide et identique ;
-- même valeur `FaimRestauree` pour éviter une fusion de représentations incompatibles ;
-- aucun besoin modifié directement ;
-- aucun prix ou paiement créé.
+- conservation exacte des portions ;
+- aucun besoin restauré directement ;
+- aucun prix ou paiement implicite.
+
+L'Execution Engine ne mute pas le World.
+
+L'applicateur revalide l'opportunité et les Cibles avant mutation puis applique le transfert avec contrôle d'overflow.
+
+---
+
+# Persistance
+
+`ProductKindId` est persisté avec `FoodProductComponent`.
+
+Lorsqu'il est `null`, le champ est omis du JSON afin de conserver la compatibilité de forme avec les anciens produits.
 
 ---
 
@@ -145,23 +158,17 @@ Contraintes du premier lot :
 
 ```text
 Tick N
-Habitant A
+A produit une denrée
 ↓
-produire_denree
-↓
-stock alimentaire A = 1
+stock A = 1
 
 Tick N+1
-A traité avant B
-↓
-A → donner_denree → B
+A donne la denrée à B
 ↓
 stock A = 0
 stock B = 1
 ↓
-B est affamé
-↓
-B → manger
+B, traité ensuite, mange
 ↓
 stock B = 0
 Faim B ↑
@@ -171,97 +178,80 @@ Le scénario doit fonctionner sans entrée joueur.
 
 ---
 
-# Couverture QA en attente de validation locale
-
-ENGINE-014 ajoute :
+# Couverture QA pré-validation
 
 ```text
 Engine014FoodTransferTests.cs
-→ 22 [Fact]
+→ 22 tests
 
 Engine014ActClassificationTests.cs
-→ 1 [Fact]
+→ 1 test
 ```
 
-Total nouveau :
+Nouveaux tests : **23**.
 
-```text
-23 tests
-```
-
-Base validée avant ce lot :
+Base précédente :
 
 ```text
 201 / 201
 ```
 
-Total attendu après validation :
+Total attendu :
 
 ```text
-224 tests
+224 / 224
 ```
 
-Aucun passage M4 n'est enregistré avant résultat local confirmé.
+Aucun passage M4 ne sera enregistré avant confirmation locale.
 
 ---
 
-# Frontière avec l'économie commerciale
+# Frontière économique maintenue
 
-L'audit `AUDIT-CIRCULATION-ECONOMIQUE-Minimale.md` conclut :
+L'audit ciblé conclut :
 
 ```text
 transfert volontaire de denrée
 → autorisé
 
 prix / monnaie / vente / troc réciproque / marché
-→ toujours bloqués
+→ bloqués
 ```
 
-ENGINE-014 ne doit donc introduire aucun coefficient de prix, solde monétaire ou négociation implicite.
+ENGINE-014 n'introduit donc aucun solde monétaire, coefficient de prix, négociation ou contrepartie automatique.
 
 ---
 
-# ENGINE-007 — Resource Manager
+# ENGINE-007
 
-ENGINE-007 reste réservé aux ressources techniques du moteur et n'a aucun lien avec les stocks économiques de ce lot.
-
----
-
-# Convention de nommage
-
-Le catalogue canonique unique est :
-
-```text
-ENGINE/CATALOG.md
-```
+ENGINE-007 reste réservé aux ressources techniques du moteur et n'a aucun lien avec les stocks économiques.
 
 ---
 
 # Historique
 
+## Version 1.18
+
+- ENGINE-014 synchronisé avec GDB-005E v1.3 / GDB-005F v1.2 ;
+- PAT-004 / VERB-004 v1.1 enregistrés ;
+- invariant `stock source ≠ stock destination` propagé ;
+- compatibilité JSON de `ProductKindId` enregistrée ;
+- couverture QA fixée à 23 nouveaux tests ;
+- total attendu fixé à **224 / 224** ;
+- aucun passage M4 anticipé.
+
 ## Version 1.17
 
-- couverture QA ENGINE-014 complétée par un test de classification ACT ;
-- lot ENGINE-014 porté à **23 nouveaux tests** ;
-- total attendu corrigé à **224 tests** ;
-- aucune validation M4 anticipée.
+- ajout du test de classification ACT ; total attendu corrigé à 224.
 
 ## Version 1.16
 
-- création d'ENGINE-014 — Circulation autonome minimale en Proposition / Maturité 2 ;
-- ouverture de PAT-004 / VERB-004 ;
-- identité de produit transférable ajoutée ;
-- opportunité volontaire injectable ;
-- ordre autonome `entretien → transfert → production` ;
-- transfert conservatif entre deux habitants ;
-- scénario cible production → transfert → consommation ;
-- prix, monnaie et marché maintenus hors périmètre.
+- création d'ENGINE-014 en Proposition / M2.
 
 ## Version 1.15
 
-- ENGINE-013 validée / Maturité 4 ;
-- suite portée à 201 / 201.
+- ENGINE-013 validée à 201 / 201.
 
 ## Versions 1.0 à 1.14
 
-- création et consolidation progressive des fondations moteur jusqu'à la production autonome minimale.
+- construction progressive des fondations et de l'autonomie jusqu'à la production minimale.

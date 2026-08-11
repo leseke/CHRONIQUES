@@ -1,6 +1,6 @@
 # ENGINE — Catalogue
 
-> Version : 1.9
+> Version : 1.10
 > Statut : Foundation
 > Maturité : 1
 > Bibliothèque : ENGINE
@@ -214,13 +214,11 @@ Cette validation résout la lacune architecturale `ENGINE-C06`. Elle ne clôt pa
 
 ## ENGINE-011 — Décision autonome par besoins
 
-Statut : Proposition.
+Statut : Validée.
 
-Maturité : 2.
+Maturité : 4.
 
-Première spécification de décision métier autonome concrète de v0.4.
-
-Elle traduit GDB-004B v1.1 et fournit la première implémentation attendue de `IAutonomousIntentSource` :
+Première décision métier autonome concrète de v0.4, fondée sur GDB-004B v1.1.
 
 ```text
 NeedsComponent
@@ -236,14 +234,25 @@ null
 
 ENGINE-011 :
 
-- n'implémente qu'un seul mapping réel : `Fatigue → se_reposer` ;
+- implémente un seul mapping réel : `Fatigue → se_reposer` ;
 - ne crée aucun Intent pour Faim, Sante ou Moral tant qu'aucune réponse exécutable documentée n'existe ;
 - laisse le seuil numérique configurable ;
 - n'introduit ni personnalité, ni habitudes, ni ambitions, ni Opportunités PNJ ;
 - ne généralise pas `PipelineRunner` ;
 - conserve la décision sans mutation directe du World.
 
-Le test d'intégration cible :
+Validation technique communiquée le 11 août 2026 :
+
+```text
+dotnet build
+→ succès
+
+dotnet test
+→ 156 / 156 tests réussis
+→ 0 échec
+```
+
+Le test d'intégration démontre :
 
 ```text
 Scheduler
@@ -258,6 +267,8 @@ ENGINE-006
 ↓
 Fatigue restaurée
 ```
+
+La consolidation TECH/roadmap/README est volontairement différée jusqu'à un jalon fonctionnel significatif.
 
 ---
 
@@ -303,7 +314,7 @@ ENGINE-007  Réservé / non créé
 ENGINE-008  Validée / Maturité 4
 ENGINE-009  Validée / Maturité 4
 ENGINE-010  Validée / Maturité 4
-ENGINE-011  Proposition / Maturité 2
+ENGINE-011  Validée / Maturité 4
 ```
 
 ---
@@ -321,6 +332,14 @@ Tout ancien catalogue alternatif doit uniquement rediriger vers ce fichier.
 ---
 
 # Historique
+
+## Version 1.10
+
+- ENGINE-011 passe à **Validée / Maturité 4** après validation locale ;
+- suite globale portée à **156 / 156 tests réussis** ;
+- premier comportement autonome réel piloté par un besoin confirmé ;
+- aucune extension aux besoins encore non actionnables ;
+- consolidation transverse différée jusqu'à un point de clôture significatif.
 
 ## Version 1.9
 

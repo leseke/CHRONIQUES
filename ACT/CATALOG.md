@@ -1,6 +1,6 @@
 # ACT — Catalogue
 
-> Version : 1.6
+> Version : 1.7
 >
 > Statut : Foundation
 >
@@ -38,8 +38,8 @@ ACT
 ├── Taxonomie                 (créé --- ACT-008-A, v1.0 audité --- voir note sur le périmètre restreint)
 ├── Composition               (créé --- ACT-009-A, v1.1 audité --- voir note sur la frontière avec le Plan)
 ├── Événements                (créé --- ACT-010-A, v1.0 audité --- voir note sur le périmètre restreint)
-├── Patterns                  (créé --- PATTERNS/, PAT-001)
-└── Verbes                    (créé --- VERBS/, VERB-001)
+├── Patterns                  (créé --- PATTERNS/, PAT-001 Officiel / M4)
+└── Verbes                    (créé --- VERBS/, VERB-001 Officiel / M4)
 
 ---
 
@@ -137,7 +137,7 @@ Leur contenu reste volontairement minimal et piloté par des besoins réels.
 
 # Bibliothèque PATTERNS
 
-Statut : créée.
+Statut : créée et ouverte.
 
 Catalogue :
 
@@ -145,13 +145,14 @@ Catalogue :
 ACT/PATTERNS/readme.md
 ```
 
-Premier Pattern réellement attribué :
+Premier Pattern réellement attribué et validé :
 
 ```text
 PAT-001 — Repos
+Officiel / Maturité 4
 ```
 
-Chaîne actuelle :
+Chaîne validée :
 
 ```text
 Principe Entretien
@@ -161,15 +162,28 @@ PAT-001 Repos
 VERB-001 Se reposer
 ```
 
-Les exemples historiques `PAT-001 Influence`, `PAT-002 Transformation`, etc. présents avant cette version étaient explicitement « envisagés, à confirmer » et ne constituaient aucune réservation d'identifiant.
+Validation technique de référence :
+
+```text
+dotnet build
+→ succès
+
+dotnet test
+→ 161 / 161 tests réussis
+→ 0 échec
+```
+
+Les exemples historiques `PAT-001 Influence`, `PAT-002 Transformation`, etc. présents avant la création effective de PATTERNS étaient explicitement « envisagés, à confirmer » et ne constituaient aucune réservation d'identifiant.
 
 L'attribution réelle commence donc par le premier besoin effectivement requis par la simulation validée.
+
+La validation de PAT-001 ne signifie pas que la sous-bibliothèque PATTERNS est clôturée.
 
 ---
 
 # Bibliothèque VERBS
 
-Statut : créée.
+Statut : créée et ouverte.
 
 Catalogue :
 
@@ -177,10 +191,11 @@ Catalogue :
 ACT/VERBS/readme.md
 ```
 
-Premier Verbe concret :
+Premier Verbe concret validé :
 
 ```text
 VERB-001 — Se reposer
+Officiel / Maturité 4
 ```
 
 Il spécialise exactement :
@@ -197,7 +212,11 @@ Objectif d'Intent associé dans l'implémentation actuelle :
 se_reposer
 ```
 
+La suite globale de **161 / 161 tests réussis** confirme la chaîne canonique, la structure contractuelle, la planification vers `SeReposerDefinition` et l'exécution déjà couverte par les lots ENGINE précédents.
+
 Aucun second Verbe ne doit être créé tant qu'il n'a pas passé, dans l'ordre, les quatre tests d'ACT-008-A : paramétrage, composition, Pattern existant, nouveau Pattern.
+
+La validation de VERB-001 ne signifie pas que la sous-bibliothèque VERBS est clôturée.
 
 ---
 
@@ -251,6 +270,14 @@ UX
 ---
 
 # Historique
+
+## Version 1.7
+
+- `PAT-001 — Repos` passe à **Officiel / Maturité 4** ;
+- `VERB-001 — Se reposer` passe à **Officiel / Maturité 4** ;
+- validation locale portée à **161 / 161 tests réussis** ;
+- chaîne canonique `Entretien → PAT-001 → VERB-001 → Action` confirmée ;
+- PATTERNS et VERBS restent ouvertes : aucune clôture de bibliothèque ni consolidation transverse n'est déclenchée.
 
 ## Version 1.6
 

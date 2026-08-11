@@ -1,11 +1,13 @@
 # VERB-003 — Produire une denrée
 
-> Version : 1.0
-> Statut : Proposition
+> Version : 1.1
+> Statut : Officiel
 > Type : Verbe d'Action
-> Maturité : 2
+> Maturité : 4
 > Bibliothèque : ACT
 > Dépendances : GDB-004A, GDB-005C, GDB-012B, GDB-012E, ACT-002-B, ACT-002-C, ACT-002-E, ACT-005-A, ACT-008-A, PAT-003
+> Implémentation de référence : `CHRONIQUES-ENGINE`
+> Validation : 201 / 201 tests réussis
 
 ---
 
@@ -147,7 +149,7 @@ Aucun Effect n'est appliqué après un Outcome en échec dans le premier lot min
 
 # 9. Events
 
-L'implémentation peut publier au minimum :
+L'implémentation publie au minimum :
 
 ```text
 production.entree.consommee
@@ -240,7 +242,7 @@ PAT-003 — Production est justifié et VERB-003 en est le premier Verbe.
 
 # 14. Contrat QA
 
-La validation devra démontrer au minimum :
+La validation démontre notamment :
 
 1. la traçabilité `Transformation → PAT-003 → VERB-003 → Action` ;
 2. l'appartenance unique de VERB-003 à PAT-003 ;
@@ -261,11 +263,19 @@ La validation devra démontrer au minimum :
 
 VERB-003 permet-il à un Acteur de transformer une entrée matérielle réelle en une denrée alimentaire réelle et traçable selon une opération explicite, sans inventer de marché, de salaire ou de carrière ?
 
-Si la réponse est non, le Verbe doit être corrigé avant validation.
+La validation technique de référence à 201 / 201 confirme ce contrat pour le premier lot implémenté.
 
 ---
 
 # HISTORIQUE
+
+## Version 1.1
+
+- passage de `VERB-003 — Produire une denrée` à **Officiel / Maturité 4** ;
+- validation locale enregistrée à **201 / 201 tests réussis** ;
+- exécution de bout en bout et intégration autonome confirmées ;
+- production au Tick N puis alimentation au Tick N+1 confirmée sans entrée joueur ;
+- frontières avec métier, salaire, prix et marché maintenues.
 
 ## Version 1.0
 

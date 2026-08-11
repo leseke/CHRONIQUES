@@ -1,47 +1,68 @@
-Chroniques
+# Chroniques
 
-Chaque vie raconte une Chronique.
+**Chaque vie raconte une Chronique.**
 
-Présentation
+> Version : 1.3  
+> Statut : Officiel  
+> Bibliothèque racine : CHRONIQUES
 
-Bienvenue dans le dépôt documentaire officiel de Chroniques.
+---
 
-Ce dépôt constitue la base de connaissances centrale du projet. Il regroupe les documents définissant la vision, les principes, les règles de simulation, les contrats d'Actions, l'architecture du moteur, la documentation technique, la validation, la production et les autres disciplines du projet.
+# Présentation
 
-Il est conçu pour être utilisé aussi bien par des développeurs que par des intelligences artificielles participant au développement.
+Bienvenue dans le dépôt documentaire officiel de **Chroniques**.
 
-Le code exécutable du moteur vit dans un dépôt séparé :
+Ce dépôt constitue la base de connaissances centrale du projet. Il regroupe les documents définissant la vision, les règles de simulation, les contrats d'Actions, l'architecture du moteur, la validation et la production.
 
+Le code exécutable vit dans le dépôt séparé :
+
+```text
 CHRONIQUES-ENGINE
+```
 
-Philosophie
+---
 
-Chroniques est développé selon une approche Documentation First.
+# Philosophie
 
-Une règle ou une architecture structurante doit être définie dans sa bibliothèque d'autorité avant d'être implémentée, sauf lorsqu'un document ENGINE est explicitement rédigé rétroactivement pour décrire du code historique déjà existant.
+Chroniques suit une approche **Documentation First**.
 
-Cette méthode vise à garantir :
+Une règle ou une architecture structurante doit être reliée à sa bibliothèque d'autorité avant son implémentation, sauf lorsqu'un document ENGINE est explicitement rédigé rétroactivement pour documenter un code historique déjà existant.
 
-une vision cohérente ;
+La documentation constitue la source de vérité conceptuelle et architecturale.
 
-une architecture évolutive ;
-
-une documentation durable ;
-
-une réduction des incohérences ;
-
-une meilleure collaboration entre humains et IA ;
-
-une traçabilité entre règle, architecture, code, tests et documentation technique.
-
-La documentation constitue la source officielle de vérité conceptuelle et architecturale du projet.
-
-Le code constitue la vérité de l'implémentation réellement exécutable.
+Le code constitue la vérité de l'implémentation exécutable.
 
 TECH documente cette implémentation après validation.
 
-Architecture du dépôt
+---
 
+# Hiérarchie de travail
+
+```text
+MASTER
+↓
+CORE
+↓
+GDB
+↓
+ACT
+↓
+ENGINE
+↓
+CHRONIQUES-ENGINE
+↓
+Tests
+↓
+TECH
+```
+
+Aucune couche aval ne doit contredire une autorité amont applicable.
+
+---
+
+# Architecture du dépôt
+
+```text
 CHRONIQUES/
 │
 ├── MASTER/
@@ -60,193 +81,102 @@ CHRONIQUES/
 ├── ADR/
 ├── AUDIT/
 └── README.md
+```
 
-Chaque bibliothèque ou registre possède une responsabilité précise.
+---
 
-Hiérarchie de travail
+# Responsabilités
 
-Le workflow de référence est :
+## MASTER
 
-MASTER
-↓
-CORE
-↓
-GDB
-↓
-ACT
-↓
-ENGINE
-↓
-CHRONIQUES-ENGINE
-↓
-Tests
-↓
-TECH
+Gouvernance, standards, phases, qualité et cohérence du projet.
 
-Cette chaîne décrit le passage d'une règle à son implémentation documentée.
+## CORE
 
-Toutes les fonctionnalités ne dépendent pas nécessairement de chaque bibliothèque intermédiaire, mais aucune couche aval ne doit contredire une autorité amont applicable.
+Primitives fondamentales : Entity, Component, Value, State, Relation, Event, Time, Lifecycle.
 
-MASTER
+## GDB
 
-MASTER définit la gouvernance du projet.
+Règles de simulation : monde, habitants, besoins, relations, compétences, économie, transmission, systèmes sociaux, événements émergents.
 
-Il décrit notamment :
+## ACT
 
-les principes généraux ;
+Langage universel des Actions : Intent, Plan, Action, Outcome, Effects et contrats associés.
 
-les standards documentaires ;
+## ENGINE
 
-les niveaux de maturité ;
+Architecture attendue du moteur de simulation.
 
-les méthodes de travail ;
+## CHRONIQUES-ENGINE
 
-la gestion des dépendances ;
+Implémentation C#/.NET déterministe et indépendante du rendu.
 
-les critères de qualité ;
+## TECH
 
-les règles de cohérence.
+Documentation de l'implémentation réellement obtenue après validation.
 
-MASTER évolue rarement et possède une autorité élevée sur l'organisation du projet.
+## AUDIT
 
-CORE
+Contrôles de cohérence, divergences et clôtures de constats transverses.
 
-CORE définit les primitives conceptuelles fondamentales utilisées par l'ensemble de Chroniques.
+---
 
-Il couvre notamment des notions comme :
+# Catalogue ENGINE actuel
 
-Entity ;
-
-Component ;
-
-Value ;
-
-State ;
-
-Relation ;
-
-Event ;
-
-Time ;
-
-Lifecycle.
-
-CORE décrit les concepts fondamentaux indépendamment de leur implémentation concrète dans le moteur.
-
-GDB
-
-La bibliothèque GDB — Game Design Bible définit les règles de simulation et le fonctionnement du monde de Chroniques.
-
-Elle couvre notamment :
-
-le monde ;
-
-les habitants ;
-
-les besoins ;
-
-les relations ;
-
-les compétences ;
-
-l'économie ;
-
-la réputation ;
-
-la transmission ;
-
-les systèmes sociaux ;
-
-les événements émergents.
-
-Les documents GDB décrivent principalement ce que le monde simulé doit faire.
-
-ACT
-
-ACT définit les contrats génériques liés aux Actions.
-
-Il couvre notamment :
-
-Intent
-Plan
-Action
-Outcome
-Effects
-
-ACT ne décide pas des règles métier particulières d'une relation, d'une compétence ou d'un héritage.
-
-Il définit le langage commun permettant d'exprimer et de résoudre les Actions.
-
-ENGINE
-
-ENGINE décrit l'architecture attendue du moteur de simulation.
-
-Il traduit les contrats conceptuels de MASTER, CORE, GDB et ACT en responsabilités techniques suffisamment précises pour guider CHRONIQUES-ENGINE.
-
-ENGINE couvre actuellement notamment :
-
+```text
 ENGINE-000  Principes d'architecture
-ENGINE-001  Journal d'événements du World
+ENGINE-001  Journal World.Events
 ENGINE-002  Kernel
 ENGINE-003  Scheduler et boucle de simulation
 ENGINE-004  Systems
 ENGINE-005  Persistence / Serialization
-ENGINE-006  Action Pipeline
-ENGINE-007  Resource Manager — réservé, non créé
-ENGINE-008  Systems de population
-ENGINE-009  Boucle de vie minimale
+ENGINE-006  Action Pipeline                    ✅ Maturité 4
+ENGINE-007  Resource Manager — réservé
+ENGINE-008  Systems de population              ✅ Maturité 4
+ENGINE-009  Boucle de vie minimale             ✅ Maturité 4
+ENGINE-010  Orchestration habitants autonomes  ✅ Maturité 4
+```
 
-ENGINE peut contenir des esquisses de types ou de signatures lorsqu'elles sont nécessaires pour exprimer un contrat avec précision.
+---
 
-Ces esquisses restent des spécifications, pas du code à copier automatiquement dans le moteur.
+# État moteur validé
 
-CHRONIQUES-ENGINE
+Le moteur contient notamment :
 
-Le dépôt séparé :
+```text
+Kernel
+World / Entity
+Components
+Lifecycle
+Scheduler
+Persistence
+Action Pipeline
+Relations
+Compétences
+Héritage minimal
+Effects de population
+LifeSession
+AutonomousActionSystem
+```
 
-CHRONIQUES-ENGINE
+Validation globale actuelle :
 
-contient l'implémentation exécutable du moteur.
-
-Le moteur est actuellement développé en C#/.NET autour d'une simulation déterministe.
-
-À l'état documenté courant, il contient notamment :
-
-Kernel ;
-
-World / Entity ;
-
-Components ;
-
-Lifecycle ;
-
-Scheduler ;
-
-Persistence ;
-
-Action Pipeline ;
-
-Relations ;
-
-Compétences ;
-
-Héritage minimal ;
-
-Effects de population ;
-
-LifeSession / boucle de vie minimale.
-
-Le dernier état validé du lot ENGINE-009 est :
-
+```text
 dotnet build
 → succès
 
 dotnet test
-→ 134 / 134 tests réussis
+→ 146 / 146 tests réussis
 → 0 échec
+```
 
-Le test d'intégration de référence démontre l'assemblage minimal :
+---
 
+# v0.3 — Boucle de vie minimale
+
+La continuité architecturale suivante est validée :
+
+```text
 Action joueur
 ↓
 évolution temporelle
@@ -255,147 +185,85 @@ vieillissement
 ↓
 mort
 ↓
-héritage
+héritage minimal
 ↓
 continuité avec l'héritier
+```
 
-Cette validation prouve la continuité architecturale minimale de v0.3, sans prétendre à elle seule représenter toute la richesse finale d'une vie jouable.
+Cette chaîne est portée notamment par ENGINE-009 et TECH-002.
 
-TECH
+---
 
-TECH documente l'implémentation réellement obtenue et validée.
+# v0.4 — Le monde vivant
 
-TECH n'est pas l'autorité sur les règles métier et ne remplace pas ENGINE.
+Le premier lot de v0.4 est désormais validé.
 
-La distinction est :
+```text
+Scheduler.Tick
+↓
+AutonomousActionSystem
+↓
+IAutonomousIntentSource
+↓
+Intent?
+↓
+IAutonomousIntentExecutor
+↓
+ENGINE-006
+↓
+World
+```
 
-ENGINE
-→ comportement et architecture attendus
+Ce lot permet à un habitant explicitement enregistré comme autonome d'initier une Action sans intervention du joueur.
 
-CHRONIQUES-ENGINE
-→ implémentation réelle
+Il ne définit pas encore la politique métier qui choisit les Intents.
 
-TECH
-→ documentation de cette implémentation après validation
+---
+
+# ENGINE-C06
+
+Le constat historique portant sur l'absence de raccordement entre Scheduler et Actions autonomes est désormais :
+
+```text
+ENGINE-C06
+→ Clos
+```
+
+Sa clôture est enregistrée dans :
+
+```text
+AUDIT/ENGINE-C06-Cloture.md
+```
+
+La clôture concerne l'orchestration, pas la future intelligence décisionnelle des habitants.
+
+---
+
+# TECH
 
 La bibliothèque TECH est active.
 
-Ses documents numérotés actuels sont :
-
+```text
 TECH-001 — Systems de population
-
-Documente l'implémentation d'ENGINE-008 :
-
-RelationComponent / RelationSystem ;
-
-SkillComponent / SkillSystem ;
-
-HeritageSystem ;
-
-Effects de population ;
-
-PopulationEffectApplicator.
+→ ENGINE-008
+→ 122 / 122 à validation initiale
 
 TECH-002 — Boucle de vie minimale
+→ ENGINE-009
+→ 134 / 134 à validation initiale
 
-Documente l'implémentation d'ENGINE-009 :
+TECH-003 — Orchestration des habitants autonomes
+→ ENGINE-010
+→ 146 / 146 à validation initiale
+```
 
-LifeSession / LifeSessionState ;
+---
 
-orchestration du Scheduler ;
+# Chaînes de traçabilité
 
-détection de la mort via Lifecycle ;
+Exemple population :
 
-lecture observable de la transmission ;
-
-continuité du contrôle avec l'héritier ;
-
-tests QA et intégration v0.3.
-
-QA
-
-QA regroupe les documents consacrés à la validation du projet.
-
-Cette bibliothèque peut notamment documenter :
-
-stratégies de tests ;
-
-campagnes de validation ;
-
-critères de sortie ;
-
-non-régressions ;
-
-scénarios de contrôle.
-
-Les tests exécutables restent dans le dépôt moteur lorsque leur nature l'exige.
-
-UX
-
-UX documente l'expérience utilisateur et les interactions avec les interfaces de Chroniques.
-
-LORE
-
-LORE documente les éléments de monde et de fiction qui ne relèvent pas directement des règles systémiques de la GDB.
-
-PROD
-
-PROD documente la production et la feuille de route.
-
-Il décrit notamment :
-
-les phases ;
-
-les versions cibles ;
-
-les priorités de développement ;
-
-l'ordre de construction des grands ensembles.
-
-ART
-
-ART regroupe les règles et documents relatifs à la direction artistique et aux assets visuels.
-
-AUDIO
-
-AUDIO regroupe les règles et documents relatifs au son, à la musique et au design audio.
-
-MKT
-
-MKT regroupe la documentation liée au marketing et à la communication du projet lorsque ces sujets deviennent nécessaires.
-
-ADR
-
-ADR constitue le registre des Architecture Decision Records.
-
-Un ADR conserve la trace d'une décision structurante, de son contexte et de sa justification.
-
-ADR complète les bibliothèques d'autorité mais ne les remplace pas.
-
-AUDIT
-
-AUDIT conserve les contrôles de cohérence et les constats documentaires transverses.
-
-Il permet notamment de suivre :
-
-les divergences ;
-
-les dettes documentaires ;
-
-les corrections ;
-
-les vérifications de concordance entre documentation et code.
-
-Principe de responsabilité unique
-
-Chaque information officielle doit posséder une source d'autorité identifiable.
-
-Une règle ne doit pas être redéfinie dans plusieurs bibliothèques.
-
-Lorsqu'un document dépend d'un autre, il doit privilégier la référence et la traçabilité plutôt qu'une duplication normative.
-
-Exemple :
-
+```text
 GDB-004C
 ↓
 ENGINE-008
@@ -405,11 +273,11 @@ RelationSystem.cs
 RelationSystemTests.cs
 ↓
 TECH-001
+```
 
-Autre chaîne désormais validée :
+Exemple boucle de vie :
 
-PROD v0.3
-↓
+```text
 ENGINE-009
 ↓
 LifeSession.cs
@@ -417,37 +285,41 @@ LifeSession.cs
 LifeSessionTests.cs
 ↓
 TECH-002
+```
 
-Chaque niveau possède ici un rôle différent.
+Exemple autonomie :
 
-Ordre de lecture recommandé
+```text
+MASTER-005 Phase 3
+↓
+GDB-004A / GDB-004B
+↓
+ENGINE-010
+↓
+AutonomousActionSystem.cs
+↓
+AutonomousActionSystemTests.cs
+↓
+146 / 146
+↓
+TECH-003
+```
 
-Pour comprendre l'ensemble du projet :
+---
 
-README.md ;
+# Principe de responsabilité unique
 
-MASTER/ ;
+Une information officielle doit posséder une source d'autorité identifiable.
 
-CORE/ ;
+Lorsqu'un document dépend d'un autre, il doit privilégier la référence et la traçabilité plutôt qu'une duplication normative.
 
-GDB/ ;
+---
 
-ACT/ ;
-
-ENGINE/ ;
-
-TECH/ ;
-
-PROD/ selon le besoin ;
-
-CHRONIQUES-ENGINE pour l'implémentation.
-
-Pour travailler sur une fonctionnalité particulière, il est préférable de suivre directement sa chaîne de traçabilité plutôt que de lire tout le dépôt.
-
-Validation
+# Validation
 
 Une fonctionnalité structurante suit idéalement :
 
+```text
 Spécification
 ↓
 Implémentation
@@ -459,49 +331,59 @@ Tests
 Validation
 ↓
 TECH
+```
 
-Une fonctionnalité n'est pas considérée comme implémentée uniquement parce qu'un document la décrit.
+Une fonctionnalité n'est jamais considérée comme implémentée uniquement parce qu'un document la décrit.
 
-Inversement, du code historique peut nécessiter une documentation ENGINE rétroactive lorsque le projet découvre qu'une infrastructure existe sans contrat architectural explicite.
+---
 
-Toute exception doit être documentée.
+# Étape actuelle
 
-Évolution du projet
+Le projet a ouvert **v0.4 — Le monde vivant**.
 
-La structure du dépôt est conçue pour rester stable tandis que son contenu gagne progressivement en profondeur.
+Le premier raccordement d'autonomie est validé.
 
-Toute évolution importante doit préserver :
+La prochaine frontière consiste à examiner les autorités GDB capables de définir une première politique déterministe de décision d'habitant, sans inventer cette politique directement dans ENGINE ou dans le code.
 
-la cohérence globale ;
+Documents à auditer en priorité :
 
-la modularité ;
+```text
+GDB-004B — Besoins
+GDB-004D — Personnalités
+GDB-004E — Habitudes
+GDB-004F — Ambitions
+GDB-002E — Opportunités
+```
 
-le déterminisme du moteur lorsque applicable ;
+---
 
-la non-redondance ;
+# Objectif
 
-la traçabilité ;
+Construire une base documentaire et un moteur suffisamment clairs, cohérents et durables pour accompagner Chroniques sur plusieurs années, avec une traçabilité complète entre :
 
-la maintenabilité ;
+```text
+règle
+→ architecture
+→ code
+→ tests
+→ documentation technique
+```
 
-la séparation entre règles, architecture et implémentation.
+---
 
-Objectif
+# Historique
 
-Construire une base documentaire suffisamment claire, structurée et durable pour accompagner le développement de Chroniques sur plusieurs années.
+## Version 1.3
 
-Cette base doit permettre à tout nouveau contributeur — humain ou IA — de comprendre rapidement :
+- ENGINE-010 validée / Maturité 4 ;
+- premier lot d'autonomie v0.4 validé ;
+- validation globale portée à 146 / 146 ;
+- TECH-003 créé ;
+- ENGINE-C06 clos ;
+- état courant et prochaine frontière v0.4 synchronisés.
 
-ce qui fait autorité ;
+## Version 1.2
 
-où se trouve une règle ;
-
-comment elle est traduite dans le moteur ;
-
-comment son implémentation est validée ;
-
-quelles parties restent encore à construire.
-
-Version : 1.2
-Statut : Officiel
-Bibliothèque racine : CHRONIQUES
+- ENGINE-009 validée ;
+- TECH-002 créé ;
+- validation portée à 134 / 134.

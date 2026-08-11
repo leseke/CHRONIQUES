@@ -1,11 +1,13 @@
 # VERB-002 — Manger
 
-> Version : 1.0
-> Statut : Proposition
+> Version : 1.1
+> Statut : Officiel
 > Type : Verbe d'Action
-> Maturité : 2
+> Maturité : 4
 > Bibliothèque : ACT
 > Dépendances : GDB-004B, GDB-005E, ACT-002-B, ACT-002-C, ACT-002-E, ACT-005-A, ACT-008-A, PAT-002
+> Implémentation de référence : `CHRONIQUES-ENGINE`
+> Validation : 178 / 178 tests réussis
 
 ---
 
@@ -35,7 +37,7 @@ VERB-002 n'appartient à aucun autre Pattern.
 
 # 3. Origine métier
 
-GDB-004B définit le contrat autonome proposé :
+GDB-004B définit le contrat autonome :
 
 ```text
 Faim < seuil configuré
@@ -71,7 +73,13 @@ Objectif d'Intent associé :
 manger
 ```
 
-L'identifiant technique d'une future Action Definition devra rester compatible avec cette capacité sans devenir l'autorité sur son sens.
+Identifiant technique d'Action Definition compatible :
+
+```text
+Manger
+```
+
+Ces formes servent des couches différentes et ne déplacent pas l'autorité métier vers le moteur.
 
 ---
 
@@ -88,7 +96,7 @@ Le produit doit :
 
 L'Acteur est également destinataire de l'effet de restauration de Faim.
 
-L'Intent `manger` ne contient pas la Cible concrète : le Planner doit sélectionner une Cible éligible conformément à ACT.
+L'Intent `manger` ne contient pas la Cible concrète : le Planner sélectionne une Cible éligible conformément à ACT.
 
 ---
 
@@ -131,9 +139,14 @@ La restauration de Faim reste bornée par la plage `0..100` définie par GDB-004
 
 ## Events
 
-L'implémentation future pourra publier des faits observables liés à la consommation et à la restauration de Faim.
+L'implémentation validée publie les faits observables :
 
-Les identifiants techniques exacts seront fixés dans la spécification ENGINE applicable avant code.
+```text
+produit.alimentaire.consomme
+besoin.faim.restauree
+```
+
+Ces Events restent observables et ne servent pas de canal de coordination entre Systems.
 
 ---
 
@@ -165,7 +178,7 @@ Résultat : non couvert.
 
 PAT-001 — Repos possède une structure différente.
 
-PAT-002 — Alimentation est créé pour la mécanique requise.
+PAT-002 — Alimentation porte la mécanique requise.
 
 Résultat : VERB-002 appartient à PAT-002.
 
@@ -180,7 +193,7 @@ La création de PAT-002 est justifiée par la différence de structure contractu
 VERB-002 ne décide jamais quand un habitant doit manger.
 
 ```text
-GDB-004B / future politique ENGINE
+GDB-004B / ENGINE-012
 = décision
 
 VERB-002
@@ -195,9 +208,9 @@ La capacité peut être utilisée par un joueur, un PNJ ou tout autre Acteur él
 
 VERB-002 exige une Cible accessible mais ne définit pas comment cette accessibilité est représentée techniquement.
 
-L'architecture future peut employer inventaire, possession, contexte, résolution d'accès ou autre mécanisme compatible avec GDB-005E.
+L'implémentation de référence passe par une frontière injectable compatible avec GDB-005E et n'impose aucun inventaire.
 
-Le Verbe reste inchangé tant que la règle métier est respectée.
+Le Verbe reste inchangé si une future architecture emploie inventaire, possession, contexte spatial ou autre mécanisme compatible avec la même règle métier.
 
 ---
 
@@ -235,7 +248,7 @@ VERB-002 ne définit pas :
 
 # 13. Contrat QA
 
-La validation devra démontrer au minimum :
+La validation démontre notamment :
 
 1. la traçabilité `Entretien → PAT-002 → VERB-002 → Action` ;
 2. l'appartenance de VERB-002 à un seul Pattern ;
@@ -249,7 +262,26 @@ La validation devra démontrer au minimum :
 
 ---
 
-# 14. Critère de validation
+# 14. Validation
+
+Validation technique communiquée par le porteur du projet le 11 août 2026 :
+
+```text
+dotnet build
+→ succès
+
+dotnet test
+→ 178 / 178 tests réussis
+→ 0 échec
+```
+
+La suite globale confirme également que VERB-001 reste fonctionnel après introduction de VERB-002.
+
+VERB-002 atteint donc la Maturité 4.
+
+---
+
+# 15. Critère de validation
 
 VERB-002 permet-il de représenter sans ambiguïté l'Action « Manger » comme consommation réelle d'un produit alimentaire accessible, distincte de la décision de manger et des mécaniques d'achat, cuisine ou production ?
 
@@ -258,6 +290,14 @@ Si la réponse est non, le Verbe doit être corrigé avant validation.
 ---
 
 # HISTORIQUE
+
+## Version 1.1
+
+- VERB-002 passe à **Officiel / Maturité 4** ;
+- validation locale : **178 / 178 tests réussis** ;
+- ciblage alimentaire par le Plan confirmé ;
+- consommation réelle, restauration de Faim et Events observables validés ;
+- compatibilité de VERB-001 conservée.
 
 ## Version 1.0
 

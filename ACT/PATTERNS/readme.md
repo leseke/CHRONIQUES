@@ -1,6 +1,6 @@
 # PATTERNS — Catalogue des Patterns d'Actions
 
-> Version : 1.3
+> Version : 1.4
 > Statut : Active
 > Type : Sous-bibliothèque ACT
 > Maturité : 2
@@ -95,9 +95,11 @@ PAT-002 formalise la consommation réelle d'un produit alimentaire accessible af
 
 ## PAT-003 — Production
 
-Statut : Proposition.
+Statut : Officiel.
 
-Maturité : 2.
+Maturité : 4.
+
+Validation de référence : `201 / 201` tests réussis.
 
 Origine métier : GDB-004A v1.1, GDB-005C v1.2, GDB-012B v1.1 et GDB-012E v1.1.
 
@@ -146,7 +148,7 @@ Un Pattern ne doit jamais contenir les règles propres à un Verbe concret si ce
 ```text
 PAT-001  Repos         Officiel / Maturité 4
 PAT-002  Alimentation  Officiel / Maturité 4
-PAT-003  Production    Proposition / Maturité 2
+PAT-003  Production    Officiel / Maturité 4
 ```
 
 La sous-bibliothèque PATTERNS reste ouverte.
@@ -162,6 +164,13 @@ Si la réponse est non, le Pattern doit être corrigé ou supprimé avant valida
 ---
 
 # Historique
+
+## Version 1.4
+
+- `PAT-003 — Production` passe à **Officiel / Maturité 4** ;
+- validation locale portée à **201 / 201 tests réussis** ;
+- production réelle et provenance persistante confirmées ;
+- PATTERNS reste ouverte.
 
 ## Version 1.3
 

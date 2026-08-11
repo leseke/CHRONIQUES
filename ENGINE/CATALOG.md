@@ -1,6 +1,6 @@
 # ENGINE — Catalogue
 
-> Version : 1.10
+> Version : 1.11
 > Statut : Foundation
 > Maturité : 1
 > Bibliothèque : ENGINE
@@ -241,32 +241,34 @@ ENGINE-011 :
 - ne généralise pas `PipelineRunner` ;
 - conserve la décision sans mutation directe du World.
 
-Validation technique communiquée le 11 août 2026 :
+Validation technique courante communiquée le 11 août 2026 :
 
 ```text
 dotnet build
 → succès
 
 dotnet test
-→ 156 / 156 tests réussis
+→ 158 / 158 tests réussis
 → 0 échec
 ```
 
-Le test d'intégration démontre :
+La couverture comprend désormais :
 
 ```text
-Scheduler
+NeedsDecaySystem
 ↓
-AutonomousActionSystem
+franchissement strict du seuil de Fatigue
 ↓
 NeedsIntentSource
 ↓
-Intent se_reposer
+AutonomousActionSystem
 ↓
 ENGINE-006
 ↓
 Fatigue restaurée
 ```
+
+ainsi qu'un scénario de vingt Ticks sans entrée joueur démontrant une régulation autonome répétée de la Fatigue.
 
 La consolidation TECH/roadmap/README est volontairement différée jusqu'à un jalon fonctionnel significatif.
 
@@ -332,6 +334,14 @@ Tout ancien catalogue alternatif doit uniquement rediriger vers ce fichier.
 ---
 
 # Historique
+
+## Version 1.11
+
+- validation courante d'ENGINE-011 portée à **158 / 158 tests réussis** ;
+- ajout de la preuve multi-Tick `NeedsDecaySystem → AutonomousActionSystem` ;
+- validation du franchissement strict du seuil et d'une régulation autonome sur vingt Ticks ;
+- ENGINE-011 reste **Validée / Maturité 4** ;
+- aucune consolidation transverse déclenchée hors jalon significatif.
 
 ## Version 1.10
 

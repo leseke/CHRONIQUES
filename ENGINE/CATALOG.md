@@ -1,6 +1,6 @@
 # ENGINE — Catalogue
 
-> Version : 1.8
+> Version : 1.9
 > Statut : Foundation
 > Maturité : 1
 > Bibliothèque : ENGINE
@@ -195,13 +195,7 @@ ENGINE-006
 World
 ```
 
-ENGINE-010 sépare strictement :
-
-- orchestration ;
-- décision métier ;
-- exécution d'Action.
-
-Il n'introduit ni IA complète, ni formule de priorité des besoins, ni Habitudes/Ambitions, ni économie autonome, ni Mémoire du Monde, ni règle `1 Action = 1 Tick`.
+ENGINE-010 sépare strictement orchestration, décision métier et exécution d'Action.
 
 Validation de référence :
 
@@ -214,25 +208,56 @@ dotnet test
 → 0 échec
 ```
 
-Le lot ajoute 12 tests, dont une intégration réelle :
+Cette validation résout la lacune architecturale `ENGINE-C06`. Elle ne clôt pas la future politique de décision des PNJ.
+
+---
+
+## ENGINE-011 — Décision autonome par besoins
+
+Statut : Proposition.
+
+Maturité : 2.
+
+Première spécification de décision métier autonome concrète de v0.4.
+
+Elle traduit GDB-004B v1.1 et fournit la première implémentation attendue de `IAutonomousIntentSource` :
 
 ```text
-Scheduler.Tick
+NeedsComponent
++
+seuil de Fatigue configuré
+↓
+Fatigue < seuil
+?
+Intent se_reposer
+:
+null
+```
+
+ENGINE-011 :
+
+- n'implémente qu'un seul mapping réel : `Fatigue → se_reposer` ;
+- ne crée aucun Intent pour Faim, Sante ou Moral tant qu'aucune réponse exécutable documentée n'existe ;
+- laisse le seuil numérique configurable ;
+- n'introduit ni personnalité, ni habitudes, ni ambitions, ni Opportunités PNJ ;
+- ne généralise pas `PipelineRunner` ;
+- conserve la décision sans mutation directe du World.
+
+Le test d'intégration cible :
+
+```text
+Scheduler
 ↓
 AutonomousActionSystem
 ↓
-Intent "se_reposer"
+NeedsIntentSource
 ↓
-PipelineRunner
+Intent se_reposer
 ↓
-Action Archived
+ENGINE-006
 ↓
-Outcome réussi
-↓
-World modifié
+Fatigue restaurée
 ```
-
-Cette validation résout la lacune architecturale `ENGINE-C06` relative au raccordement Scheduler / Actions autonomes. Elle ne clôt pas la future politique de décision des PNJ.
 
 ---
 
@@ -278,6 +303,7 @@ ENGINE-007  Réservé / non créé
 ENGINE-008  Validée / Maturité 4
 ENGINE-009  Validée / Maturité 4
 ENGINE-010  Validée / Maturité 4
+ENGINE-011  Proposition / Maturité 2
 ```
 
 ---
@@ -296,22 +322,25 @@ Tout ancien catalogue alternatif doit uniquement rediriger vers ce fichier.
 
 # Historique
 
+## Version 1.9
+
+- création de `ENGINE-011 — Décision autonome par besoins` ;
+- prise en compte de GDB-004B v1.1 / Maturité 2 ;
+- premier mapping autonome concret `Fatigue → se_reposer` ;
+- seuil de décision laissé configurable ;
+- frontières explicites avec les futurs arbitrages multi-besoins et couches psychologiques.
+
 ## Version 1.8
 
 - ENGINE-010 passe à **Validée / Maturité 4** ;
 - implémentation `AutonomousActionSystem` et contrats d'injection confirmés ;
-- couverture ENGINE-010 validée ;
 - suite globale portée à **146 / 146 tests réussis** ;
 - intégration Scheduler → autonomie → ENGINE-006 confirmée ;
-- lacune ENGINE-C06 considérée résolue ;
-- frontière maintenue avec la politique future de décision des PNJ.
+- lacune ENGINE-C06 considérée résolue.
 
 ## Version 1.7
 
-- création de `ENGINE-010 — Orchestration des habitants autonomes` ;
-- entrée documentaire dans v0.4 ;
-- réouverture ciblée d'ENGINE-C06 ;
-- séparation orchestration / source d'Intent / exécution ENGINE-006.
+- création de `ENGINE-010 — Orchestration des habitants autonomes`.
 
 ## Version 1.6
 

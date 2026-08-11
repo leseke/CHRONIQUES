@@ -1,6 +1,6 @@
 # GDB-005F --- Les Échanges
 
-> Version : 1.1
+> Version : 1.2
 > Statut : Officiel
 > Type : Économie & Progression
 > Maturité : 2
@@ -53,7 +53,7 @@ Une opportunité de transfert volontaire peut être considérée exécutable lor
 - un Acteur qui cède le produit ;
 - un destinataire distinct ;
 - un stock source accessible et autorisé pour l'Acteur ;
-- un stock destination compatible et rattaché au contexte du destinataire ;
+- un stock destination distinct du stock source, compatible et rattaché au contexte du destinataire ;
 - une quantité strictement positive ;
 - une même identité de produit entre source et destination conformément à GDB-005E.
 
@@ -64,7 +64,7 @@ stock source du produit P
 +
 Destinataire B
 +
-stock destination du même produit P
+stock destination distinct du même produit P
 +
 quantité q > 0
 ↓
@@ -91,6 +91,7 @@ Invariants :
 
 - `q > 0` ;
 - la source possède au moins `q` avant résolution ;
+- la source et la destination sont deux stocks distincts ;
 - la source et la destination représentent le même produit ;
 - aucune quantité ne devient négative ;
 - aucune portion n'apparaît ou ne disparaît du seul fait du transfert.
@@ -188,7 +189,7 @@ Le transfert d'une denrée peut notamment rendre un produit précédemment inacc
 - Un échange implique au moins deux parties identifiables.
 - Le premier transfert minimal est volontaire et contextuellement autorisé.
 - Aucune opportunité absente n'est inventée par le moteur.
-- Source et destination portent la même identité de produit.
+- Source et destination sont deux stocks distincts portant la même identité de produit.
 - La quantité transférée est strictement positive et conservée.
 - Les Cibles concrètes et la quantité appartiennent au contexte/Plan, pas à l'Intent abstrait.
 - Le transfert ne crée ni monnaie, ni prix, ni marché implicite.
@@ -206,19 +207,25 @@ Toute mécanique liée aux échanges devra :
 4. encourager les interactions entre systèmes ;
 5. enrichir l'expérience du joueur ;
 6. conserver les quantités lors d'un simple transfert ;
-7. ne jamais confondre opportunité volontaire et décision arbitraire du moteur.
+7. ne jamais confondre opportunité volontaire et décision arbitraire du moteur ;
+8. ne jamais présenter un auto-transfert de stock comme un échange réel.
 
 ---
 
 # CRITÈRE DE VALIDATION
 
-Cette mécanique crée-t-elle une circulation réelle et crédible de valeur entre acteurs, avec des parties, des stocks et une autorisation explicites, plutôt qu'un simple déplacement gratuit ou un système de vente automatisé ?
+Cette mécanique crée-t-elle une circulation réelle et crédible de valeur entre acteurs, avec des parties, des stocks distincts et une autorisation explicites, plutôt qu'un simple déplacement gratuit ou un système de vente automatisé ?
 
 Si la réponse est non, elle devra être repensée.
 
 ---
 
 # HISTORIQUE
+
+## Version 1.2
+
+- explicitation de l'invariant `stock source ≠ stock destination` ;
+- alignement du transfert volontaire sur GDB-005E v1.3.
 
 ## Version 1.1
 

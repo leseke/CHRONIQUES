@@ -1,6 +1,6 @@
-# Chroniques — Feuille de Route V2.3
+# Chroniques — Feuille de Route V2.4
 
-> Version : 2.3
+> Version : 2.4
 > Statut : Officiel
 > Type : Roadmap
 > Maturité : 2
@@ -20,22 +20,21 @@ Le développement suit une approche **Documentation First** où chaque règle ou
 
 ---
 
-# Ce qui change par rapport à la V2.2
+# Ce qui change par rapport à la V2.3
 
-La V2.3 aligne la feuille de route sur l'architecture documentaire et moteur réellement adoptée.
+La V2.4 enregistre la validation de la boucle de vie minimale de v0.3.
 
-Principales corrections :
+Principales évolutions :
 
-- ajout explicite de **GDB** dans la hiérarchie de développement ;
-- remplacement de l'ancien concept d'EventBus par le **journal `World.Events`** réellement implémenté ;
-- consolidation de **Simulation Loop** avec le Scheduler dans ENGINE-003 ;
-- consolidation de **Serialization** avec Persistence dans ENGINE-005 ;
-- clarification de la frontière entre **mémoire technique de ressources** et **Mémoire du Monde** ;
-- retrait du terme ambigu « mémoire » de la cible v0.3 ;
-- maintien de la **Mémoire du Monde** dans v0.4, avec le monde vivant ;
-- mise à jour de l'état de v0.3 avec ENGINE-008 implémenté et validé.
+- `ENGINE-009 — Boucle de vie minimale` passe à **Validée / Maturité 4** ;
+- `LifeSession` relie désormais Scheduler, Lifecycle et résultat d'héritage sans introduire de nouvelle règle métier ;
+- le test d'intégration v0.3 démontre le parcours minimal `Action → temps → vieillissement → mort → héritier → continuité` ;
+- la couverture QA d'ENGINE-009 est complète ;
+- validation technique de référence portée à **134 / 134 tests réussis** ;
+- création de `TECH-002 — Boucle de vie minimale` ;
+- l'ouverture de la phase v0.4 — Le monde vivant peut désormais être préparée sans confondre autonomie des PNJ et orchestration joueur de v0.3.
 
-Les objectifs directeurs restent inchangés : parvenir d'abord à une vie entière jouable, puis à un monde autonome vivant sur plusieurs générations.
+Cette validation prouve l'assemblage architectural minimal de la continuité d'une vie. Elle ne prétend pas à elle seule représenter toute la richesse finale du contenu, du Rendering ou des parcours joueurs.
 
 ---
 
@@ -241,6 +240,7 @@ World
 ├── Scheduler / Simulation Loop
 ├── Systems
 ├── Action Pipeline
+├── Session / boucle de vie minimale
 ├── Persistence / Serialization
 └── Resource Management futur
 ```
@@ -258,6 +258,12 @@ Les Systems observent l'état du World pour décider d'agir.
 La boucle de simulation actuellement implémentée est portée par le Scheduler et documentée par ENGINE-003.
 
 Aucune séparation artificielle n'est créée tant que le code ne matérialise pas deux responsabilités indépendantes.
+
+## Session / boucle de vie minimale
+
+`LifeSession`, documentée par ENGINE-009 et TECH-002, orchestre la continuité du personnage contrôlé au-dessus du Scheduler.
+
+Elle ne devient ni un System, ni un moteur de règles métier, ni un moteur d'autonomie PNJ.
 
 ## Persistence / Serialization
 
@@ -348,7 +354,7 @@ Toute la simulation reste déterministe.
 
 # v0.3 — Une vie entière
 
-Atteint le critère de sortie de la Phase 1 de MASTER-005.
+Atteint le critère de sortie de la Phase 1 de MASTER-005 sur le plan de l'assemblage moteur minimal.
 
 ## ACT
 
@@ -364,34 +370,53 @@ Atteint le critère de sortie de la Phase 1 de MASTER-005.
 - relations ;
 - compétences ;
 - héritage minimal ;
-- assemblage de ces briques en une boucle de vie complète.
+- assemblage de ces briques en une boucle de vie continue.
 
 ## État courant
 
-Les briques ENGINE-008 suivantes sont implémentées :
+Les briques structurantes de v0.3 sont désormais implémentées :
 
 ```text
-Relations          ✅
-Compétences        ✅
-Héritage minimal   ✅
+Action Pipeline                ✅
+Relations                      ✅
+Compétences                    ✅
+Héritage minimal               ✅
+Boucle de vie / LifeSession    ✅
+Continuité avec héritier       ✅
+```
+
+Spécifications ENGINE concernées :
+
+```text
+ENGINE-006  Validée / Maturité 4
+ENGINE-008  Validée / Maturité 4
+ENGINE-009  Validée / Maturité 4
+```
+
+Documentation technique aval :
+
+```text
+TECH-001  Systems de population
+TECH-002  Boucle de vie minimale
 ```
 
 Validation technique de référence du moteur :
 
 ```text
-122 / 122 tests réussis
+dotnet build
+→ succès
+
+dotnet test
+→ 134 / 134 tests réussis
+→ 0 échec
 ```
 
-La prochaine étape de v0.3 consiste à vérifier et spécifier l'assemblage nécessaire pour qu'une partie traverse réellement :
+Le test d'intégration v0.3 démontre :
 
 ```text
-création / début de vie
-↓
-choix et actions
+choix / Action joueur
 ↓
 évolution temporelle
-↓
-relations / compétences
 ↓
 vieillissement
 ↓
@@ -402,25 +427,31 @@ transmission minimale
 continuité avec héritier
 ```
 
+Ce résultat valide l'assemblage minimal du moteur. La richesse finale d'une vie jouable dépend encore du contenu, du catalogue d'Actions, du Rendering et des systèmes futurs ; elle ne doit pas être inférée du seul nombre de tests.
+
 ## Rendering
 
-Une première interface jouable peut être construite lorsque la boucle de vie minimale du moteur est suffisamment stable.
-
-Le rendu ne doit pas être utilisé pour compenser une boucle Simulation incomplète.
+La boucle de vie minimale du moteur est suffisamment stable pour permettre la construction d'une première interface jouable sans utiliser le Rendering pour compenser une lacune d'orchestration Simulation.
 
 ## Validation de sortie
 
-Le joueur peut :
+Le moteur sait désormais démontrer techniquement le parcours minimal :
 
-- vivre une vie complète ;
-- mourir ;
-- poursuivre avec son héritier.
+- un personnage contrôlé agit ;
+- le temps progresse ;
+- il peut mourir ;
+- une transmission minimale peut être produite ;
+- le contrôle peut poursuivre avec l'héritier.
+
+La validation produit/jeu complète reste distincte de cette validation architecturale.
 
 ---
 
 # v0.4 — Le monde vivant
 
 Correspond à la phase où Chroniques dépasse la vie individuelle pour faire évoluer le monde de manière autonome.
+
+Cette phase devient le prochain axe d'architecture moteur après validation d'ENGINE-009.
 
 Ajouts visés :
 
@@ -429,6 +460,14 @@ Ajouts visés :
 - **Mémoire du Monde** ;
 - événements dynamiques ;
 - premières couches de comportement autonome nécessaires à cette simulation.
+
+## Principe d'ouverture
+
+v0.4 ne doit pas commencer par ajouter arbitrairement une IA générale.
+
+Le prochain lot doit d'abord identifier dans les documents GDB existants le plus petit besoin d'autonomie concret, puis produire la spécification ENGINE correspondante avant toute implémentation.
+
+Le constat historique ENGINE-C06 relatif à l'orchestration future des Actions de PNJ reste ouvert et appartient à cette phase.
 
 ## Mémoire du Monde
 
@@ -542,6 +581,17 @@ Le jeu est la première utilisation de ce moteur, pas sa seule finalité possibl
 ---
 
 # Historique
+
+## Version 2.4
+
+- validation d'`ENGINE-009 — Boucle de vie minimale` ;
+- ajout de `LifeSession` à l'architecture moteur courante ;
+- validation du test d'intégration `Action → temps → mort → héritier → continuité` ;
+- création de `TECH-002 — Boucle de vie minimale` ;
+- validation moteur portée à **134 / 134 tests réussis** ;
+- état v0.3 mis à jour comme assemblage moteur minimal validé ;
+- v0.4 identifié comme prochain axe d'architecture ;
+- maintien explicite d'ENGINE-C06 dans le périmètre futur des habitants autonomes.
 
 ## Version 2.3
 

@@ -1,6 +1,6 @@
 # ENGINE — Catalogue
 
-> Version : 1.7
+> Version : 1.8
 > Statut : Foundation
 > Maturité : 1
 > Bibliothèque : ENGINE
@@ -13,14 +13,7 @@
 
 Ce catalogue est la source canonique pour la bibliothèque ENGINE.
 
-ENGINE décrit l'architecture fonctionnelle et technique du moteur. Les règles métier restent définies dans leurs bibliothèques d'autorité, notamment CORE, GDB et ACT.
-
-Le catalogue distingue :
-
-- les spécifications existantes ;
-- les spécifications rédigées rétroactivement ;
-- les spécifications rédigées avant implémentation ;
-- les documents encore planifiés.
+ENGINE décrit l'architecture fonctionnelle et technique attendue du moteur. Les règles métier restent définies dans leurs bibliothèques d'autorité, notamment CORE, GDB et ACT.
 
 ---
 
@@ -30,14 +23,7 @@ Le catalogue distingue :
 
 Statut : Stable.
 
-Définit notamment :
-
-- Documentation First ;
-- déterminisme ;
-- contrats ;
-- tests ;
-- séparation des responsabilités ;
-- validation avant intégration.
+Définit notamment Documentation First, déterminisme, contrats, tests, séparation des responsabilités et validation avant intégration.
 
 ---
 
@@ -45,13 +31,7 @@ Définit notamment :
 
 Statut : Stable — v2.x.
 
-Décrit `World.Events`.
-
-Le journal :
-
-- accumule les `GameEvent` observables ;
-- ne constitue pas un EventBus Publish/Subscribe ;
-- n'est jamais utilisé comme canal de coordination entre Systems.
+`World.Events` est un journal observable, jamais un EventBus entre Systems.
 
 ---
 
@@ -59,9 +39,7 @@ Le journal :
 
 Statut : Stable.
 
-Rédigé rétroactivement.
-
-Documente les primitives du Kernel présentes dans le moteur.
+Rédigé rétroactivement pour documenter les primitives du Kernel présentes dans le moteur.
 
 ---
 
@@ -69,13 +47,7 @@ Documente les primitives du Kernel présentes dans le moteur.
 
 Statut : Stable.
 
-Rédigé rétroactivement.
-
-Documente :
-
-- l'avancement du Tick ;
-- l'ordre déterministe des Systems ;
-- la boucle de simulation actuellement portée par le Scheduler.
+Documente l'avancement du Tick, l'ordre déterministe des Systems et la boucle actuellement portée par le Scheduler.
 
 ---
 
@@ -83,13 +55,7 @@ Documente :
 
 Statut : Stable.
 
-Rédigé rétroactivement.
-
-Couvre notamment :
-
-- `NeedsDecaySystem` ;
-- `AgingSystem` ;
-- `CalendrierSimule`.
+Couvre notamment `NeedsDecaySystem`, `AgingSystem` et `CalendrierSimule`.
 
 ---
 
@@ -97,16 +63,7 @@ Couvre notamment :
 
 Statut : Stable.
 
-Rédigé rétroactivement.
-
-Documente :
-
-- `WorldRepository` ;
-- snapshots ;
-- sérialisation JSON ;
-- restauration du World.
-
-La sérialisation reste intégrée au même ensemble architectural que la persistance tant qu'aucune séparation technique réelle ne le justifie.
+Documente `WorldRepository`, snapshots, sérialisation JSON et restauration du World.
 
 ---
 
@@ -116,7 +73,7 @@ Statut : Validée.
 
 Maturité : 4.
 
-Première spécification ENGINE ayant parcouru le cycle complet :
+Première spécification ENGINE à avoir parcouru le cycle complet :
 
 ```text
 Spécification
@@ -144,8 +101,6 @@ Execution Engine
 Outcome
 ```
 
-L'implémentation est présente et testée dans `CHRONIQUES-ENGINE`.
-
 ---
 
 ## ENGINE-008 — Systems de population
@@ -156,21 +111,15 @@ Statut : Validée.
 
 Maturité : 4.
 
-Rédigé avant implémentation puis implémenté et validé dans `CHRONIQUES-ENGINE`.
-
 Couvre :
 
-- `RelationComponent` ;
-- `RelationSystem` ;
-- `SkillComponent` ;
-- `SkillSystem` ;
+- `RelationComponent` / `RelationSystem` ;
+- `SkillComponent` / `SkillSystem` ;
 - `HeritageSystem` ;
-- `RelationInteractionEffect` ;
-- `SkillPracticeEffect` ;
-- `HeritageRefusalEffect` ;
+- Effects de population ;
 - `PopulationEffectApplicator`.
 
-Validation de référence du lot ENGINE-008 :
+Validation de référence du lot :
 
 ```text
 dotnet build
@@ -178,20 +127,9 @@ dotnet build
 
 dotnet test
 → 122 / 122 tests réussis
-→ 0 échec
 ```
 
-La transmission matérielle incomplète définie conceptuellement par GDB-004J reste volontairement différée tant que le moteur ne dispose pas d'une représentation du patrimoine transmissible.
-
-ENGINE-008 participe à la cible v0.3 sur les axes suivants :
-
-```text
-relations
-compétences
-héritage minimal
-```
-
-La Mémoire du Monde n'appartient pas à ENGINE-008 et relève de la phase du monde vivant, ciblée par v0.4 dans la feuille de route.
+La transmission matérielle complète reste différée tant que le patrimoine transmissible n'est pas représenté.
 
 ---
 
@@ -201,14 +139,10 @@ Statut : Validée.
 
 Maturité : 4.
 
-Rédigé avant implémentation conformément au workflow Documentation First, puis implémenté et validé dans `CHRONIQUES-ENGINE`.
-
-Objectif : relier les briques déjà présentes de la v0.3 afin de démontrer la continuité minimale :
+Relie les briques v0.3 en une continuité minimale :
 
 ```text
-personnage actif
-↓
-Actions joueur
+Action joueur
 ↓
 Scheduler / Systems
 ↓
@@ -221,16 +155,6 @@ héritier
 continuité de session
 ```
 
-ENGINE-009 :
-
-- ne crée aucune nouvelle règle métier ;
-- ne déclenche aucune Action de PNJ automatiquement ;
-- ne remplace ni ENGINE-003 ni ENGINE-006 ;
-- conserve `Lifecycle` comme source de vérité de la mort ;
-- conserve `HeritageSystem` comme source de vérité de la désignation ;
-- autorise la couche de session à lire `World.Events` uniquement comme journal d'observabilité ;
-- ne ferme pas ENGINE-C06, qui concerne l'orchestration future des habitants autonomes.
-
 Validation de référence :
 
 ```text
@@ -239,35 +163,21 @@ dotnet build
 
 dotnet test
 → 134 / 134 tests réussis
-→ 0 échec
 ```
 
-Le test d'intégration de référence démontre :
-
-```text
-Action joueur
-→ progression temporelle
-→ vieillissement
-→ mort
-→ héritage
-→ continuité avec l'héritier
-```
-
-Cette validation prouve l'assemblage architectural minimal de la v0.3 ; elle ne prétend pas à elle seule représenter toute la richesse finale d'une vie jouable.
+ENGINE-009 n'avait volontairement pas fermé ENGINE-C06 : l'autonomie des habitants relevait de la Phase 3.
 
 ---
 
 ## ENGINE-010 — Orchestration des habitants autonomes
 
-Statut : Proposition.
+Statut : Validée.
 
-Maturité : 2.
+Maturité : 4.
 
-Première spécification ENGINE ouverte pour v0.4 — Le monde vivant.
+Première spécification ENGINE validée de v0.4 — Le monde vivant.
 
-Elle répond au besoin conservé par `ENGINE-C06`, dont la réouverture était explicitement différée jusqu'à l'entrée en Phase 3 de MASTER-005.
-
-Objectif minimal : permettre à un habitant explicitement enregistré comme autonome d'initier un Intent pendant un Tick, sans intervention du joueur, puis remettre cet Intent à un exécuteur conforme à ENGINE-006.
+Objectif : permettre à un habitant explicitement enregistré comme autonome d'initier un Intent pendant un Tick sans intervention du joueur, puis remettre cet Intent à un exécuteur conforme à ENGINE-006.
 
 ```text
 Scheduler
@@ -276,7 +186,7 @@ AutonomousActionSystem
 ↓
 IAutonomousIntentSource
 ↓
-Intent
+Intent?
 ↓
 IAutonomousIntentExecutor
 ↓
@@ -291,17 +201,38 @@ ENGINE-010 sépare strictement :
 - décision métier ;
 - exécution d'Action.
 
-Il n'introduit :
+Il n'introduit ni IA complète, ni formule de priorité des besoins, ni Habitudes/Ambitions, ni économie autonome, ni Mémoire du Monde, ni règle `1 Action = 1 Tick`.
 
-- ni IA complète ;
-- ni règle de priorité des besoins ;
-- ni Habitudes ou Ambitions implémentées ;
-- ni catalogue de Verbes ;
-- ni économie autonome ;
-- ni Mémoire du Monde ;
-- ni règle `1 Action = 1 Tick`.
+Validation de référence :
 
-Le test d'intégration cible utilise « Se reposer » uniquement comme Verbe déjà exécutable afin de prouver le raccordement Scheduler → autonomie → ENGINE-006.
+```text
+dotnet build
+→ succès
+
+dotnet test
+→ 146 / 146 tests réussis
+→ 0 échec
+```
+
+Le lot ajoute 12 tests, dont une intégration réelle :
+
+```text
+Scheduler.Tick
+↓
+AutonomousActionSystem
+↓
+Intent "se_reposer"
+↓
+PipelineRunner
+↓
+Action Archived
+↓
+Outcome réussi
+↓
+World modifié
+```
+
+Cette validation résout la lacune architecturale `ENGINE-C06` relative au raccordement Scheduler / Actions autonomes. Elle ne clôt pas la future politique de décision des PNJ.
 
 ---
 
@@ -309,15 +240,9 @@ Le test d'intégration cible utilise « Se reposer » uniquement comme Verbe dé
 
 ## ENGINE-007 — Resource Manager
 
-Gestion future des ressources techniques :
-
-- contenu externe chargé ;
-- durée de vie des ressources ;
-- cache et ressources mémoire au sens technique.
+Gestion future des ressources techniques : contenu externe, durée de vie, cache et ressources mémoire au sens technique.
 
 Ce document ne désigne pas la Mémoire du Monde au sens GDB.
-
-Aucun besoin d'implémentation concret ne justifie encore sa création.
 
 Il reste réservé mais non spécifié conformément à MASTER-006.
 
@@ -325,36 +250,17 @@ Il reste réservé mais non spécifié conformément à MASTER-006.
 
 # Consolidation de l'organisation initiale
 
-La structure initiale envisageait notamment des documents distincts pour :
-
-- Scheduler ;
-- Simulation Loop ;
-- Persistence ;
-- Serialization.
-
-L'architecture réellement implémentée a montré que certaines responsabilités sont actuellement indissociables.
-
-Ainsi :
-
 ```text
 Simulation Loop
 → intégrée à ENGINE-003
 ```
-
-car `Scheduler.Tick` porte actuellement l'avancement du World et l'exécution ordonnée des Systems.
-
-Et :
 
 ```text
 Serialization
 → intégrée à ENGINE-005
 ```
 
-car persistance et sérialisation sont actuellement portées par le même ensemble de contrats.
-
-Cette consolidation reflète le code réel.
-
-Si ces responsabilités deviennent techniquement indépendantes, elles pourront être séparées par une nouvelle spécification.
+Ces consolidations restent valides tant que le code ne matérialise pas des responsabilités indépendantes.
 
 ---
 
@@ -371,76 +277,69 @@ ENGINE-006  Validée / Maturité 4
 ENGINE-007  Réservé / non créé
 ENGINE-008  Validée / Maturité 4
 ENGINE-009  Validée / Maturité 4
-ENGINE-010  Proposition / Maturité 2
+ENGINE-010  Validée / Maturité 4
 ```
 
 ---
 
 # Convention de nommage
 
-Le fichier canonique du catalogue ENGINE est :
+Le catalogue canonique unique est :
 
 ```text
 ENGINE/CATALOG.md
 ```
 
-Tout ancien fichier alternatif de catalogue doit uniquement rediriger vers ce fichier et ne doit plus constituer une seconde source de vérité.
+Tout ancien catalogue alternatif doit uniquement rediriger vers ce fichier.
 
 ---
 
 # Historique
 
+## Version 1.8
+
+- ENGINE-010 passe à **Validée / Maturité 4** ;
+- implémentation `AutonomousActionSystem` et contrats d'injection confirmés ;
+- couverture ENGINE-010 validée ;
+- suite globale portée à **146 / 146 tests réussis** ;
+- intégration Scheduler → autonomie → ENGINE-006 confirmée ;
+- lacune ENGINE-C06 considérée résolue ;
+- frontière maintenue avec la politique future de décision des PNJ.
+
 ## Version 1.7
 
 - création de `ENGINE-010 — Orchestration des habitants autonomes` ;
-- entrée documentaire dans v0.4 — Le monde vivant ;
-- réouverture ciblée du besoin architectural conservé par ENGINE-C06 ;
-- séparation entre orchestration autonome, source d'Intent et exécution ENGINE-006 ;
-- absence volontaire de politique de décision métier tant que la GDB n'en fournit pas une suffisamment précise ;
-- test d'intégration cible Scheduler → autonomie → Pipeline d'Actions.
+- entrée documentaire dans v0.4 ;
+- réouverture ciblée d'ENGINE-C06 ;
+- séparation orchestration / source d'Intent / exécution ENGINE-006.
 
 ## Version 1.6
 
-- ENGINE-009 passe à **Validée / Maturité 4** ;
-- `LifeSession` et sa couverture QA sont confirmés dans `CHRONIQUES-ENGINE` ;
-- test d'intégration de continuité v0.3 confirmé ;
-- validation globale portée à **134 / 134 tests réussis** ;
-- distinction conservée entre validation de l'assemblage minimal et richesse finale d'une vie jouable.
+- ENGINE-009 validée / Maturité 4 ;
+- validation portée à 134 / 134 tests ;
+- création du point de sortie v0.3.
 
 ## Version 1.5
 
-- création de `ENGINE-009 — Boucle de vie minimale` ;
-- enregistrement d'ENGINE-009 en Proposition / Maturité 2 ;
-- ajout du critère d'intégration `personnage actif → mort → héritier → continuité` ;
-- clarification explicite qu'ENGINE-009 ne ferme pas ENGINE-C06 relatif aux habitants autonomes.
+- création d'ENGINE-009.
 
 ## Version 1.4
 
-- `ENGINE/CATALOG.md` devient explicitement le catalogue canonique unique ;
-- synchronisation avec l'état réel d'ENGINE-006 et ENGINE-008 ;
-- validation ENGINE-008 conservée à **122 / 122 tests réussis** ;
-- clarification de la frontière entre mémoire technique du Resource Manager et Mémoire du Monde ;
-- suppression de la Mémoire du Monde de la cible ENGINE-008 / v0.3 ;
-- rappel des consolidations Scheduler/Simulation Loop et Persistence/Serialization.
+- catalogue canonique unique ;
+- synchronisation ENGINE-006 / ENGINE-008.
 
 ## Version 1.3
 
-- ENGINE-008 passe à Validée / Maturité 4 ;
-- implémentation correspondante confirmée dans `CHRONIQUES-ENGINE` ;
-- ajout des Effects de population et de `PopulationEffectApplicator` ;
-- `HeritageRefusalEffect` traité par `HeritageSystem` ;
-- correction du comportement du plancher familial ;
-- transmission incomplète explicitement différée.
+- ENGINE-008 validée / Maturité 4.
 
 ## Version 1.2
 
-- ENGINE-006 validé après implémentation et tests ;
-- création d'ENGINE-008 comme spécification préalable aux Systems de population ;
-- dépendance GDB ajoutée au catalogue.
+- ENGINE-006 validée ;
+- création d'ENGINE-008.
 
 ## Version 1.1
 
-- création d'ENGINE-006 — Action Pipeline.
+- création d'ENGINE-006.
 
 ## Version 1.0
 

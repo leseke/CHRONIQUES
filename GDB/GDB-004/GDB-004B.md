@@ -1,6 +1,6 @@
 # GDB-004B --- Les Besoins des Habitants
 
-> Version : 1.1
+> Version : 1.2
 > Statut : Officiel
 > Type : Population du Monde
 > Maturité : 2
@@ -80,7 +80,7 @@ La valeur reste bornée entre `0` et `100`.
 
 Une valeur basse signifie donc qu'une réponse devient plus urgente ; une valeur haute signifie que le besoin ne justifie pas, à lui seul, une nouvelle Action.
 
-Cette convention correspond au modèle déjà employé par les besoins fondamentaux de Chroniques et constitue désormais leur contrat GDB.
+Cette convention correspond au modèle déjà employé par les besoins fondamentaux de Chroniques et constitue leur contrat GDB.
 
 ---
 
@@ -90,17 +90,17 @@ Un besoin ne devient candidat à une décision autonome que si sa satisfaction p
 
 ```text
 satisfaction < seuil
-→ besoin actionnable
+→ besoin candidat
 
 satisfaction >= seuil
 → pas d'Intent produit par ce besoin seul
 ```
 
-Le cas d'égalité appartient donc explicitement au second cas.
+Le cas d'égalité appartient explicitement au second cas.
 
 Les valeurs numériques exactes des seuils ne sont pas fixées par la GDB.
 
-Elles constituent des paramètres d'équilibrage, au même titre que les taux d'érosion ou autres constantes de tuning déjà laissées configurables dans les Systems existants.
+Elles constituent des paramètres d'équilibrage.
 
 Un seuil doit rester déterministe et stable pour une même configuration de simulation.
 
@@ -108,21 +108,21 @@ Un seuil doit rester déterministe et stable pour une même configuration de sim
 
 # BESOIN ACTIONNABLE
 
-Un besoin sous son seuil n'est réellement actionnable que si le moteur dispose d'au moins un objectif actuellement exécutable susceptible de contribuer à le satisfaire.
+Un besoin sous son seuil n'est réellement actionnable que si le contexte permet au moteur de construire au moins une réponse exécutable susceptible de contribuer à le satisfaire.
 
 Invariant :
 
 ```text
 besoin urgent
 +
-aucun Intent exécutable connu
+aucune réponse exécutable disponible
 ≠
 création d'un faux Intent
 ```
 
-Un besoin sans mapping disponible reste un état réel de l'habitant, mais il ne doit pas pousser le moteur à inventer une Action, un Verbe ou une règle absente des bibliothèques d'autorité.
+Un besoin sans mapping ou sans moyen d'exécuter son mapping reste un état réel de l'habitant, mais il ne doit pas pousser le moteur à inventer une Action, un Verbe, une Cible ou une ressource absente.
 
-Il ne doit pas non plus bloquer l'évaluation des autres besoins disposant, eux, d'une réponse exécutable.
+Il ne doit pas non plus bloquer l'évaluation des autres besoins disposant, eux, d'une réponse réellement exécutable.
 
 ---
 
@@ -137,7 +137,7 @@ satisfaction plus basse
 
 Autrement dit, à paramètres comparables, l'habitant traite d'abord le besoin le moins satisfait parmi ceux qu'il sait actuellement adresser.
 
-La GDB ne fixe pas ici une formule arithmétique unique de score. Elle fixe uniquement l'ordre monotone : diminuer la satisfaction d'un besoin ne peut jamais diminuer son urgence de base.
+La GDB ne fixe pas une formule arithmétique unique de score. Elle fixe l'ordre monotone : diminuer la satisfaction d'un besoin ne peut jamais diminuer son urgence de base.
 
 ---
 
@@ -166,7 +166,7 @@ Cet ordre technique ne constitue pas nécessairement une hiérarchie morale ou n
 
 Tous les besoins n'ont pas la même importance dans toutes les situations.
 
-Le modèle minimal de cette version définit d'abord l'urgence de base par la satisfaction courante.
+Le modèle minimal définit d'abord l'urgence de base par la satisfaction courante.
 
 Des modificateurs futurs pourront faire évoluer cette priorité selon :
 
@@ -185,11 +185,9 @@ L'existence conceptuelle d'une influence ne constitue pas à elle seule une form
 
 ---
 
-# PREMIER CONTRAT D'AUTONOMIE IMPLÉMENTABLE
+# CONTRAT AUTONOME 1 — REPOS
 
-Pour ouvrir la Phase 3 de MASTER-005 sans anticiper tout le système comportemental, une première politique autonome peut volontairement couvrir un seul besoin disposant déjà d'une réponse exécutable.
-
-Le premier cas retenu est :
+Le premier cas autonome validé est :
 
 ```text
 Besoin : repos / fatigue
@@ -205,9 +203,76 @@ Si la satisfaction de Fatigue est supérieure ou égale au seuil configuré :
 aucun nouvel Intent de repos
 ```
 
-Cette règle ne signifie pas que le repos sera toujours prioritaire sur la nourriture, la santé ou le moral lorsque ceux-ci disposeront à leur tour de réponses exécutables.
+La capacité ACT correspondante est `VERB-001 — Se reposer`.
 
-Elle signifie uniquement que le premier lot autonome réel peut être construit et testé sans inventer les Actions manquantes des autres besoins.
+---
+
+# CONTRAT AUTONOME 2 — NOURRITURE
+
+Le second besoin rendu spécifiable est la nourriture.
+
+Dans la représentation actuelle :
+
+```text
+Besoin : nourriture
+→ Faim
+
+0
+→ critique
+
+100
+→ pleinement satisfait
+```
+
+La réponse autonome minimale est :
+
+```text
+Faim < seuil configuré
++
+au moins un produit alimentaire accessible et consommable
+↓
+Intent : manger
+```
+
+Le produit alimentaire et son accessibilité sont définis par GDB-005E [réf: GDB-005E].
+
+Si aucun produit alimentaire accessible n'est disponible :
+
+```text
+Faim < seuil
++
+aucune nourriture accessible
+↓
+pas d'Intent manger produit par ce besoin
+```
+
+Cette absence ne signifie jamais que le besoin est satisfait.
+
+Elle signifie seulement qu'aucune réponse exécutable n'est actuellement disponible.
+
+L'Intent exprime uniquement l'objectif `manger`. Il ne porte pas lui-même la Cible concrète : la sélection d'une Cible alimentaire appartient au Plan et à l'Action conformément à ACT.
+
+---
+
+# EFFET DE L'ALIMENTATION
+
+Une Action alimentaire résolue avec succès peut augmenter la satisfaction de Faim.
+
+La quantité de restauration n'est pas universelle : elle dépend du produit ou des données d'équilibrage applicables [réf: GDB-005E].
+
+La décision autonome ne modifie jamais directement `Faim`.
+
+```text
+Intent manger
+↓
+ACT
+↓
+Action résolue avec succès
+↓
+consommation du produit
++
+Faim ↑
+```
 
 ---
 
@@ -215,7 +280,7 @@ Elle signifie uniquement que le premier lot autonome réel peut être construit 
 
 GDB-004D affirme que la personnalité influence les décisions et les priorités.
 
-Cette influence reste réelle, mais son poids exact n'est pas encore défini sous une forme suffisamment précise pour modifier le premier arbitrage autonome.
+Cette influence reste réelle, mais son poids exact n'est pas encore défini sous une forme suffisamment précise pour modifier l'arbitrage autonome minimal.
 
 La politique minimale de besoins doit donc fonctionner sans personnalité plutôt que d'inventer des coefficients de traits.
 
@@ -227,8 +292,6 @@ GDB-004E affirme que les habitudes rendent les comportements cohérents et influ
 
 Une habitude pourra ultérieurement favoriser certains Intents ou certains contextes, mais aucune pondération n'est définie à ce stade.
 
-Le premier lot autonome ne simule donc pas cette influence.
-
 ---
 
 # FRONTIÈRE AVEC LES AMBITIONS
@@ -237,7 +300,7 @@ GDB-004F affirme que les ambitions donnent une direction durable à la vie des h
 
 Les ambitions ne remplacent pas les besoins et ne sont pas requises pour satisfaire un besoin physiologique minimal.
 
-Leur arbitrage avec les besoins devra être spécifié avant toute implémentation d'une politique multi-objectifs.
+Leur arbitrage avec les besoins devra être spécifié avant toute implémentation d'une politique multi-objectifs enrichie.
 
 ---
 
@@ -245,9 +308,7 @@ Leur arbitrage avec les besoins devra être spécifié avant toute implémentati
 
 GDB-002E définit actuellement les Opportunités comme des possibilités offertes au joueur.
 
-Elles ne constituent donc pas, dans leur forme documentaire actuelle, une entrée normative de la première politique autonome des habitants.
-
-Une future extension aux opportunités perçues par les PNJ nécessitera une évolution GDB explicite avant implémentation.
+Elles ne constituent donc pas, dans leur forme documentaire actuelle, une entrée normative de la politique autonome minimale des habitants.
 
 ---
 
@@ -281,6 +342,8 @@ Ils participent à faire vivre le monde sans intervention du joueur.
 
 Cette influence doit passer par les Actions et Systems responsables, jamais par une mutation directe effectuée par la politique de décision.
 
+Le besoin de nourriture crée notamment un lien explicite avec les produits alimentaires et leur consommation [réf: GDB-005E].
+
 ---
 
 # INVARIANTS
@@ -291,6 +354,10 @@ Cette influence doit passer par les Actions et Systems responsables, jamais par 
 - Le seuil d'activation est strict : égal au seuil signifie non activé.
 - Une satisfaction plus faible ne peut pas produire une urgence de base plus faible.
 - Les égalités utilisent un ordre stable, jamais un hasard non déterministe.
+- `se_reposer` ne nécessite aucune ressource alimentaire.
+- `manger` nécessite qu'au moins un produit alimentaire accessible permette réellement l'exécution.
+- L'Intent `manger` ne transporte pas la Cible alimentaire concrète.
+- Une Action alimentaire réussie consomme ou réduit la disponibilité du produit utilisé [réf: GDB-005E].
 - Personnalité, Habitudes et Ambitions ne reçoivent aucun coefficient implicite avant spécification.
 - Les Opportunités joueur de GDB-002E ne sont pas réutilisées silencieusement comme Opportunités PNJ.
 
@@ -306,19 +373,28 @@ Toute mécanique liée aux besoins devra :
 4. éviter les comportements artificiels ;
 5. renforcer les histoires émergentes ;
 6. produire des décisions reproductibles à état et configuration identiques ;
-7. ne jamais inventer une Action absente des contrats disponibles.
+7. ne jamais inventer une Action, une Cible ou une ressource absente des contrats disponibles.
 
 ---
 
 # CRITÈRE DE VALIDATION
 
-Le système permet-il à un habitant de transformer un besoin réellement insatisfait en objectif autonome cohérent, reproductible et exécutable, sans contourner ACT ni inventer les systèmes de décision encore non spécifiés ?
+Le système permet-il à un habitant de transformer un besoin réellement insatisfait en objectif autonome cohérent, reproductible et réellement exécutable dans son contexte, sans contourner ACT ni créer gratuitement les ressources nécessaires ?
 
 Si la réponse est non, il devra être repensé.
 
 ---
 
 # HISTORIQUE
+
+## Version 1.2
+
+- ajout du second contrat autonome `Faim → manger` ;
+- exigence d'un produit alimentaire accessible et consommable [réf: GDB-005E] ;
+- interdiction explicite de produire `manger` lorsqu'aucune nourriture accessible n'existe ;
+- clarification que l'Intent ne porte pas la Cible alimentaire ;
+- liaison entre Action alimentaire réussie, consommation du produit et restauration de Faim ;
+- conservation de l'arbitrage déterministe entre besoins actionnables.
 
 ## Version 1.1
 
@@ -328,7 +404,7 @@ Si la réponse est non, il devra être repensé.
 - définition d'un besoin actionnable et interdiction des faux Intents ;
 - définition de l'urgence de base monotone et du départage déterministe des égalités ;
 - clarification des frontières avec Personnalité, Habitudes, Ambitions et Opportunités ;
-- définition du premier contrat autonome implémentable `Fatigue → se_reposer`, avec seuil numérique laissé configurable ;
+- définition du premier contrat autonome implémentable `Fatigue → se_reposer` ;
 - ajout des invariants de décision autonome nécessaires à la Phase 3 de MASTER-005.
 
 ## Version 1.0
@@ -338,5 +414,3 @@ Si la réponse est non, il devra être repensé.
 ---
 
 Fin du document
-
-Statut : Validé --- Référence officielle.

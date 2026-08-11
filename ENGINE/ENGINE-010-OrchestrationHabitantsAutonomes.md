@@ -1,10 +1,12 @@
 # ENGINE-010 — Orchestration des habitants autonomes
 
-> Version : 1.0
-> Statut : Proposition
-> Maturité : 2
+> Version : 1.1
+> Statut : Validée
+> Maturité : 4
 > Bibliothèque : ENGINE
 > Dépendances : MASTER-005, GDB-004A, GDB-004B, ACT-002-H, ACT-004-A, ENGINE-003, ENGINE-006, ENGINE-009
+> Implémentation : `CHRONIQUES-ENGINE`
+> Validation : 146 / 146 tests réussis
 
 ---
 
@@ -12,7 +14,7 @@
 
 Définir le premier mécanisme architectural de la Phase 3 de `MASTER-005 — Le monde vivant` : permettre à un habitant explicitement considéré comme autonome d'initier une Action sans intervention du joueur, tout en réutilisant le pipeline d'Actions existant.
 
-Le parcours minimal recherché est :
+Le parcours validé est :
 
 ```text
 Scheduler.Tick
@@ -21,11 +23,11 @@ AutonomousActionSystem
 ↓
 acteur autonome enregistré
 ↓
-source déterministe d'Intent
+IAutonomousIntentSource
 ↓
 Intent éventuel
 ↓
-exécuteur d'Intent injecté
+IAutonomousIntentExecutor
 ↓
 ENGINE-006 Action Pipeline
 ↓
@@ -34,7 +36,7 @@ Outcome / Effects
 World
 ```
 
-ENGINE-010 répond au besoin architectural conservé par le constat `ENGINE-C06` : à l'entrée dans la phase des habitants autonomes, le Scheduler doit désormais pouvoir conduire indirectement des Actions sans que le joueur les déclenche.
+ENGINE-010 répond au besoin architectural conservé par le constat `ENGINE-C06`.
 
 ---
 
@@ -42,181 +44,99 @@ ENGINE-010 répond au besoin architectural conservé par le constat `ENGINE-C06`
 
 ## MASTER-005
 
-La Phase 3 exige notamment :
-
-```text
-Habitants autonomes qui vieillissent, travaillent et meurent
-```
-
-et un monde capable d'évoluer sans intervention permanente du joueur.
+La Phase 3 exige notamment des habitants autonomes qui poursuivent leur existence indépendamment du joueur.
 
 ## GDB-004A
 
 Les habitants poursuivent leur existence même lorsque le joueur n'interagit pas avec eux.
 
-Ils peuvent notamment travailler, se déplacer, échanger, apprendre et vieillir.
-
 ## GDB-004B
 
 Les besoins constituent l'un des moteurs principaux de leurs décisions.
 
-Chaque habitant agit pour satisfaire des besoins et établit des priorités selon sa situation.
-
 ## ACT
 
-Une Action ne naît jamais spontanément : elle provient d'un `Intent` porté par un Acteur.
+Une Action provient d'un `Intent` porté par un Acteur et traverse le pipeline ACT / ENGINE-006.
 
-ENGINE-010 ne contourne donc jamais :
-
-```text
-Acteur
-↓
-Intent
-↓
-Plan
-↓
-Action
-↓
-Outcome
-```
+ENGINE-010 ne contourne jamais cette chaîne.
 
 ---
 
-# 3. Ce que ENGINE-010 résout
+# 3. Responsabilité exacte
 
 ENGINE-010 résout uniquement l'orchestration automatique entre :
 
 - le Tick déterministe d'ENGINE-003 ;
-- un habitant autorisé à agir de manière autonome ;
+- un habitant explicitement enregistré comme autonome ;
 - une source d'Intent ;
-- le mécanisme d'exécution conforme à ENGINE-006.
+- un exécuteur conforme à ENGINE-006.
 
-Il fournit le point de raccordement qui manquait jusque-là entre :
+Il fournit le raccordement :
 
 ```text
 Scheduler
+↓
+Action autonome
 ```
 
-et :
-
-```text
-Action Pipeline
-```
-
-pour les habitants autonomes.
+sans devenir une intelligence artificielle complète.
 
 ---
 
-# 4. Ce que ENGINE-010 ne résout pas
-
-ENGINE-010 ne définit pas :
-
-- une intelligence artificielle complète ;
-- une psychologie ;
-- des émotions ;
-- des croyances ;
-- une mémoire individuelle ;
-- la Mémoire du Monde ;
-- un système d'ambitions complet ;
-- un système d'habitudes complet ;
-- un catalogue de Verbes ;
-- un système de métiers ;
-- une économie autonome ;
-- une règle `1 Action = 1 Tick` ;
-- une formule universelle de sélection d'Action ;
-- un seuil métier imposant qu'un besoin précis déclenche automatiquement une Action précise.
-
-Ces éléments doivent rester dans leurs bibliothèques et phases d'autorité respectives.
-
----
-
-# 5. Principe de séparation
-
-La couche d'orchestration ne décide jamais elle-même de ce qu'un habitant veut faire.
+# 4. Séparation des responsabilités
 
 ```text
 AutonomousActionSystem
-= quand demander et quand transmettre
-≠ pourquoi choisir cette Action
+= orchestration
+
+IAutonomousIntentSource
+= proposition éventuelle d'un objectif
+
+IAutonomousIntentExecutor
+= remise de l'Intent à l'exécution ENGINE-006
 ```
 
-Le choix de l'objectif est délégué à une source d'Intent injectée.
+Ces responsabilités restent séparées.
 
-L'exécution est déléguée à un exécuteur d'Intent injecté.
+`AutonomousActionSystem` ne choisit aucune règle métier et ne connaît aucun Verbe concret.
 
-Ainsi :
+---
+
+# 5. Implémentation validée
+
+Le moteur contient désormais :
 
 ```text
-orchestration
-≠ décision métier
-≠ exécution métier
+Simulation/Chroniques.Simulation/Autonomy/
+├── IAutonomousIntentSource.cs
+├── IAutonomousIntentExecutor.cs
+└── AutonomousActionSystem.cs
+```
+
+Les tests associés sont portés notamment par :
+
+```text
+Tests/Chroniques.Simulation.Tests/
+└── AutonomousActionSystemTests.cs
 ```
 
 ---
 
-# 6. Position architecturale
+# 6. AutonomousActionSystem
 
-```mermaid
-flowchart TD
+`AutonomousActionSystem` implémente `ISystem`.
 
-Scheduler[ENGINE-003 Scheduler]
-    --> Auto[AutonomousActionSystem]
+Il est donc exécuté par le Scheduler dans l'ordre d'enregistrement des Systems.
 
-Auto
-    --> Actors[Acteurs autonomes enregistrés]
+Il conserve une liste ordonnée d'`EntityId` explicitement enregistrés comme autonomes.
 
-Actors
-    --> Source[IAutonomousIntentSource]
-
-Source
-    --> Intent[ACT Intent]
-
-Intent
-    --> Executor[IAutonomousIntentExecutor]
-
-Executor
-    --> Pipeline[ENGINE-006 Action Pipeline]
-
-Pipeline
-    --> World[World]
-```
-
-`AutonomousActionSystem` est un `ISystem` ordinaire.
-
-Il est donc exécuté dans l'ordre d'enregistrement du Scheduler, comme tous les autres Systems.
+L'enregistrement est idempotent : un même Acteur n'est pas traité plusieurs fois pendant une même invocation à cause d'un double enregistrement.
 
 ---
 
-# 7. Acteurs autonomes
+# 7. Éligibilité minimale
 
-ENGINE-010 n'affirme pas que toute Entity du World est automatiquement autonome.
-
-Un habitant doit être explicitement enregistré auprès du système d'autonomie.
-
-Structure minimale proposée :
-
-```csharp
-public sealed class AutonomousActionSystem : ISystem
-{
-    public IReadOnlyList<EntityId> Actors { get; }
-
-    public void RegisterActor(EntityId actorId);
-
-    public void Update(World world, Tick currentTick);
-}
-```
-
-L'ordre d'enregistrement est conservé.
-
-Cet ordre devient une partie du comportement déterministe lorsque plusieurs habitants autonomes agissent pendant le même Tick.
-
-ENGINE-010 ne crée pas encore de `NpcComponent`, `AutonomyComponent` ou autre marqueur métier tant qu'aucune autorité amont n'en exige un.
-
----
-
-# 8. Éligibilité d'un Acteur
-
-Avant toute demande d'Intent, le système vérifie au minimum :
+Avant de demander un Intent, le System vérifie :
 
 ```text
 Entity existe dans World
@@ -228,15 +148,13 @@ Une Entity absente est ignorée.
 
 Une Entity morte est ignorée.
 
-Cette vérification ne remplace pas les règles d'éligibilité d'ACT-004-A ni les Preconditions propres aux Actions.
-
-Elle évite uniquement de demander une décision autonome à une Entity qui n'est manifestement plus capable d'agir dans l'état actuel du moteur.
+Cette vérification ne remplace ni ACT-004-A ni les Preconditions propres à une Action.
 
 ---
 
-# 9. Source d'Intent autonome
+# 8. Source d'Intent
 
-La responsabilité de proposer un objectif appartient à :
+Contrat validé :
 
 ```csharp
 public interface IAutonomousIntentSource
@@ -248,65 +166,35 @@ public interface IAutonomousIntentSource
 }
 ```
 
-Le nom exact peut évoluer pendant l'implémentation si la responsabilité reste identique.
+La source peut retourner un Intent ou `null`.
 
-La source :
+Elle ne doit pas :
 
-- reçoit l'Acteur réellement présent dans le World ;
-- peut observer l'état nécessaire à sa décision ;
-- retourne soit un `Intent`, soit `null` ;
-- ne modifie jamais directement le World ;
-- ne crée jamais d'Action Instance ;
-- ne produit jamais directement d'Effect ;
-- ne publie jamais directement d'Event ;
-- doit être déterministe à état, seed, Tick et entrées identiques.
+- modifier directement le World ;
+- créer directement une Action Instance ;
+- appliquer directement un Effect ;
+- publier directement un Event comme substitut au pipeline ;
+- produire un comportement non déterministe à entrées identiques.
 
 ---
 
-# 10. Absence d'Intent
+# 9. Cohérence de l'Acteur
 
-Une source peut retourner :
-
-```text
-null
-```
-
-Cela signifie uniquement :
-
-```text
-aucun nouvel Intent autonome à initier lors de cette invocation
-```
-
-Cela ne signifie pas :
-
-- que l'habitant est inactif narrativement ;
-- qu'il n'a aucun besoin ;
-- qu'il ne pourra jamais agir ;
-- que son temps s'arrête.
-
-Le Scheduler et les autres Systems continuent normalement.
-
----
-
-# 11. Cohérence de l'Acteur
-
-Si la source retourne un `Intent`, son `Acteur` doit être l'Entity pour laquelle la décision a été demandée.
-
-Invariant :
+Invariant validé :
 
 ```text
 intent.Acteur == actor.Id
 ```
 
-Une source d'Intent autonome ne peut jamais faire agir silencieusement une autre Entity.
+Une source ne peut pas recevoir A puis retourner silencieusement un Intent attribué à B.
 
-Une violation de cet invariant constitue une erreur d'intégration et doit être rejetée explicitement par l'orchestration.
+Une violation provoque une erreur d'intégration explicite avant l'exécution.
 
 ---
 
-# 12. Exécution de l'Intent
+# 10. Exécuteur d'Intent
 
-ENGINE-010 introduit une frontière d'exécution minimale :
+Contrat validé :
 
 ```csharp
 public interface IAutonomousIntentExecutor
@@ -315,385 +203,264 @@ public interface IAutonomousIntentExecutor
 }
 ```
 
-Cette interface n'est pas un second Action Pipeline.
+Cette interface n'est pas un deuxième Action Pipeline.
 
-Elle représente uniquement le point de raccordement par lequel l'orchestration autonome remet un `Intent` à un exécuteur conforme à ENGINE-006.
-
-Une implémentation ou un adaptateur peut utiliser `PipelineRunner` ou tout futur exécuteur général conforme à ENGINE-006.
-
-`AutonomousActionSystem` ne connaît :
-
-- ni `SimplePlanner` ;
-- ni `SimpleExecutionEngine` ;
-- ni `SeReposerDefinition` ;
-- ni `PopulationEffectApplicator` ;
-- ni aucun Verbe concret.
+Elle constitue uniquement la frontière entre l'orchestration autonome et un exécuteur conforme à ENGINE-006.
 
 ---
 
-# 13. Frontière avec PipelineRunner
+# 11. Frontière avec PipelineRunner
 
-Le moteur possède actuellement un `PipelineRunner` spécialisé sur le Verbe de démonstration « Se reposer ».
+Le moteur ne possède actuellement qu'un `PipelineRunner` concret spécialisé autour du Verbe de démonstration « Se reposer ».
 
-ENGINE-010 ne transforme pas artificiellement ce prototype en interprète universel.
+ENGINE-010 ne le généralise pas artificiellement.
 
-Le besoin réel ouvert par la Phase 3 justifie désormais une frontière générique entre :
-
-```text
-orchestration autonome
-```
-
-et :
+Le test d'intégration utilise un adaptateur vers ce `PipelineRunner` afin de démontrer réellement :
 
 ```text
-exécution d'un Intent
+Scheduler
+↓
+AutonomousActionSystem
+↓
+Intent "se_reposer"
+↓
+PipelineRunner
+↓
+Action Archived
+↓
+Outcome réussi
+↓
+Fatigue restaurée
+↓
+GameEvent observable
 ```
 
-mais pas encore la création d'un catalogue universel de dispatch des Verbes.
-
-Un test d'intégration peut utiliser un adaptateur vers le `PipelineRunner` actuel afin de prouver le raccordement réel avec ENGINE-006 sans prétendre résoudre tous les futurs Verbes.
+Cette preuve valide le raccordement architectural sans prétendre résoudre le futur catalogue complet de Verbes.
 
 ---
 
-# 14. Exécution pendant un Tick
+# 12. Exécution pendant un Tick
 
-Lors de `Update` :
+Lors d'un `Update` :
 
 ```text
-pour chaque acteur enregistré
+pour chaque Acteur enregistré
 ↓
-vérifier existence
+existence ?
 ↓
-vérifier état de vie minimal
+vivant ?
 ↓
-demander un Intent à la source
+demander Intent
 ↓
-aucun Intent ? continuer
+null ? continuer
 ↓
-vérifier intent.Acteur
+vérifier l'Acteur de l'Intent
 ↓
 transmettre à l'exécuteur
 ```
 
 Le System ne fait jamais avancer lui-même le Tick.
 
-Il agit uniquement parce que le Scheduler l'a invoqué.
+Le Scheduler reste l'autorité temporelle.
 
 ---
 
-# 15. Nombre d'Intents par invocation
-
-Dans cette première version, une invocation de la source retourne au maximum un `Intent` par Acteur et par `Update`.
-
-Cette limitation est une borne d'orchestration minimale, pas une règle de Game Design équivalente à :
-
-```text
-1 habitant = 1 Action par Tick
-```
-
-ENGINE-010 ne définit aucune équivalence entre durée d'Action et Tick.
-
-Si de futurs contrats temporels nécessitent plusieurs Intents, des files d'attente, des Actions persistantes ou une fréquence différente, cette architecture pourra évoluer après spécification amont.
-
----
-
-# 16. Ordre déterministe
+# 13. Ordre déterministe
 
 Les habitants sont évalués dans leur ordre d'enregistrement.
 
-Exemple :
+À :
 
 ```text
-A enregistré
-B enregistré
-C enregistré
-
-Tick
-↓
-A
-↓
-B
-↓
-C
+World identique
+Seed identique
+Tick identique
+Acteurs identiques
+ordre identique
+source identique
+exécuteur identique
 ```
 
-Aucune collection dont l'ordre d'itération n'est pas garanti ne doit devenir la source implicite de l'ordre d'action.
+la séquence d'Intents et le résultat observable doivent rester identiques.
 
-À World, seed, Tick, liste d'Acteurs, source d'Intent, exécuteur et ordre des Systems identiques, le résultat observable doit être identique.
-
----
-
-# 17. Ordre avec les autres Systems
-
-ENGINE-010 ne fixe pas un ordre global unique avec :
-
-- `NeedsDecaySystem` ;
-- `AgingSystem` ;
-- `RelationSystem` ;
-- `SkillSystem` ;
-- `HeritageSystem`.
-
-Le Scheduler conserve l'autorité sur l'ordre.
-
-Cependant, l'ordre choisi devient une partie du comportement déterministe et doit être explicite dans tout assemblage de référence.
-
-Exemple : si une future source d'Intent se base sur un besoin après son érosion du Tick, alors `NeedsDecaySystem` devra être enregistré avant `AutonomousActionSystem` dans cet assemblage.
-
-Ce besoin devra être prouvé par la politique concernée, pas imposé globalement par anticipation.
+Cet invariant est couvert par les tests.
 
 ---
 
-# 18. Frontière avec LifeSession
+# 14. Frontière avec LifeSession
 
-`LifeSession` gère le personnage contrôlé par le joueur.
+`LifeSession` reste responsable du personnage contrôlé par le joueur.
 
-`AutonomousActionSystem` gère uniquement les Entities explicitement enregistrées comme autonomes.
+`AutonomousActionSystem` reste indépendant de `LifeSession`.
 
-ENGINE-010 ne lit pas `LifeSession.ActiveCharacterId` et ne dépend pas de `LifeSession`.
+Il ne lit jamais `ActiveCharacterId`.
 
-La couche applicative qui assemble une partie doit éviter d'enregistrer comme autonome une Entity dont elle souhaite réserver le contrôle au joueur.
-
-Aucune règle générale « joueur versus PNJ » n'est ajoutée au Kernel.
+La couche applicative est responsable de ne pas enregistrer comme autonome une Entity qu'elle souhaite réserver au contrôle joueur.
 
 ---
 
-# 19. Frontière avec GDB-004B
+# 15. Frontière avec GDB-004B
 
-GDB-004B indique que les besoins sont un moteur principal des décisions.
+GDB-004B indique que les besoins influencent les décisions.
 
-Mais l'état documentaire actuel ne fixe pas encore :
+Cependant, aucune autorité amont ne fixe encore :
 
-- de formule universelle de priorité ;
-- de seuil numérique ;
-- de mapping complet `besoin → Intent` ;
-- de règle d'arbitrage complète entre plusieurs besoins égaux ;
-- de comportement en présence d'ambitions, habitudes, opportunités et contraintes concurrentes.
+- un score universel de décision ;
+- des seuils numériques définitifs ;
+- un mapping complet `besoin → Intent` ;
+- l'arbitrage complet entre besoins, ambitions, habitudes et opportunités.
 
-ENGINE-010 ne doit donc pas inventer ces règles.
+ENGINE-010 n'invente donc aucune de ces règles.
 
-Une première source d'Intent concrète pilotée par les besoins pourra être spécifiée lorsque le besoin d'implémentation sera ouvert avec des règles amont suffisamment précises.
+La politique de décision concrète constitue un lot futur distinct.
 
 ---
 
-# 20. Frontière avec GDB-004E et GDB-004F
+# 16. Frontière avec Habitudes et Ambitions
 
-Les Habitudes et Ambitions peuvent influencer les décisions futures.
+ENGINE-010 n'implémente ni GDB-004E ni GDB-004F.
 
-ENGINE-010 n'implémente ni l'une ni l'autre.
+Ces systèmes pourront alimenter une future `IAutonomousIntentSource` sans modifier la responsabilité d'orchestration validée ici.
 
-Elles pourront devenir des entrées d'une future politique de décision sans nécessiter de modifier le contrat général :
+---
+
+# 17. Frontière avec la Mémoire du Monde
+
+La Mémoire du Monde n'est pas nécessaire pour prouver la première Action autonome.
+
+ENGINE-010 ne dépend donc pas de cette brique.
+
+Elle reste un chantier distinct de v0.4.
+
+---
+
+# 18. Ce que ENGINE-010 ne définit pas
+
+ENGINE-010 ne définit pas :
+
+- une IA générale ;
+- une psychologie complète ;
+- des émotions ;
+- des croyances ;
+- une mémoire individuelle ;
+- la Mémoire du Monde ;
+- les Habitudes ;
+- les Ambitions ;
+- les métiers ;
+- l'économie autonome ;
+- un catalogue complet de Verbes ;
+- une formule universelle de choix ;
+- une règle `1 Action = 1 Tick`.
+
+---
+
+# 19. Contrat QA validé
+
+La couverture ENGINE-010 vérifie notamment :
+
+- un Acteur enregistré vivant est interrogé ;
+- un Acteur non enregistré n'est jamais interrogé ;
+- une Entity absente est ignorée ;
+- une Entity morte est ignorée ;
+- `null` n'exécute rien ;
+- un Intent valide est exécuté exactement une fois ;
+- un Intent attribué à un autre Acteur est rejeté ;
+- plusieurs Acteurs respectent l'ordre d'enregistrement ;
+- un double enregistrement reste idempotent ;
+- la séquence d'Intents reste déterministe ;
+- le System n'avance jamais lui-même le Tick ;
+- un test d'intégration traverse réellement le Pipeline d'Actions existant.
+
+---
+
+# 20. Validation technique
+
+Validation confirmée par le porteur du projet le 11 août 2026 :
 
 ```text
-Entity + World + Tick
-↓
-IAutonomousIntentSource
-↓
-Intent?
+dotnet build
+→ succès
+
+dotnet test
+→ 146 / 146 tests réussis
+→ 0 échec
 ```
 
----
-
-# 21. Frontière avec la Mémoire du Monde
-
-La Mémoire du Monde n'est pas requise pour déclencher la première Action autonome.
-
-ENGINE-010 ne dépend donc pas de GDB-002B ou GDB-008I pour fonctionner.
-
-La Mémoire du Monde reste une brique distincte de v0.4.
+Le lot ajoute 12 tests à la base précédemment validée à 134 / 134.
 
 ---
 
-# 22. Réouverture d'ENGINE-C06
+# 21. Résolution d'ENGINE-C06
 
-`ENGINE-C06` avait été volontairement différé jusqu'à l'entrée dans la Phase 3 de MASTER-005.
+ENGINE-C06 avait été volontairement différé jusqu'à la Phase 3 de MASTER-005 afin d'éviter d'inventer prématurément l'orchestration des habitants autonomes.
 
-Cette condition est désormais atteinte après validation de la boucle de vie minimale v0.3.
+La condition de réouverture a été atteinte après validation de v0.3.
 
-ENGINE-010 constitue la réponse architecturale ciblée à ce constat :
+ENGINE-010 fournit maintenant la réponse architecturale, l'implémentation existe, le raccordement réel avec ENGINE-006 est testé et la suite complète est validée.
+
+Le constat peut donc être considéré :
 
 ```text
-Scheduler
-↓
-System d'autonomie
-↓
-Intent
-↓
-Action Pipeline
+ENGINE-C06
+→ Clos
 ```
 
-Le constat ne devra être considéré comme clos qu'après :
+La fermeture concerne exclusivement la lacune d'orchestration Scheduler / Actions autonomes.
 
-- implémentation ;
-- compilation ;
-- tests ;
-- validation de l'intégration réelle avec ENGINE-006.
+Elle ne signifie pas que la politique de décision des PNJ est terminée.
 
 ---
 
-# 23. Invariants
+# 22. Critères de validation
 
-- `AutonomousActionSystem` ne modifie jamais directement un Component métier.
-- Il ne choisit jamais lui-même un objectif métier.
-- Il ne connaît aucun Verbe concret.
-- Il n'exécute jamais directement une Action Definition.
-- Il n'avance jamais le Tick.
-- Il ne lit pas `World.Events` pour décider de faire agir un habitant.
-- Une Entity absente n'agit pas.
-- Une Entity morte n'agit pas.
-- Un `Intent` retourné doit référencer l'Acteur interrogé.
-- La source d'Intent ne mute jamais directement le World.
-- L'exécuteur d'Intent est la seule sortie vers ENGINE-006.
-- L'ordre des habitants autonomes est déterministe.
-- Une invocation produit au plus un nouvel Intent par Acteur dans cette version minimale.
-- Aucune règle `1 Action = 1 Tick` n'est introduite.
+ENGINE-010 est Validée / Maturité 4 car :
+
+- la spécification a précédé le code ;
+- l'implémentation respecte les frontières prévues ;
+- aucun Verbe concret n'est connu du System d'autonomie ;
+- aucun algorithme métier de décision n'a été inventé ;
+- l'ordre d'action est déterministe ;
+- le Scheduler reste l'autorité sur le Tick ;
+- l'intégration avec ENGINE-006 est démontrée ;
+- la suite complète passe à 146 / 146.
 
 ---
 
-# 24. Contrat TECH
+# 23. Prochaine frontière
 
-L'implémentation devra permettre au minimum de :
+La prochaine brique de v0.4 ne doit pas être choisie par commodité technique.
 
-- créer un `AutonomousActionSystem` avec une source d'Intent et un exécuteur ;
-- enregistrer explicitement des `EntityId` autonomes ;
-- conserver leur ordre d'enregistrement ;
-- ignorer un acteur absent ;
-- ignorer un acteur mort ;
-- demander au plus un Intent par acteur lors d'un `Update` ;
-- ne rien exécuter lorsque la source retourne `null` ;
-- rejeter un Intent dont l'Acteur ne correspond pas à l'Entity interrogée ;
-- transmettre un Intent valide à l'exécuteur injecté ;
-- fonctionner comme `ISystem` sous le Scheduler ;
-- rester déterministe à entrées identiques.
+Elle doit être ouverte depuis une règle amont suffisamment précise.
 
----
-
-# 25. Contrat QA
-
-Les tests devront vérifier au minimum :
-
-✓ un acteur enregistré vivant est interrogé lors du Tick ;
-
-✓ un acteur non enregistré n'est jamais interrogé ;
-
-✓ un acteur absent du World est ignoré ;
-
-✓ un acteur mort est ignoré ;
-
-✓ `null` ne déclenche aucune exécution ;
-
-✓ un Intent valide est remis exactement une fois à l'exécuteur ;
-
-✓ un Intent attribué à un autre Acteur est rejeté ;
-
-✓ plusieurs acteurs sont traités dans leur ordre d'enregistrement ;
-
-✓ à état et entrées identiques, la séquence d'Intents exécutés est identique ;
-
-✓ `AutonomousActionSystem` n'avance pas lui-même le Tick ;
-
-✓ un test d'intégration réel démontre :
+Candidats naturels à auditer :
 
 ```text
-Scheduler.Tick
-↓
-AutonomousActionSystem
-↓
-Intent autonome
-↓
-PipelineRunner / ENGINE-006
-↓
-Action archivée
-↓
-Effect appliqué
-↓
-Event observable dans World.Events
-```
-
----
-
-# 26. Test d'intégration cible
-
-Le premier scénario de référence peut utiliser le seul Verbe actuellement exécutable de bout en bout : « Se reposer ».
-
-Le scénario ne définit pas une règle automatique de repos.
-
-Une source d'Intent de test déterministe fournit explicitement :
-
-```text
-Intent("se_reposer")
-```
-
-pour un habitant autonome équipé d'un `NeedsComponent`.
-
-Le test vérifie ensuite :
-
-```text
-Scheduler.Tick
-↓
-source appelée
-↓
-Intent remis à un adaptateur ENGINE-006
-↓
-PipelineRunner.ExecuterSeReposer
-↓
-Action Archived
-↓
-Fatigue restaurée
-↓
-besoin.fatigue.restauree publié
-```
-
-Cette preuve ferme l'écart d'orchestration sans prétendre que la décision « se reposer » a déjà été automatisée par la GDB.
-
----
-
-# 27. Critères de validation
-
-ENGINE-010 pourra passer à Maturité 4 lorsque :
-
-- l'implémentation respecte les responsabilités ci-dessus ;
-- les tests unitaires sont passants ;
-- le test d'intégration Scheduler → autonomie → ENGINE-006 est passant ;
-- aucune règle métier de décision n'a été ajoutée à `AutonomousActionSystem` ;
-- aucune dépendance à un Verbe concret n'existe dans `AutonomousActionSystem` ;
-- le déterminisme de l'ordre des acteurs est testé ;
-- le build est réussi ;
-- la suite complète de tests est réussie.
-
----
-
-# 28. Suite de v0.4
-
-Une fois ENGINE-010 validé, les prochains besoins pourront être ouverts séparément selon la GDB, notamment :
-
-```text
-politique de décision pilotée par besoins
-↓
-habitudes / ambitions
-↓
-travail et économie autonome
-↓
-événements dynamiques
-↓
+politique minimale de décision des habitants
 Mémoire du Monde
+événements dynamiques
+économie autonome minimale
 ```
 
-Cet ordre n'est pas normatif au-delà du premier lot.
-
-Chaque brique devra être justifiée par son propre besoin et ses autorités amont.
+La priorité doit être déterminée par le plus petit besoin concret nécessaire au critère de sortie de MASTER-005 Phase 3.
 
 ---
 
-# 29. Historique
+# 24. Historique
+
+## Version 1.1
+
+- ENGINE-010 passe à **Validée / Maturité 4** ;
+- implémentation `AutonomousActionSystem` confirmée ;
+- contrats `IAutonomousIntentSource` et `IAutonomousIntentExecutor` confirmés ;
+- 12 tests ENGINE-010 validés ;
+- suite globale portée à **146 / 146 tests réussis** ;
+- intégration Scheduler → autonomie → ENGINE-006 → World confirmée ;
+- ENGINE-C06 considéré clos ;
+- frontière maintenue avec la future politique de décision métier.
 
 ## Version 1.0
 
 - création d'ENGINE-010 comme première spécification ENGINE de v0.4 ;
-- réouverture ciblée du besoin conservé par ENGINE-C06 ;
-- introduction d'une orchestration autonome comme `ISystem` ;
-- sélection explicite des Acteurs autonomes par enregistrement ;
-- séparation stricte entre orchestration, décision et exécution ;
-- source d'Intent injectable et déterministe ;
-- frontière d'exécution injectable vers ENGINE-006 ;
-- aucun Verbe concret ni règle métier de décision dans le System ;
-- test d'intégration cible basé sur le Verbe de démonstration « Se reposer » uniquement comme preuve de raccordement.
+- réouverture ciblée d'ENGINE-C06 à l'entrée en Phase 3 ;
+- séparation entre orchestration autonome, décision métier et exécution d'Action ;
+- absence volontaire de politique concrète de décision.

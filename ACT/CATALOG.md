@@ -1,6 +1,6 @@
 # ACT — Catalogue
 
-> Version : 1.11
+> Version : 1.12
 >
 > Statut : Foundation
 >
@@ -18,8 +18,6 @@ Ce catalogue référence l'ensemble des documents constituant la bibliothèque A
 
 ACT définit le langage universel des actions de Chroniques.
 
-Chaque document appartient à une catégorie clairement identifiée.
-
 ---
 
 # Structure générale
@@ -36,36 +34,14 @@ ACT
 ├── Taxonomie                 (ACT-008-A, audité)
 ├── Composition               (ACT-009-A, audité)
 ├── Événements                (ACT-010-A, audité)
-├── Patterns                  (PAT-001 M4 ; PAT-002 M4 ; PAT-003 M4)
-└── Verbes                    (VERB-001 M4 ; VERB-002 M4 ; VERB-003 M4)
-
----
-
-# Documents existants
-
-## ACT-001 — Fondements de l'action
-
-Créé et audité.
-
-## ACT-002 — Modèle universel de l'action
-
-Créé et audité.
-
-## ACT-003 — Retiré
-
-ACT-003 reste retiré car son contenu serait redondant avec ACT-001-E et ACT-002-F à I. Son identifiant ne sera pas réattribué.
-
-## ACT-004 à ACT-010
-
-Créés. Leur statut documentaire détaillé reste porté par leurs documents propres et les audits applicables.
+├── Patterns                  (PAT-001 M4 ; PAT-002 M4 ; PAT-003 M4 ; PAT-004 M2)
+└── Verbes                    (VERB-001 M4 ; VERB-002 M4 ; VERB-003 M4 ; VERB-004 M2)
 
 ---
 
 # Bibliothèque PATTERNS
 
 Statut : créée et ouverte.
-
-Catalogue : `ACT/PATTERNS/readme.md`.
 
 ## PAT-001 — Repos
 
@@ -94,19 +70,24 @@ Principe : Transformation
 Verbe : VERB-003 Produire une denrée
 ```
 
-Origine : GDB-004A v1.1, GDB-005C v1.2, GDB-012B v1.1 et GDB-012E v1.1.
-
-Structure validée :
+## PAT-004 — Transfert
 
 ```text
-entrées accessibles consommées
-↓
-sortie produite
-+
-provenance persistante
+Proposition / Maturité 2
+Principe : Échange
+Verbe proposé : VERB-004 Donner une denrée
 ```
 
-PAT-003 est distinct de Repos et Alimentation par sa structure de contrat entrée → sortie.
+Origine : GDB-005E v1.2 + GDB-005F v1.1.
+
+Structure proposée :
+
+```text
+source P -= q
+destination P += q
+```
+
+La quantité totale est conservée. Aucun prix, paiement ou marché n'est inclus.
 
 PATTERNS reste ouverte.
 
@@ -115,8 +96,6 @@ PATTERNS reste ouverte.
 # Bibliothèque VERBS
 
 Statut : créée et ouverte.
-
-Catalogue : `ACT/VERBS/readme.md`.
 
 ## VERB-001 — Se reposer
 
@@ -143,7 +122,17 @@ Intent : produire_denree
 Pattern : PAT-003 Production
 ```
 
-Le contrat validé transforme une entrée matérielle en sortie alimentaire selon une opération explicite, sans métier, salaire, prix ni marché implicites.
+## VERB-004 — Donner une denrée
+
+```text
+Proposition / Maturité 2
+Intent : donner_denree
+Pattern : PAT-004 Transfert
+```
+
+Le premier contrat resserré transfère une denrée existante d'un habitant à un autre entre deux stocks alimentaires distincts et compatibles.
+
+VERB-004 ne constitue ni une vente, ni un troc réciproque, ni un système de prix.
 
 VERBS reste ouverte.
 
@@ -179,42 +168,21 @@ CODE
 
 # Historique
 
+## Version 1.12
+
+- création de `PAT-004 — Transfert` en Proposition / Maturité 2 ;
+- création de `VERB-004 — Donner une denrée` en Proposition / Maturité 2 ;
+- rattachement `Échange → PAT-004 → VERB-004` ;
+- transfert conservatif de denrée entre habitants ;
+- prix, monnaie, vente et troc réciproque maintenus hors périmètre ;
+- aucune validation M4 anticipée ;
+- aucune consolidation TECH/roadmap/README déclenchée.
+
 ## Version 1.11
 
-- `PAT-003 — Production` passe à **Officiel / Maturité 4** ;
-- `VERB-003 — Produire une denrée` passe à **Officiel / Maturité 4** ;
-- validation locale portée à **201 / 201 tests réussis** ;
-- chaîne `Transformation → PAT-003 → VERB-003 → Action` confirmée ;
-- production autonome puis alimentation au Tick suivant confirmées sans entrée joueur ;
-- PATTERNS et VERBS restent ouvertes ;
-- aucune consolidation TECH/roadmap/README déclenchée automatiquement.
+- PAT-003 et VERB-003 validés / Maturité 4 ;
+- validation portée à 201 / 201.
 
-## Version 1.10
+## Versions 1.0 à 1.10
 
-- création de `PAT-003 — Production` en Proposition / Maturité 2 ;
-- création de `VERB-003 — Produire une denrée` en Proposition / Maturité 2 ;
-- rattachement `Transformation → PAT-003 → VERB-003` ;
-- origine métier fixée par GDB-004A v1.1, GDB-005C v1.2, GDB-012B v1.1 et GDB-012E v1.1 ;
-- aucune validation M4 anticipée.
-
-## Version 1.9
-
-- PAT-002 et VERB-002 validés / Maturité 4 ;
-- validation portée à 178 / 178.
-
-## Version 1.8
-
-- création de PAT-002 et VERB-002.
-
-## Version 1.7
-
-- PAT-001 et VERB-001 validés / Maturité 4 ;
-- validation portée à 161 / 161.
-
-## Version 1.6
-
-- création effective des sous-bibliothèques PATTERNS/ et VERBS/.
-
-## Versions 1.0 à 1.5
-
-- création et consolidation initiales d'ACT-001 à ACT-010, avec retrait d'ACT-003 et ouverture de la taxonomie/composition/événements.
+- création et consolidation des fondations ACT et des trois premiers couples Pattern/Verbe.

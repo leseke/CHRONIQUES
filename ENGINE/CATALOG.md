@@ -1,6 +1,6 @@
 # ENGINE — Catalogue
 
-> Version : 1.14
+> Version : 1.15
 > Statut : Foundation
 > Maturité : 1
 > Bibliothèque : ENGINE
@@ -33,7 +33,7 @@ ENGINE-009  Boucle de vie minimale                   Validée / M4
 ENGINE-010  Orchestration habitants autonomes        Validée / M4
 ENGINE-011  Décision autonome par besoins            Validée / M4
 ENGINE-012  Alimentation autonome minimale           Validée / M4
-ENGINE-013  Production autonome minimale             Proposition / M2
+ENGINE-013  Production autonome minimale             Validée / M4
 ```
 
 ---
@@ -64,7 +64,7 @@ World
 
 # ENGINE-010 à ENGINE-012 — Bloc autonomie par besoins consolidé
 
-Le bloc déjà validé permet :
+Le bloc déjà consolidé permet :
 
 ```text
 Scheduler
@@ -78,7 +78,7 @@ Repos ou Alimentation
 World
 ```
 
-Validation courante consolidée :
+Validation de référence du point de consolidation :
 
 ```text
 178 / 178 tests réussis
@@ -90,9 +90,9 @@ Ce bloc est documenté par TECH-003 et TECH-004.
 
 # ENGINE-013 — Production autonome minimale
 
-Statut : Proposition.
+Statut : Validée.
 
-Maturité : 2.
+Maturité : 4.
 
 ENGINE-013 ouvre le premier socle productif réel de v0.4.
 
@@ -105,7 +105,7 @@ GDB-012B v1.1
 GDB-012E v1.1
 ```
 
-Autorités ACT :
+Autorités ACT validées :
 
 ```text
 Transformation
@@ -115,7 +115,7 @@ PAT-003 Production
 VERB-003 Produire une denrée
 ```
 
-Flux cible :
+Flux validé :
 
 ```text
 NeedsIntentSource
@@ -159,7 +159,7 @@ Le `PipelineRunner` n'est pas spécialisé pour VERB-003 : la nouvelle capacité
 
 ---
 
-# Scénario d'intégration cible
+# Scénario d'intégration validé
 
 ```text
 Tick N
@@ -182,13 +182,13 @@ portion consommée
 Faim restaurée
 ```
 
-Ce scénario doit fonctionner sans entrée joueur.
+Ce scénario fonctionne sans entrée joueur.
 
 ---
 
-# Couverture QA en attente de validation locale
+# Validation technique
 
-ENGINE-013 ajoute 22 tests ciblés.
+Le fichier ENGINE-013 contient **23 nouveaux tests**.
 
 Base validée avant ce lot :
 
@@ -196,13 +196,18 @@ Base validée avant ce lot :
 178 / 178
 ```
 
-Total attendu après validation :
+Validation locale communiquée le 11 août 2026 :
 
 ```text
-200 tests
+dotnet build
+→ succès
+
+dotnet test
+→ 201 / 201 tests réussis
+→ 0 échec
 ```
 
-Aucun passage M4 n'est enregistré avant résultat local confirmé.
+Le précédent total attendu de 200 provenait d'un comptage erroné de 22 nouveaux tests ; le fichier `Engine013ProductionTests.cs` contient bien 23 `[Fact]`.
 
 ---
 
@@ -242,6 +247,17 @@ ENGINE/CATALOG.md
 
 # Historique
 
+## Version 1.15
+
+- ENGINE-013 passe à **Validée / Maturité 4** ;
+- PAT-003 / VERB-003 confirmés comme autorités ACT validées ;
+- suite globale portée à **201 / 201 tests réussis** ;
+- correction du comptage ENGINE-013 : 23 nouveaux tests, et non 22 ;
+- scénario autonome production au Tick N → alimentation au Tick N+1 confirmé ;
+- stocks et provenance persistante validés ;
+- économie commerciale maintenue hors périmètre ;
+- aucune consolidation TECH/roadmap/README déclenchée automatiquement.
+
 ## Version 1.14
 
 - création d'ENGINE-013 — Production autonome minimale en Proposition / Maturité 2 ;
@@ -250,9 +266,8 @@ ENGINE/CATALOG.md
 - composition ordonnée entretien → production ;
 - composition des Planners et Execution Engines ;
 - scénario cible production au Tick N → alimentation au Tick N+1 ;
-- 22 nouveaux tests ajoutés, total attendu 200 ;
-- économie commerciale explicitement laissée hors périmètre ;
-- aucune consolidation TECH/roadmap/README avant validation.
+- couverture QA ajoutée ;
+- économie commerciale explicitement laissée hors périmètre.
 
 ## Version 1.13
 

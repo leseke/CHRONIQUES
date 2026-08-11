@@ -1,6 +1,6 @@
 # ENGINE — Catalogue
 
-> Version : 1.11
+> Version : 1.12
 > Statut : Foundation
 > Maturité : 1
 > Bibliothèque : ENGINE
@@ -105,31 +105,13 @@ Outcome
 
 ## ENGINE-008 — Systems de population
 
-### Relations, Compétences, Héritage
-
 Statut : Validée.
 
 Maturité : 4.
 
-Couvre :
+Couvre Relations, Compétences, Héritage minimal et Effects de population.
 
-- `RelationComponent` / `RelationSystem` ;
-- `SkillComponent` / `SkillSystem` ;
-- `HeritageSystem` ;
-- Effects de population ;
-- `PopulationEffectApplicator`.
-
-Validation de référence du lot :
-
-```text
-dotnet build
-→ succès
-
-dotnet test
-→ 122 / 122 tests réussis
-```
-
-La transmission matérielle complète reste différée tant que le patrimoine transmissible n'est pas représenté.
+Validation de référence : `122 / 122`.
 
 ---
 
@@ -139,33 +121,9 @@ Statut : Validée.
 
 Maturité : 4.
 
-Relie les briques v0.3 en une continuité minimale :
+Relie Action joueur, Scheduler, mort, HeritageSystem et continuité avec l'héritier.
 
-```text
-Action joueur
-↓
-Scheduler / Systems
-↓
-mort
-↓
-HeritageSystem
-↓
-héritier
-↓
-continuité de session
-```
-
-Validation de référence :
-
-```text
-dotnet build
-→ succès
-
-dotnet test
-→ 134 / 134 tests réussis
-```
-
-ENGINE-009 n'avait volontairement pas fermé ENGINE-C06 : l'autonomie des habitants relevait de la Phase 3.
+Validation de référence : `134 / 134`.
 
 ---
 
@@ -174,10 +132,6 @@ ENGINE-009 n'avait volontairement pas fermé ENGINE-C06 : l'autonomie des habita
 Statut : Validée.
 
 Maturité : 4.
-
-Première spécification ENGINE validée de v0.4 — Le monde vivant.
-
-Objectif : permettre à un habitant explicitement enregistré comme autonome d'initier un Intent pendant un Tick sans intervention du joueur, puis remettre cet Intent à un exécuteur conforme à ENGINE-006.
 
 ```text
 Scheduler
@@ -195,20 +149,9 @@ ENGINE-006
 World
 ```
 
-ENGINE-010 sépare strictement orchestration, décision métier et exécution d'Action.
+Validation de référence : `146 / 146`.
 
-Validation de référence :
-
-```text
-dotnet build
-→ succès
-
-dotnet test
-→ 146 / 146 tests réussis
-→ 0 échec
-```
-
-Cette validation résout la lacune architecturale `ENGINE-C06`. Elle ne clôt pas la future politique de décision des PNJ.
+Cette validation résout la lacune architecturale ENGINE-C06.
 
 ---
 
@@ -218,59 +161,83 @@ Statut : Validée.
 
 Maturité : 4.
 
-Première décision métier autonome concrète de v0.4, fondée sur GDB-004B v1.1.
+Premier comportement autonome réel :
 
 ```text
-NeedsComponent
-+
-seuil de Fatigue configuré
-↓
 Fatigue < seuil
-?
+↓
 Intent se_reposer
-:
-null
 ```
 
-ENGINE-011 :
-
-- implémente un seul mapping réel : `Fatigue → se_reposer` ;
-- ne crée aucun Intent pour Faim, Sante ou Moral tant qu'aucune réponse exécutable documentée n'existe ;
-- laisse le seuil numérique configurable ;
-- n'introduit ni personnalité, ni habitudes, ni ambitions, ni Opportunités PNJ ;
-- ne généralise pas `PipelineRunner` ;
-- conserve la décision sans mutation directe du World.
-
-Validation technique courante communiquée le 11 août 2026 :
+Validation technique courante :
 
 ```text
-dotnet build
-→ succès
-
-dotnet test
-→ 158 / 158 tests réussis
-→ 0 échec
+158 / 158 tests réussis
 ```
 
-La couverture comprend désormais :
+La couverture comprend le franchissement strict du seuil et une régulation autonome multi-Tick.
+
+---
+
+## ENGINE-012 — Alimentation autonome minimale
+
+Statut : Proposition.
+
+Maturité : 2.
+
+Deuxième comportement autonome réel, fondé sur :
 
 ```text
-NeedsDecaySystem
+GDB-004B v1.2
++
+GDB-005E v1.1
 ↓
-franchissement strict du seuil de Fatigue
+PAT-002 Alimentation
 ↓
-NeedsIntentSource
-↓
-AutonomousActionSystem
-↓
-ENGINE-006
-↓
-Fatigue restaurée
+VERB-002 Manger
 ```
 
-ainsi qu'un scénario de vingt Ticks sans entrée joueur démontrant une régulation autonome répétée de la Fatigue.
+Flux cible :
 
-La consolidation TECH/roadmap/README est volontairement différée jusqu'à un jalon fonctionnel significatif.
+```text
+Faim sous seuil
++
+nourriture accessible
+↓
+Intent manger
+↓
+NeedsPlanner
+↓
+PlanStep + Cibles
+↓
+Manger
+↓
+Outcome
+↓
+portion consommée
++
+Faim restaurée
+```
+
+ENGINE-012 introduit uniquement ce qui devient nécessaire avec le deuxième Verbe réel :
+
+- `FoodProductComponent` ;
+- `IAccessibleFoodResolver` sans inventaire imposé ;
+- Cibles portées par `PlanStep` ;
+- `NeedsPlanner` pour `se_reposer` et `manger` ;
+- décision Faim/Fatigue déterministe ;
+- `MangerDefinition` ;
+- applicateurs d'Effects séparés du `PipelineRunner` ;
+- entrée générique `PipelineRunner.Execute` ;
+- persistance de `FoodProductComponent`.
+
+Le contrat QA ajoute 17 tests ciblés. La suite attendue avant validation locale est :
+
+```text
+178 tests
+```
+
+ENGINE-012 ne crée ni inventaire, ni propriété, ni achat, ni cuisine, ni moteur universel d'Effects.
 
 ---
 
@@ -280,7 +247,7 @@ La consolidation TECH/roadmap/README est volontairement différée jusqu'à un j
 
 Gestion future des ressources techniques : contenu externe, durée de vie, cache et ressources mémoire au sens technique.
 
-Ce document ne désigne pas la Mémoire du Monde au sens GDB.
+Ce document ne désigne pas les ressources économiques de GDB-005.
 
 Il reste réservé mais non spécifié conformément à MASTER-006.
 
@@ -297,8 +264,6 @@ Simulation Loop
 Serialization
 → intégrée à ENGINE-005
 ```
-
-Ces consolidations restent valides tant que le code ne matérialise pas des responsabilités indépendantes.
 
 ---
 
@@ -317,6 +282,7 @@ ENGINE-008  Validée / Maturité 4
 ENGINE-009  Validée / Maturité 4
 ENGINE-010  Validée / Maturité 4
 ENGINE-011  Validée / Maturité 4
+ENGINE-012  Proposition / Maturité 2
 ```
 
 ---
@@ -329,53 +295,50 @@ Le catalogue canonique unique est :
 ENGINE/CATALOG.md
 ```
 
-Tout ancien catalogue alternatif doit uniquement rediriger vers ce fichier.
-
 ---
 
 # Historique
 
+## Version 1.12
+
+- création d'ENGINE-012 — Alimentation autonome minimale ;
+- prise en compte de GDB-004B v1.2 et GDB-005E v1.1 ;
+- raccordement de PAT-002 / VERB-002 ;
+- deuxième besoin autonome `Faim → manger` spécifié ;
+- Cibles matérialisées dans le Plan ;
+- séparation du runner et des applicateurs d'Effects ;
+- produit alimentaire minimal et persistance ajoutés ;
+- couverture QA cible portée à 17 nouveaux tests, soit 178 attendus ;
+- aucune consolidation TECH/roadmap/README déclenchée.
+
 ## Version 1.11
 
-- validation courante d'ENGINE-011 portée à **158 / 158 tests réussis** ;
-- ajout de la preuve multi-Tick `NeedsDecaySystem → AutonomousActionSystem` ;
-- validation du franchissement strict du seuil et d'une régulation autonome sur vingt Ticks ;
-- ENGINE-011 reste **Validée / Maturité 4** ;
-- aucune consolidation transverse déclenchée hors jalon significatif.
+- validation courante d'ENGINE-011 portée à 158 / 158 ;
+- preuve multi-Tick de régulation autonome ajoutée.
 
 ## Version 1.10
 
-- ENGINE-011 passe à **Validée / Maturité 4** après validation locale ;
-- suite globale portée à **156 / 156 tests réussis** ;
-- premier comportement autonome réel piloté par un besoin confirmé ;
-- aucune extension aux besoins encore non actionnables ;
-- consolidation transverse différée jusqu'à un point de clôture significatif.
+- ENGINE-011 passe à Validée / Maturité 4 ;
+- suite globale portée à 156 / 156.
 
 ## Version 1.9
 
-- création de `ENGINE-011 — Décision autonome par besoins` ;
-- prise en compte de GDB-004B v1.1 / Maturité 2 ;
-- premier mapping autonome concret `Fatigue → se_reposer` ;
-- seuil de décision laissé configurable ;
-- frontières explicites avec les futurs arbitrages multi-besoins et couches psychologiques.
+- création d'ENGINE-011.
 
 ## Version 1.8
 
-- ENGINE-010 passe à **Validée / Maturité 4** ;
-- implémentation `AutonomousActionSystem` et contrats d'injection confirmés ;
-- suite globale portée à **146 / 146 tests réussis** ;
-- intégration Scheduler → autonomie → ENGINE-006 confirmée ;
-- lacune ENGINE-C06 considérée résolue.
+- ENGINE-010 passe à Validée / Maturité 4 ;
+- suite globale portée à 146 / 146 ;
+- ENGINE-C06 résolue.
 
 ## Version 1.7
 
-- création de `ENGINE-010 — Orchestration des habitants autonomes`.
+- création d'ENGINE-010.
 
 ## Version 1.6
 
 - ENGINE-009 validée / Maturité 4 ;
-- validation portée à 134 / 134 tests ;
-- création du point de sortie v0.3.
+- validation portée à 134 / 134.
 
 ## Version 1.5
 

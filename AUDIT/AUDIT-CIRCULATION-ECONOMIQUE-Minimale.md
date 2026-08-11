@@ -1,6 +1,6 @@
 # AUDIT — Circulation économique minimale
 
-> Version : 1.0
+> Version : 1.1
 > Statut : Clos
 > Type : Audit de concordance ciblé
 > Maturité : 4
@@ -54,7 +54,7 @@ GDB-005I interdit de traiter la Valeur économique comme un simple nombre univer
 
 # 4. Sous-capacité autorisable
 
-Une sous-capacité plus petite est déjà cohérente avec les principes : le transfert volontaire d'une denrée entre deux habitants.
+Une sous-capacité plus petite est cohérente avec les principes : le transfert volontaire d'une denrée entre deux habitants.
 
 Elle nécessite uniquement :
 
@@ -67,7 +67,7 @@ destinataire
 +
 opportunité volontaire
 +
-stocks compatibles
+deux stocks distincts compatibles
 +
 quantité positive
 ↓
@@ -82,8 +82,8 @@ Cette capacité crée une circulation économique réelle sans prétendre consti
 
 Pour rendre le contrat exécutable sans invention, les documents suivants ont été précisés :
 
-- `GDB-005E v1.2` : identité stable de produit et conservation lors d'un transfert ;
-- `GDB-005F v1.1` : opportunité volontaire explicite et transfert minimal entre parties ;
+- `GDB-005E v1.3` : identité stable de produit, conservation lors d'un transfert et invariant `stock source ≠ stock destination` ;
+- `GDB-005F v1.2` : opportunité volontaire explicite, transfert minimal entre parties et exigence de deux stocks distincts ;
 - `GDB-004A v1.2` : ordre autonome minimal `entretien → échange volontaire → production` ;
 - `GDB-019D v1.1` : GDB-005F devient l'autorité sur les invariants d'échange et le transfert minimal reste distinct du commerce complet.
 
@@ -93,7 +93,7 @@ Pour rendre le contrat exécutable sans invention, les documents suivants ont é
 
 Les quatre tests d'ACT-008-A concluent :
 
-1. **Paramétrage** : aucun Verbe existant ne déplace un produit intact entre deux stocks.
+1. **Paramétrage** : aucun Verbe existant ne déplace un produit intact entre deux stocks distincts.
 2. **Composition** : Repos, Manger et Produire une denrée ne reproduisent pas un transfert conservatif sans détourner leurs Effects.
 3. **Pattern existant** : PAT-001 à PAT-003 ont des contrats incompatibles.
 4. **Nouveau Pattern** : un nouveau Pattern est justifié.
@@ -108,13 +108,13 @@ PAT-004 Transfert
 VERB-004 Donner une denrée
 ```
 
-PAT-004 et VERB-004 restent Proposition / Maturité 2 jusqu'à validation moteur.
+PAT-004 v1.1 et VERB-004 v1.1 restent Proposition / Maturité 2 jusqu'à validation moteur.
 
 ---
 
 # 7. ENGINE
 
-ENGINE-014 peut être ouvert pour démontrer :
+ENGINE-014 v1.1 peut démontrer :
 
 ```text
 production par A
@@ -123,12 +123,14 @@ stock alimentaire de A
 ↓
 transfert volontaire A → B
 ↓
-stock alimentaire de B
+stock alimentaire distinct de B
 ↓
 consommation par B
 ```
 
 Le lot ne nécessite aucune modification du `PipelineRunner` : le quatrième Verbe est raccordé par les compositeurs et interfaces existants.
+
+La couverture pré-validation comprend 23 nouveaux tests pour un total attendu de 224 tests.
 
 ---
 
@@ -163,6 +165,21 @@ Circulation volontaire d'une denrée
 ```
 
 L'audit ciblé est clos.
+
+---
+
+# HISTORIQUE
+
+## Version 1.1
+
+- synchronisation avec GDB-005E v1.3 / GDB-005F v1.2 ;
+- ajout explicite de l'invariant de stocks source/destination distincts ;
+- synchronisation avec PAT-004 v1.1, VERB-004 v1.1 et ENGINE-014 v1.1 ;
+- couverture pré-validation enregistrée à 23 nouveaux tests, soit 224 attendus.
+
+## Version 1.0
+
+- audit initial de la frontière entre circulation volontaire et économie commerciale.
 
 ---
 

@@ -1,6 +1,6 @@
 # VERBS — Catalogue des Verbes d'Actions
 
-> Version : 1.1
+> Version : 1.2
 > Statut : Active
 > Type : Sous-bibliothèque ACT
 > Maturité : 2
@@ -66,8 +66,6 @@ Maturité : 4.
 
 Validation de référence : `161 / 161` tests réussis.
 
-Chaîne :
-
 ```text
 Principe Entretien
 ↓
@@ -90,13 +88,13 @@ se_reposer
 
 ## VERB-002 — Manger
 
-Statut : Proposition.
+Statut : Officiel.
 
-Maturité : 2.
+Maturité : 4.
+
+Validation de référence : `178 / 178` tests réussis.
 
 Origine métier : GDB-004B v1.2 et GDB-005E v1.1.
-
-Chaîne proposée :
 
 ```text
 Principe Entretien
@@ -128,7 +126,7 @@ Le moteur peut utiliser un identifiant technique compatible, mais l'implémentat
 
 Une valeur de tuning présente dans le code n'est pas automatiquement une règle VERBS.
 
-VERB-002 n'impose notamment aucun système technique d'inventaire : il exige uniquement qu'une future implémentation puisse résoudre une nourriture réellement accessible conformément à GDB-005E.
+VERB-002 n'impose aucun système technique d'inventaire : il exige uniquement qu'une implémentation puisse résoudre une nourriture réellement accessible conformément à GDB-005E.
 
 ---
 
@@ -136,8 +134,10 @@ VERB-002 n'impose notamment aucun système technique d'inventaire : il exige uni
 
 ```text
 VERB-001  Se reposer  Officiel / Maturité 4
-VERB-002  Manger      Proposition / Maturité 2
+VERB-002  Manger      Officiel / Maturité 4
 ```
+
+La sous-bibliothèque VERBS reste ouverte : la validation de ses deux premiers Verbes ne constitue pas sa clôture.
 
 ---
 
@@ -150,6 +150,13 @@ Si la réponse est non, le Verbe doit être corrigé avant validation.
 ---
 
 # Historique
+
+## Version 1.2
+
+- `VERB-002 — Manger` passe à **Officiel / Maturité 4** ;
+- validation locale portée à **178 / 178 tests réussis** ;
+- ciblage par le Plan, consommation réelle et restauration de Faim confirmés ;
+- VERBS reste ouverte, sans clôture globale de bibliothèque.
 
 ## Version 1.1
 

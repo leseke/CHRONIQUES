@@ -2,7 +2,7 @@
 
 **Chaque vie raconte une Chronique.**
 
-> Version : 1.3  
+> Version : 1.4  
 > Statut : Officiel  
 > Bibliothèque racine : CHRONIQUES
 
@@ -32,7 +32,7 @@ La documentation constitue la source de vérité conceptuelle et architecturale.
 
 Le code constitue la vérité de l'implémentation exécutable.
 
-TECH documente cette implémentation après validation.
+TECH documente cette implémentation après validation, à un point de consolidation pertinent conformément à MASTER-006 v1.1.
 
 ---
 
@@ -57,6 +57,28 @@ TECH
 ```
 
 Aucune couche aval ne doit contredire une autorité amont applicable.
+
+---
+
+# Gouvernance de validation
+
+Chroniques distingue désormais officiellement :
+
+```text
+validation courante
+≠
+consolidation documentaire
+```
+
+Une validation courante synchronise immédiatement les sources de vérité directement concernées.
+
+Une consolidation transverse intervient à un jalon significatif : capacité majeure, fin de bloc cohérent, changement de phase/version, fermeture de bibliothèque/sous-ensemble ou audit critique.
+
+Cette règle est portée par :
+
+```text
+MASTER-006 v1.1
+```
 
 ---
 
@@ -101,7 +123,7 @@ Règles de simulation : monde, habitants, besoins, relations, compétences, éco
 
 ## ACT
 
-Langage universel des Actions : Intent, Plan, Action, Outcome, Effects et contrats associés.
+Langage universel des Actions : Intent, Plan, Pattern, Verbe, Action, Outcome, Effects et contrats associés.
 
 ## ENGINE
 
@@ -113,11 +135,11 @@ Implémentation C#/.NET déterministe et indépendante du rendu.
 
 ## TECH
 
-Documentation de l'implémentation réellement obtenue après validation.
+Documentation de l'implémentation réellement obtenue et validée.
 
 ## AUDIT
 
-Contrôles de cohérence, divergences et clôtures de constats transverses.
+Contrôles de cohérence, divergences et clôtures de constats ou de jalons transverses.
 
 ---
 
@@ -135,7 +157,33 @@ ENGINE-007  Resource Manager — réservé
 ENGINE-008  Systems de population              ✅ Maturité 4
 ENGINE-009  Boucle de vie minimale             ✅ Maturité 4
 ENGINE-010  Orchestration habitants autonomes  ✅ Maturité 4
+ENGINE-011  Décision autonome par besoins      ✅ Maturité 4
+ENGINE-012  Alimentation autonome minimale     ✅ Maturité 4
 ```
+
+---
+
+# ACT concret actuel
+
+Les sous-bibliothèques PATTERNS et VERBS sont ouvertes et possèdent désormais deux chaînes validées :
+
+```text
+Entretien
+↓
+PAT-001 — Repos
+↓
+VERB-001 — Se reposer
+```
+
+```text
+Entretien
+↓
+PAT-002 — Alimentation
+↓
+VERB-002 — Manger
+```
+
+Les quatre documents sont Officiels / Maturité 4 dans leur périmètre validé.
 
 ---
 
@@ -157,16 +205,21 @@ Héritage minimal
 Effects de population
 LifeSession
 AutonomousActionSystem
+NeedsIntentSource
+FoodProductComponent
+NeedsPlanner
+NeedsExecutionEngine
+ActionEffectDispatcher
 ```
 
-Validation globale actuelle :
+Validation globale actuelle communiquée le 11 août 2026 :
 
 ```text
 dotnet build
 → succès
 
 dotnet test
-→ 146 / 146 tests réussis
+→ 178 / 178 tests réussis
 → 0 échec
 ```
 
@@ -196,7 +249,9 @@ Cette chaîne est portée notamment par ENGINE-009 et TECH-002.
 
 # v0.4 — Le monde vivant
 
-Le premier lot de v0.4 est désormais validé.
+v0.4 comporte désormais deux lots validés.
+
+## Lot 1 — Orchestration autonome
 
 ```text
 Scheduler.Tick
@@ -214,28 +269,80 @@ ENGINE-006
 World
 ```
 
-Ce lot permet à un habitant explicitement enregistré comme autonome d'initier une Action sans intervention du joueur.
+Porté par ENGINE-010 et TECH-003.
 
-Il ne définit pas encore la politique métier qui choisit les Intents.
+## Lot 2 — Décision autonome par besoins
+
+```text
+Fatigue < seuil
+↓
+Intent se_reposer
+↓
+VERB-001
+↓
+Fatigue restaurée
+```
+
+et :
+
+```text
+Faim < seuil
++
+nourriture accessible
+↓
+Intent manger
+↓
+VERB-002
+↓
+portion consommée
++
+Faim restaurée
+```
+
+Lorsque les deux besoins sont actionnables, le moteur choisit le besoin dont la satisfaction est la plus basse ; l'égalité est départagée de manière déterministe.
+
+Cette capacité est portée par ENGINE-011, ENGINE-012 et TECH-004.
+
+---
+
+# Ressource alimentaire minimale
+
+L'alimentation ne crée jamais gratuitement une ressource.
+
+Le bloc validé impose :
+
+```text
+produit alimentaire réel
++
+accessible
++
+portion disponible
+↓
+Action Manger réussie
+↓
+portion - 1
++
+Faim restaurée
+```
+
+L'accès est isolé derrière `IAccessibleFoodResolver` afin de ne pas inventer prématurément un système général d'inventaire ou de propriété.
 
 ---
 
 # ENGINE-C06
 
-Le constat historique portant sur l'absence de raccordement entre Scheduler et Actions autonomes est désormais :
+Le constat historique portant sur l'absence de raccordement entre Scheduler et Actions autonomes est :
 
 ```text
 ENGINE-C06
 → Clos
 ```
 
-Sa clôture est enregistrée dans :
+Sa clôture concerne l'orchestration et reste documentée dans :
 
 ```text
 AUDIT/ENGINE-C06-Cloture.md
 ```
-
-La clôture concerne l'orchestration, pas la future intelligence décisionnelle des habitants.
 
 ---
 
@@ -255,104 +362,76 @@ TECH-002 — Boucle de vie minimale
 TECH-003 — Orchestration des habitants autonomes
 → ENGINE-010
 → 146 / 146 à validation initiale
+
+TECH-004 — Décision autonome par besoins
+→ ENGINE-011 + ENGINE-012
+→ 178 / 178 à consolidation
 ```
 
 ---
 
-# Chaînes de traçabilité
+# Audit de jalon
 
-Exemple population :
-
-```text
-GDB-004C
-↓
-ENGINE-008
-↓
-RelationSystem.cs
-↓
-RelationSystemTests.cs
-↓
-TECH-001
-```
-
-Exemple boucle de vie :
+Le premier bloc de décision autonome a reçu un contrôle de concordance dédié :
 
 ```text
-ENGINE-009
-↓
-LifeSession.cs
-↓
-LifeSessionTests.cs
-↓
-TECH-002
+AUDIT/AUDIT-AUTONOMIE-BESOINS-Consolidation.md
+→ Clos
 ```
 
-Exemple autonomie :
+Ce contrôle confirme la chaîne GDB → ACT → ENGINE → code → tests → TECH dans le périmètre repos + alimentation.
+
+La synthèse haute d'`AUDIT-GLOBALE.md` reste historique et devra être réconciliée lors d'un futur passage global sans écraser son backlog.
+
+---
+
+# Chaîne de traçabilité autonomie actuelle
 
 ```text
 MASTER-005 Phase 3
 ↓
-GDB-004A / GDB-004B
+GDB-004B v1.2
++
+GDB-005E v1.1
 ↓
-ENGINE-010
+PAT-001 / VERB-001
+PAT-002 / VERB-002
 ↓
-AutonomousActionSystem.cs
+ENGINE-010 / 011 / 012
 ↓
-AutonomousActionSystemTests.cs
+CHRONIQUES-ENGINE
 ↓
-146 / 146
+178 / 178
 ↓
-TECH-003
+TECH-003 / TECH-004
 ```
-
----
-
-# Principe de responsabilité unique
-
-Une information officielle doit posséder une source d'autorité identifiable.
-
-Lorsqu'un document dépend d'un autre, il doit privilégier la référence et la traçabilité plutôt qu'une duplication normative.
-
----
-
-# Validation
-
-Une fonctionnalité structurante suit idéalement :
-
-```text
-Spécification
-↓
-Implémentation
-↓
-Build
-↓
-Tests
-↓
-Validation
-↓
-TECH
-```
-
-Une fonctionnalité n'est jamais considérée comme implémentée uniquement parce qu'un document la décrit.
 
 ---
 
 # Étape actuelle
 
-Le projet a ouvert **v0.4 — Le monde vivant**.
+Le projet poursuit **v0.4 — Le monde vivant**.
 
-Le premier raccordement d'autonomie est validé.
+Le bloc d'**autonomie physiologique minimale** est consolidé.
 
-La prochaine frontière consiste à examiner les autorités GDB capables de définir une première politique déterministe de décision d'habitant, sans inventer cette politique directement dans ENGINE ou dans le code.
-
-Documents à auditer en priorité :
+La prochaine frontière recommandée n'est pas l'ajout mécanique d'un troisième besoin, mais un pas vers un monde capable de fonctionner réellement sans le joueur :
 
 ```text
+travail autonome
++
+économie autonome minimale
+```
+
+Les autorités à auditer avant code comprennent notamment :
+
+```text
+GDB-004A — Habitants du Monde
 GDB-004B — Besoins
-GDB-004D — Personnalités
-GDB-004E — Habitudes
-GDB-004F — Ambitions
-GDB-002E — Opportunités
+GDB-005 — Économie
+GDB-012 — Métiers et activités
+GDB-019 — Mécanismes économiques et commerciaux
+ACT/PATTERNS
+ACT/VERBS
 ```
 
 ---
@@ -372,6 +451,17 @@ règle
 ---
 
 # Historique
+
+## Version 1.4
+
+- MASTER-006 v1.1 formalise validation courante vs consolidation documentaire ;
+- ENGINE-011 et ENGINE-012 validées / Maturité 4 ;
+- PAT/VERB 001 et 002 validés ;
+- validation globale portée à **178 / 178 tests réussis** ;
+- TECH-004 créé ;
+- bloc autonomie repos + alimentation consolidé ;
+- audit de jalon créé ;
+- prochaine frontière v0.4 recentrée sur travail autonome et économie minimale.
 
 ## Version 1.3
 

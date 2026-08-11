@@ -1,6 +1,6 @@
 # PATTERNS — Catalogue des Patterns d'Actions
 
-> Version : 1.2
+> Version : 1.3
 > Statut : Active
 > Type : Sous-bibliothèque ACT
 > Maturité : 2
@@ -71,8 +71,6 @@ PAT-001 Repos
 VERB-001 Se reposer
 ```
 
-PAT-001 formalise la récupération du besoin de repos sans consommation de produit alimentaire.
-
 ---
 
 ## PAT-002 — Alimentation
@@ -82,8 +80,6 @@ Statut : Officiel.
 Maturité : 4.
 
 Validation de référence : `178 / 178` tests réussis.
-
-Origine métier : GDB-004B v1.2 et GDB-005E v1.1.
 
 ```text
 Principe Entretien
@@ -95,7 +91,35 @@ VERB-002 Manger
 
 PAT-002 formalise la consommation réelle d'un produit alimentaire accessible afin de contribuer au besoin de nourriture.
 
-Il est distinct de PAT-001 car sa structure de contrat exige une Cible-produit, une accessibilité et une diminution de disponibilité.
+---
+
+## PAT-003 — Production
+
+Statut : Proposition.
+
+Maturité : 2.
+
+Origine métier : GDB-004A v1.1, GDB-005C v1.2, GDB-012B v1.1 et GDB-012E v1.1.
+
+```text
+Principe Transformation
+↓
+PAT-003 Production
+↓
+VERB-003 Produire une denrée
+```
+
+PAT-003 formalise une transformation productive réelle :
+
+```text
+entrées accessibles consommées
+↓
+sorties produites
++
+provenance conservée
+```
+
+Il est distinct de PAT-001 et PAT-002 par sa structure de contrat entrée → sortie.
 
 ---
 
@@ -122,9 +146,10 @@ Un Pattern ne doit jamais contenir les règles propres à un Verbe concret si ce
 ```text
 PAT-001  Repos         Officiel / Maturité 4
 PAT-002  Alimentation  Officiel / Maturité 4
+PAT-003  Production    Proposition / Maturité 2
 ```
 
-La sous-bibliothèque PATTERNS reste ouverte : la validation de ses deux premiers Patterns ne constitue pas sa clôture.
+La sous-bibliothèque PATTERNS reste ouverte.
 
 ---
 
@@ -138,23 +163,26 @@ Si la réponse est non, le Pattern doit être corrigé ou supprimé avant valida
 
 # Historique
 
+## Version 1.3
+
+- création et enregistrement de `PAT-003 — Production` en Proposition / Maturité 2 ;
+- rattachement au Principe `Transformation` ;
+- provenance et transformation entrée → sortie explicitées.
+
 ## Version 1.2
 
-- `PAT-002 — Alimentation` passe à **Officiel / Maturité 4** ;
-- validation locale portée à **178 / 178 tests réussis** ;
-- PATTERNS reste ouverte, sans clôture globale de bibliothèque.
+- `PAT-002 — Alimentation` passe à Officiel / Maturité 4 ;
+- validation locale portée à 178 / 178.
 
 ## Version 1.1
 
 - synchronisation de PAT-001 avec sa validation Officiel / Maturité 4 ;
-- création et enregistrement de PAT-002 — Alimentation en Proposition / Maturité 2 ;
-- distinction contractuelle Repos / Alimentation explicitée.
+- création de PAT-002.
 
 ## Version 1.0
 
 - création de la sous-bibliothèque PATTERNS ;
-- attribution du premier identifiant réel `PAT-001` ;
-- enregistrement de `PAT-001 — Repos`.
+- attribution du premier identifiant réel `PAT-001`.
 
 ---
 

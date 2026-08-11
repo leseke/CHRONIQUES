@@ -1,10 +1,12 @@
 # ENGINE-011 — Décision autonome par besoins
 
-> Version : 1.0
-> Statut : Proposition
-> Maturité : 2
+> Version : 1.1
+> Statut : Validée
+> Maturité : 4
 > Bibliothèque : ENGINE
 > Dépendances : MASTER-005, GDB-004B v1.1, ACT-002-H, ENGINE-006, ENGINE-010
+> Implémentation : `CHRONIQUES-ENGINE`
+> Validation : 156 / 156 tests réussis
 
 ---
 
@@ -109,7 +111,7 @@ Elle ne :
 
 # 5. Contrat minimal
 
-Structure attendue :
+Structure validée :
 
 ```csharp
 public sealed class NeedsIntentSource : IAutonomousIntentSource
@@ -125,8 +127,6 @@ public sealed class NeedsIntentSource : IAutonomousIntentSource
 }
 ```
 
-Le nom exact peut évoluer si la responsabilité reste identique.
-
 ---
 
 # 6. Validation du seuil
@@ -137,11 +137,11 @@ Le seuil de Fatigue est une valeur de satisfaction compatible avec GDB-004B :
 0 <= seuil <= 100
 ```
 
-Une valeur hors de cet intervalle constitue une erreur de configuration et doit être rejetée à la construction.
+Une valeur hors de cet intervalle constitue une erreur de configuration et est rejetée à la construction.
 
 Le seuil n'est pas une constante GDB.
 
-L'assemblage ou les tests doivent donc le fournir explicitement.
+L'assemblage ou les tests le fournissent explicitement.
 
 ---
 
@@ -254,17 +254,7 @@ Tick identique
 World pertinent identique
 ```
 
-la source doit retourner :
-
-```text
-même Intent
-```
-
-ou :
-
-```text
-null dans les deux cas
-```
+la source retourne le même `Intent` ou `null` de manière reproductible.
 
 Aucun RNG n'est nécessaire pour ENGINE-011.
 
@@ -288,7 +278,7 @@ La satisfaction de Fatigue n'est modifiée qu'après passage éventuel de l'Inte
 
 # 13. Intégration avec ENGINE-010
 
-`NeedsIntentSource` doit pouvoir être injectée directement dans :
+`NeedsIntentSource` est injectée directement dans :
 
 ```text
 AutonomousActionSystem
@@ -296,13 +286,13 @@ AutonomousActionSystem
 
 sans modification de celui-ci.
 
-ENGINE-011 valide ainsi que la frontière créée par ENGINE-010 permet réellement l'ajout progressif de politiques métier distinctes.
+ENGINE-011 confirme ainsi que la frontière créée par ENGINE-010 permet réellement l'ajout progressif de politiques métier distinctes.
 
 ---
 
 # 14. Intégration avec ENGINE-006
 
-Le test d'intégration de référence doit démontrer :
+Le test d'intégration de référence démontre :
 
 ```text
 Fatigue sous seuil
@@ -323,8 +313,6 @@ Fatigue restaurée
 ↓
 GameEvent observable
 ```
-
-Le test peut utiliser l'adaptateur d'exécution déjà employé pour ENGINE-010.
 
 ENGINE-011 ne généralise pas `PipelineRunner`.
 
@@ -366,7 +354,7 @@ Ces sujets nécessiteront leurs propres règles amont avant code.
 
 # 17. Contrat QA
 
-Les tests doivent vérifier au minimum :
+La couverture validée vérifie notamment :
 
 1. seuil inférieur à `0` rejeté ;
 2. seuil supérieur à `100` rejeté ;
@@ -377,20 +365,27 @@ Les tests doivent vérifier au minimum :
 7. l'Intent référence le bon Acteur ;
 8. la source ne modifie pas `NeedsComponent` ;
 9. mêmes entrées → même décision ;
-10. intégration réelle ENGINE-010 → ENGINE-006 → World.
+10. intégration réelle ENGINE-010 → ENGINE-006 → World ;
+11. un besoin non actionnable ne produit pas de faux Intent.
 
 ---
 
-# 18. Critères de validation
+# 18. Validation
 
-ENGINE-011 pourra passer en Validée / Maturité 4 lorsque :
+Validation technique communiquée par le porteur du projet le 11 août 2026 :
 
-- l'implémentation existe dans `CHRONIQUES-ENGINE` ;
-- le build réussit ;
-- tous les tests existants restent verts ;
-- les tests ENGINE-011 sont verts ;
-- l'intégration réelle jusqu'au pipeline d'Actions est démontrée ;
-- aucun comportement hors GDB-004B v1.1 n'est introduit.
+```text
+dotnet build
+→ succès
+
+dotnet test
+→ 156 / 156 tests réussis
+→ 0 échec
+```
+
+Les critères ENGINE-011 sont donc satisfaits et le document atteint la Maturité 4 conformément à MASTER-004.
+
+Cette validation porte sur la première décision autonome réelle `Fatigue → se_reposer`. Elle ne vaut pas validation d'une politique multi-besoins.
 
 ---
 
@@ -408,13 +403,21 @@ ENGINE-011
 CHRONIQUES-ENGINE
 ↓
 Tests
-↓
-TECH futur après validation
 ```
+
+La consolidation TECH/roadmap/README est volontairement différée jusqu'à un point de clôture fonctionnel significatif.
 
 ---
 
 # 20. Historique
+
+## Version 1.1
+
+- implémentation `NeedsIntentSource` confirmée ;
+- validation locale communiquée : **156 / 156 tests réussis** ;
+- ENGINE-011 passe à **Validée / Maturité 4** ;
+- aucune extension aux besoins non actionnables ;
+- consolidation transverse différée jusqu'au prochain jalon significatif.
 
 ## Version 1.0
 

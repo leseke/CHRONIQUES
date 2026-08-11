@@ -1,16 +1,16 @@
 # ENGINE-014 — Circulation autonome minimale
 
-> Version : 1.0
+> Version : 1.1
 > Statut : Proposition
 > Maturité : 2
 > Bibliothèque : ENGINE
-> Dépendances : MASTER-005 Phase 3, GDB-004A v1.2, GDB-005E v1.2, GDB-005F v1.1, PAT-004, VERB-004, ENGINE-006, ENGINE-010, ENGINE-011, ENGINE-012, ENGINE-013
+> Dépendances : MASTER-005 Phase 3, GDB-004A v1.2, GDB-005E v1.3, GDB-005F v1.2, PAT-004 v1.1, VERB-004 v1.1, ENGINE-006, ENGINE-010, ENGINE-011, ENGINE-012, ENGINE-013
 
 ---
 
 # 1. Objectif
 
-Définir le premier socle de circulation économique autonome entre deux habitants : une denrée déjà produite peut être transférée volontairement d'un stock alimentaire source vers un stock alimentaire compatible du destinataire, puis être utilisée normalement par les Actions déjà existantes.
+Définir le premier socle de circulation économique autonome entre deux habitants : une denrée déjà produite peut être transférée volontairement d'un stock alimentaire source vers un stock alimentaire destination distinct et compatible du destinataire, puis être utilisée normalement par les Actions déjà existantes.
 
 Flux cible :
 
@@ -94,7 +94,9 @@ Contraintes ENGINE-014 :
 - les deux identifiants doivent être égaux avec comparaison ordinale ;
 - le premier lot exige également la même valeur `FaimRestauree` afin qu'un regroupement de portions ne change pas silencieusement la propriété alimentaire du produit.
 
-Le champ est déjà persisté via `FoodProductComponent` dans `WorldRepository` ; aucune nouvelle structure snapshot n'est nécessaire.
+Le champ est persisté via `FoodProductComponent` dans `WorldRepository`.
+
+Lorsqu'il est `null`, il est omis du JSON afin de préserver la forme historique des sauvegardes de produits antérieurs à ENGINE-014.
 
 ---
 
@@ -113,7 +115,8 @@ public sealed record FoodTransferOpportunity(
 Contrat :
 
 - `Portions > 0` ;
-- le destinataire concret sera validé comme distinct de l'Acteur ;
+- le destinataire concret est validé comme distinct de l'Acteur ;
+- source et destination doivent désigner deux stocks distincts ;
 - source et destination sont résolues au moment de l'exécution.
 
 L'opportunité ne constitue pas un prix, un contrat commercial ni un inventaire.
@@ -244,6 +247,7 @@ L'Execution Engine rejette l'Action si :
 - aucune opportunité exécutable n'est encore résolue ;
 - le destinataire n'existe plus ;
 - le destinataire est identique à l'Acteur ;
+- la source et la destination désignent le même stock ;
 - les Cibles du Plan ne correspondent plus à l'opportunité ;
 - source ou destination n'existe plus ;
 - source ou destination ne possède pas `FoodProductComponent` ;
@@ -268,9 +272,10 @@ DonnerDenree → FoodTransferExecutionEngine
 Après Outcome réussi :
 
 1. retrouve l'opportunité encore applicable ;
-2. soustrait exactement `Portions` à la source ;
-3. ajoute exactement `Portions` à la destination ;
-4. publie `produit.alimentaire.transfere`.
+2. revalide les Cibles de l'Action contre l'opportunité ;
+3. soustrait exactement `Portions` à la source ;
+4. ajoute exactement `Portions` à la destination avec contrôle d'overflow ;
+5. publie `produit.alimentaire.transfere`.
 
 Invariant de conservation :
 
@@ -305,8 +310,9 @@ Aucune nouvelle structure persistante n'est requise au-delà de `ProductKindId`,
 
 Après sauvegarde/rechargement :
 
-- l'identité du produit doit être conservée ;
-- les portions des stocks source/destination doivent être conservées.
+- l'identité du produit doit être conservée lorsqu'elle existe ;
+- les portions des stocks source/destination doivent être conservées ;
+- un ancien produit sans identité conserve une représentation JSON compatible grâce à l'omission de `ProductKindId` lorsqu'il est `null`.
 
 Une opportunité contextuelle n'est pas nécessairement persistée par ENGINE-014 : sa source de vérité appartient au resolver compétent.
 
@@ -342,6 +348,7 @@ ENGINE-014 ne couvre pas :
 - L'Intent ne contient ni destinataire, ni Cibles, ni quantité.
 - Le Planner matérialise les Cibles depuis l'opportunité.
 - Donneur et destinataire sont distincts.
+- Stock source et stock destination sont distincts.
 - Source et destination portent la même identité de produit non vide.
 - Une réussite conserve exactement le nombre total de portions.
 - Aucun stock ne devient négatif.
@@ -353,7 +360,19 @@ ENGINE-014 ne couvre pas :
 
 # 16. Contrat QA
 
-Les tests doivent vérifier au minimum :
+La couverture ajoutée par ENGINE-014 comprend :
+
+```text
+Engine014FoodTransferTests.cs
+→ 22 tests comportementaux
+
+Engine014ActClassificationTests.cs
+→ 1 test de classification ACT
+```
+
+Soit **23 nouveaux tests**.
+
+Ils vérifient notamment :
 
 1. validation de `FoodTransferOpportunity` ;
 2. persistance de `ProductKindId` ;
@@ -365,18 +384,19 @@ Les tests doivent vérifier au minimum :
 8. Planner refuse l'absence d'opportunité ;
 9. Execution Engine refuse un destinataire absent ;
 10. refuse un destinataire identique au donneur ;
-11. refuse une source insuffisante ;
-12. refuse une identité de produit absente ou différente ;
-13. refuse une représentation alimentaire incompatible ;
-14. réussite sans mutation dans l'Execution Engine ;
-15. applicateur soustrait exactement la quantité ;
-16. applicateur ajoute exactement la quantité ;
+11. refuse `source == destination` ;
+12. refuse une source insuffisante ;
+13. refuse une identité de produit absente ou différente ;
+14. refuse une représentation alimentaire incompatible ;
+15. réussite sans mutation dans l'Execution Engine ;
+16. applicateur transfère exactement la quantité ;
 17. conservation stricte de la somme des portions ;
 18. Event publié ;
-19. pipeline composite continue d'exécuter Repos, Manger et ProduireDenree ;
+19. pipeline composite continue d'exécuter les trois Verbes précédents ;
 20. pipeline composite exécute DonnerDenree ;
 21. scénario multi-habitants production → transfert → consommation sans joueur ;
-22. déterminisme à état/opportunité identiques.
+22. déterminisme à état/opportunité identiques ;
+23. classification `Échange → Transfert → DonnerDenree`.
 
 ---
 
@@ -386,8 +406,9 @@ ENGINE-014 pourra passer en Validée / Maturité 4 lorsque :
 
 - le build réussit ;
 - les tests historiques restent verts ;
-- les tests ENGINE-014 sont verts ;
+- les 23 nouveaux tests ENGINE-014 sont verts ;
 - PAT-004 / VERB-004 sont correctement tracés ;
+- une suite globale de **224 / 224** est confirmée localement à partir de la base 201 / 201 ;
 - la conservation du transfert est démontrée ;
 - le scénario producteur → destinataire → consommation fonctionne sans joueur ;
 - aucun mécanisme de prix ou paiement non spécifié n'est introduit.
@@ -415,6 +436,15 @@ Tests
 ---
 
 # HISTORIQUE
+
+## Version 1.1
+
+- alignement sur GDB-005E v1.3, GDB-005F v1.2, PAT-004 v1.1 et VERB-004 v1.1 ;
+- explicitation de l'invariant `stock source ≠ stock destination` ;
+- persistance JSON rétrocompatible de `ProductKindId` documentée ;
+- revalidation des Cibles dans l'applicateur explicitée ;
+- couverture QA portée à **23 nouveaux tests** ;
+- total attendu fixé à **224 tests** avant validation locale.
 
 ## Version 1.0
 

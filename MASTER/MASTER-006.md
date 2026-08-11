@@ -1,6 +1,6 @@
 # MASTER-006 --- Gouvernance des Décisions
 
-> Version : 1.0
+> Version : 1.1
 > Statut : Officiel
 > Type : Gouvernance
 > Maturité : 1
@@ -32,10 +32,11 @@ Elle sera reprise, contredite, ou réinventée différemment quelques semaines p
 
 | Type | Portée | Trace |
 |------|--------|-------|
-| Structurante | Vision, principes, architecture | Document MASTER modifié |
-| De conception | Comportement d'un système | Document GDB créé ou modifié |
-| Technique | Implémentation | Document TECH créé ou modifié |
-| Courante | Détail sans conséquence | Aucune |
+| Structurante | Vision, principes, architecture, gouvernance | Document MASTER modifié |
+| De conception | Comportement d'un système | Document GDB ou ACT créé/modifié |
+| D'architecture moteur | Contrat attendu du moteur | Document ENGINE créé/modifié |
+| Technique | Implémentation réellement obtenue | Document TECH créé/modifié au point de consolidation applicable |
+| Courante | Détail sans conséquence durable | Aucune |
 
 Une décision courante n'est pas documentée. Le coût d'écriture dépasserait le bénéfice.
 
@@ -69,9 +70,107 @@ Une décision peut être : adoptée, adoptée sous condition, ajournée, ou reje
 
 ## 4. Inscription
 
-Une décision adoptée est immédiatement inscrite dans le document compétent.
+Une décision adoptée est inscrite dans le document compétent dès qu'elle devient une autorité applicable au travail courant.
 
-Tant qu'elle n'est pas inscrite, elle n'est pas prise.
+Tant qu'une règle structurante ou métier adoptée n'est pas inscrite, elle n'est pas prise.
+
+Cette inscription immédiate ne signifie pas que tous les documents transverses du projet doivent être régénérés après chaque petit changement.
+
+---
+
+# Validation courante et consolidation documentaire
+
+Chroniques distingue explicitement deux opérations.
+
+```text
+VALIDATION COURANTE
+≠
+CONSOLIDATION DOCUMENTAIRE
+```
+
+## Validation courante
+
+Une validation courante confirme un incrément cohérent et directement vérifiable.
+
+Elle met à jour immédiatement les sources de vérité directement concernées :
+
+```text
+règle ou contrat d'autorité concerné
++
+code concerné
++
+tests concernés
++
+statut/catalogue local nécessaire à la traçabilité
+```
+
+Exemples :
+
+- une GDB précisée pour autoriser une nouvelle mécanique ;
+- un Pattern ou un Verbe ACT validé ;
+- un document ENGINE passant de Proposition à Validée après réussite des tests ;
+- le catalogue de la bibliothèque concernée synchronisé avec ce statut.
+
+Une validation courante ne déclenche pas automatiquement la régénération de TECH, des README, de la roadmap ou des synthèses d'audit globales.
+
+## Consolidation documentaire
+
+Une consolidation documentaire remet en cohérence les documents transverses après un jalon significatif.
+
+Elle est déclenchée par un événement, non par un nombre arbitraire de modifications.
+
+Les déclencheurs normaux sont notamment :
+
+- fermeture d'une bibliothèque ou d'un sous-ensemble documentaire cohérent ;
+- jalon important de roadmap ;
+- capacité fonctionnelle majeure obtenue de bout en bout ;
+- fin d'un bloc architectural cohérent ;
+- changement de phase ou de version ;
+- audit ou correction critique nécessitant une remise en concordance immédiate.
+
+À ce point, le contrôle porte selon le périmètre sur :
+
+```text
+sources d'autorité concernées
+↓
+ENGINE / GDB / ACT applicables
+↓
+implémentation + tests
+↓
+TECH
+↓
+AUDIT
+↓
+CATALOGUES
+↓
+roadmap
+↓
+README documentaires et moteur
+```
+
+Tous ces niveaux ne sont modifiés que s'ils sont réellement concernés par le jalon.
+
+La consolidation ne doit jamais servir de prétexte à modifier des documents sans impact réel.
+
+## Règle de seuil
+
+Le seuil principal est donc qualitatif :
+
+```text
+le projet vient-il d'obtenir ou de fermer quelque chose que les documents transverses doivent désormais raconter ?
+```
+
+Si oui, consolidation.
+
+Si non, validation courante et poursuite du développement.
+
+Un garde-fou numérique peut être utilisé pour éviter une accumulation excessive de dette documentaire, mais il ne remplace jamais ce critère événementiel.
+
+## Exception critique
+
+Une contradiction d'autorité, un invariant faux, un statut trompeur ou une divergence susceptible d'orienter le développement dans une mauvaise direction est corrigé immédiatement, même hors point de consolidation.
+
+La réduction du bruit documentaire ne doit jamais se faire au prix d'une source de vérité fausse.
 
 ---
 
@@ -125,7 +224,27 @@ Avant de considérer une décision comme prise :
 
 Un contributeur qui n'a jamais participé à cette discussion pourrait-il retrouver cette décision et sa raison dans le dépôt ?
 
-Si la réponse est non, la décision n'est pas prise.
+Avant de déclencher une consolidation documentaire :
+
+Le jalon modifie-t-il réellement ce que les documents transverses doivent raconter sur l'état du projet ?
+
+Si la réponse applicable est non, l'opération n'est pas terminée ou la consolidation n'est pas justifiée.
+
+---
+
+# Historique
+
+## Version 1.1
+
+- distinction officielle entre validation courante et consolidation documentaire ;
+- adoption d'un seuil de consolidation événementiel plutôt que d'une mise à jour transverse après chaque modification ;
+- définition des déclencheurs : fermeture de bibliothèque/sous-ensemble, jalon de roadmap, capacité majeure, fin de bloc architectural, changement de phase/version ou audit critique ;
+- maintien d'une exception immédiate pour toute contradiction d'autorité ou invariant trompeur ;
+- clarification que TECH, README, roadmap et audit global ne sont pas régénérés automatiquement après chaque incrément validé.
+
+## Version 1.0
+
+- création du document.
 
 ---
 

@@ -1,6 +1,6 @@
 # ACT — Catalogue
 
-> Version : 1.7
+> Version : 1.8
 >
 > Statut : Foundation
 >
@@ -38,8 +38,8 @@ ACT
 ├── Taxonomie                 (créé --- ACT-008-A, v1.0 audité --- voir note sur le périmètre restreint)
 ├── Composition               (créé --- ACT-009-A, v1.1 audité --- voir note sur la frontière avec le Plan)
 ├── Événements                (créé --- ACT-010-A, v1.0 audité --- voir note sur le périmètre restreint)
-├── Patterns                  (créé --- PATTERNS/, PAT-001 Officiel / M4)
-└── Verbes                    (créé --- VERBS/, VERB-001 Officiel / M4)
+├── Patterns                  (PAT-001 Officiel/M4 ; PAT-002 Proposition/M2)
+└── Verbes                    (VERB-001 Officiel/M4 ; VERB-002 Proposition/M2)
 
 ---
 
@@ -75,21 +75,15 @@ Les identifiants ACT-004 à ACT-010 ne sont pas renumérotés : un identifiant r
 
 ---
 
-# Chapitres créés, non encore audités
-
-Les chapitres suivants existent dans le dépôt (Statut : Proposition) mais n'ont pas encore tous traversé les étapes Validée/Spécifiée du cycle de vie documentaire d'une mécanique.
+# Chapitres créés, non encore tous validés
 
 ## ACT-004 --- Acteurs
 
-Décrit les entités capables d'initier des actions.
-
-ACT-004 complète les axiomes déjà présents dans ACT-001 en précisant les règles d'éligibilité, de multiplicité et les liens avec l'Action Contract.
+Décrit les entités capables d'initier des actions et leurs règles d'éligibilité.
 
 ## ACT-005 --- Cibles
 
-Décrit les entités pouvant recevoir une action.
-
-ACT-005 précise multiplicité, rôle, éligibilité et perte d'éligibilité d'une Cible, sans redéfinir les axiomes de ciblage déjà présents dans ACT-001.
+Décrit multiplicité, rôle, éligibilité et accessibilité des Cibles.
 
 ## ACT-006 --- Conditions
 
@@ -101,14 +95,12 @@ Décrit la taxonomie et la composition des conséquences sans redéfinir Effects
 
 ## ACT-008 --- Taxonomie des verbes
 
-Décrit les règles d'organisation des Verbes en familles partageant un même Pattern.
-
-ACT-008 définit notamment :
+Décrit notamment :
 
 - la multiplicité Pattern / Verbe ;
 - le critère de création d'un nouveau Verbe en quatre tests ;
 - la non-polysémie ;
-- la responsabilité de la sous-bibliothèque VERBS pour l'énumération concrète.
+- la responsabilité de VERBS pour l'énumération concrète.
 
 ## ACT-009 --- Composition d'Actions
 
@@ -117,21 +109,6 @@ Décrit la combinaison d'Actions simples en Actions complexes et tranche la fron
 ## ACT-010 --- Taxonomie des événements
 
 Décrit les catégories conceptuelles d'événements sans redéfinir le mécanisme technique de publication.
-
----
-
-# Chapitres planifiés, non créés
-
-Aucun chapitre numéroté d'ACT ne reste planifié à ce stade : ACT-001 à ACT-010 sont créés, ACT-003 restant explicitement retiré.
-
-Les deux sous-bibliothèques anciennement planifiées sont désormais créées :
-
-```text
-PATTERNS/
-VERBS/
-```
-
-Leur contenu reste volontairement minimal et piloté par des besoins réels.
 
 ---
 
@@ -145,11 +122,11 @@ Catalogue :
 ACT/PATTERNS/readme.md
 ```
 
-Premier Pattern réellement attribué et validé :
+## PAT-001 — Repos
 
 ```text
-PAT-001 — Repos
 Officiel / Maturité 4
+Validation : 161 / 161
 ```
 
 Chaîne validée :
@@ -162,22 +139,27 @@ PAT-001 Repos
 VERB-001 Se reposer
 ```
 
-Validation technique de référence :
+## PAT-002 — Alimentation
 
 ```text
-dotnet build
-→ succès
-
-dotnet test
-→ 161 / 161 tests réussis
-→ 0 échec
+Proposition / Maturité 2
 ```
 
-Les exemples historiques `PAT-001 Influence`, `PAT-002 Transformation`, etc. présents avant la création effective de PATTERNS étaient explicitement « envisagés, à confirmer » et ne constituaient aucune réservation d'identifiant.
+Origine : GDB-004B v1.2 + GDB-005E v1.1.
 
-L'attribution réelle commence donc par le premier besoin effectivement requis par la simulation validée.
+Chaîne proposée :
 
-La validation de PAT-001 ne signifie pas que la sous-bibliothèque PATTERNS est clôturée.
+```text
+Principe Entretien
+↓
+PAT-002 Alimentation
+↓
+VERB-002 Manger
+```
+
+PAT-002 est distinct de PAT-001 car il exige une Cible-produit alimentaire accessible, une consommation réelle et un effet sur le besoin de nourriture.
+
+PATTERNS reste ouverte.
 
 ---
 
@@ -191,32 +173,40 @@ Catalogue :
 ACT/VERBS/readme.md
 ```
 
-Premier Verbe concret validé :
+## VERB-001 — Se reposer
 
 ```text
-VERB-001 — Se reposer
 Officiel / Maturité 4
+Validation : 161 / 161
+Intent : se_reposer
 ```
 
-Il spécialise exactement :
+## VERB-002 — Manger
 
 ```text
-PAT-001 — Repos
+Proposition / Maturité 2
+Intent : manger
 ```
 
-et répond au besoin GDB réel défini par GDB-004B.
+VERB-002 spécialise exactement PAT-002.
 
-Objectif d'Intent associé dans l'implémentation actuelle :
+Son contrat exige :
 
 ```text
-se_reposer
+Acteur
++
+produit alimentaire accessible
+↓
+Action Manger réussie
+↓
+disponibilité du produit ↓
++
+Faim ↑
 ```
 
-La suite globale de **161 / 161 tests réussis** confirme la chaîne canonique, la structure contractuelle, la planification vers `SeReposerDefinition` et l'exécution déjà couverte par les lots ENGINE précédents.
+La Cible alimentaire appartient au Plan/Action, jamais à l'Intent.
 
-Aucun second Verbe ne doit être créé tant qu'il n'a pas passé, dans l'ordre, les quatre tests d'ACT-008-A : paramétrage, composition, Pattern existant, nouveau Pattern.
-
-La validation de VERB-001 ne signifie pas que la sous-bibliothèque VERBS est clôturée.
+VERBS reste ouverte.
 
 ---
 
@@ -271,56 +261,54 @@ UX
 
 # Historique
 
+## Version 1.8
+
+- création de `PAT-002 — Alimentation` en Proposition / Maturité 2 ;
+- création de `VERB-002 — Manger` en Proposition / Maturité 2 ;
+- origine métier fixée par GDB-004B v1.2 et GDB-005E v1.1 ;
+- distinction contractuelle avec PAT-001 / VERB-001 confirmée par les quatre tests d'ACT-008-A ;
+- PATTERNS et VERBS restent ouvertes ;
+- aucune consolidation TECH/roadmap/README déclenchée.
+
 ## Version 1.7
 
-- `PAT-001 — Repos` passe à **Officiel / Maturité 4** ;
-- `VERB-001 — Se reposer` passe à **Officiel / Maturité 4** ;
-- validation locale portée à **161 / 161 tests réussis** ;
-- chaîne canonique `Entretien → PAT-001 → VERB-001 → Action` confirmée ;
-- PATTERNS et VERBS restent ouvertes : aucune clôture de bibliothèque ni consolidation transverse n'est déclenchée.
+- `PAT-001 — Repos` passe à Officiel / Maturité 4 ;
+- `VERB-001 — Se reposer` passe à Officiel / Maturité 4 ;
+- validation locale portée à 161 / 161 tests réussis ;
+- chaîne canonique `Entretien → PAT-001 → VERB-001 → Action` confirmée.
 
 ## Version 1.6
 
-- création effective des sous-bibliothèques `PATTERNS/` et `VERBS/` ;
-- création de leurs catalogues respectifs ;
-- attribution du premier Pattern réel `PAT-001 — Repos` ;
-- attribution du premier Verbe réel `VERB-001 — Se reposer` ;
-- rattachement `Entretien → PAT-001 → VERB-001` ;
-- suppression du statut « planifié, non créé » pour PATTERNS et VERBS ;
-- clarification que les anciennes listes PAT-xxx / VERB-xxx n'étaient que des exemples non réservés.
+- création effective des sous-bibliothèques PATTERNS/ et VERBS/ ;
+- attribution du premier Pattern réel PAT-001 ;
+- attribution du premier Verbe réel VERB-001.
 
 ## Version 1.5
 
-- `ACT-008-A` créé : règles de multiplicité Pattern/Verbe, critère de nouveau Verbe en quatre tests et non-polysémie ;
-- `ACT-009-A` créé : composition d'Actions et frontière avec le Plan ;
-- `ACT-010-A` créé : taxonomie conceptuelle des événements ;
-- ACT-001 à ACT-010 désormais créés, ACT-003 excepté car retiré ;
-- PATTERNS et VERBS restaient alors à créer.
+- ACT-008-A créé ;
+- ACT-009-A créé ;
+- ACT-010-A créé.
 
 ## Version 1.4
 
-- `ACT-007-A` créé ;
+- ACT-007-A créé ;
 - correction du statut d'ACT-006 dans le catalogue.
 
 ## Version 1.3
 
 - correction d'une citation erronée sur la non-réattribution d'identifiants ;
-- `ACT-004` marqué comme créé ;
-- `ACT-005` créé.
+- ACT-004 marqué comme créé ;
+- ACT-005 créé.
 
 ## Version 1.2
 
 - retrait d'ACT-003 après vérification de redondance ;
-- confirmation de la non-duplication d'ACT-004 et ACT-005 ;
 - restriction du périmètre annoncé d'ACT-006 et ACT-007.
 
 ## Version 1.1
 
 - distinction explicite entre chapitres existants et planifiés ;
-- avertissement sur le recouvrement potentiel d'ACT-003 ;
-- correction du champ `Bibliothèque`.
-
-Corrige le constat ACT-C01.
+- correction du champ Bibliothèque.
 
 ## Version 1.0
 

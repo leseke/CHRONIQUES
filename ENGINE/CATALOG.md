@@ -1,6 +1,6 @@
 # ENGINE — Catalogue
 
-> Version : 1.4
+> Version : 1.5
 > Statut : Foundation
 > Maturité : 1
 > Bibliothèque : ENGINE
@@ -195,6 +195,53 @@ La Mémoire du Monde n'appartient pas à ENGINE-008 et relève de la phase du mo
 
 ---
 
+## ENGINE-009 — Boucle de vie minimale
+
+Statut : Proposition.
+
+Maturité : 2.
+
+Rédigé avant implémentation conformément au workflow Documentation First.
+
+Objectif : relier les briques déjà présentes de la v0.3 afin de démontrer la continuité minimale :
+
+```text
+personnage actif
+↓
+Actions joueur
+↓
+Scheduler / Systems
+↓
+mort
+↓
+HeritageSystem
+↓
+héritier
+↓
+continuité de session
+```
+
+ENGINE-009 :
+
+- ne crée aucune nouvelle règle métier ;
+- ne déclenche aucune Action de PNJ automatiquement ;
+- ne remplace ni ENGINE-003 ni ENGINE-006 ;
+- conserve `Lifecycle` comme source de vérité de la mort ;
+- conserve `HeritageSystem` comme source de vérité de la désignation ;
+- autorise la couche de session à lire `World.Events` uniquement comme journal d'observabilité ;
+- ne ferme pas ENGINE-C06, qui concerne l'orchestration future des habitants autonomes.
+
+Critère cible de validation :
+
+```text
+personnage actif
+→ mort
+→ héritier
+→ continuité
+```
+
+---
+
 # Documents planifiés mais non créés
 
 ## ENGINE-007 — Resource Manager
@@ -260,6 +307,7 @@ ENGINE-005  Stable
 ENGINE-006  Validée / Maturité 4
 ENGINE-007  Réservé / non créé
 ENGINE-008  Validée / Maturité 4
+ENGINE-009  Proposition / Maturité 2
 ```
 
 ---
@@ -277,6 +325,13 @@ Tout ancien fichier alternatif de catalogue doit uniquement rediriger vers ce fi
 ---
 
 # Historique
+
+## Version 1.5
+
+- création de `ENGINE-009 — Boucle de vie minimale` ;
+- enregistrement d'ENGINE-009 en Proposition / Maturité 2 ;
+- ajout du critère d'intégration `personnage actif → mort → héritier → continuité` ;
+- clarification explicite qu'ENGINE-009 ne ferme pas ENGINE-C06 relatif aux habitants autonomes.
 
 ## Version 1.4
 

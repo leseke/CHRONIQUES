@@ -194,6 +194,7 @@ ENGINE-005  Persistence / Serialization
 ENGINE-006  Action Pipeline
 ENGINE-007  Resource Manager — réservé, non créé
 ENGINE-008  Systems de population
+ENGINE-009  Boucle de vie minimale
 
 ENGINE peut contenir des esquisses de types ou de signatures lorsqu'elles sont nécessaires pour exprimer un contrat avec précision.
 
@@ -231,16 +232,34 @@ Compétences ;
 
 Héritage minimal ;
 
-Effects de population.
+Effects de population ;
 
-Le dernier état validé du lot ENGINE-008 est :
+LifeSession / boucle de vie minimale.
+
+Le dernier état validé du lot ENGINE-009 est :
 
 dotnet build
 → succès
 
 dotnet test
-→ 122 / 122 tests réussis
+→ 134 / 134 tests réussis
 → 0 échec
+
+Le test d'intégration de référence démontre l'assemblage minimal :
+
+Action joueur
+↓
+évolution temporelle
+↓
+vieillissement
+↓
+mort
+↓
+héritage
+↓
+continuité avec l'héritier
+
+Cette validation prouve la continuité architecturale minimale de v0.3, sans prétendre à elle seule représenter toute la richesse finale d'une vie jouable.
 
 TECH
 
@@ -259,13 +278,13 @@ CHRONIQUES-ENGINE
 TECH
 → documentation de cette implémentation après validation
 
-La bibliothèque TECH est désormais active.
+La bibliothèque TECH est active.
 
-Son premier document numéroté est :
+Ses documents numérotés actuels sont :
 
 TECH-001 — Systems de population
 
-Il documente l'implémentation d'ENGINE-008 :
+Documente l'implémentation d'ENGINE-008 :
 
 RelationComponent / RelationSystem ;
 
@@ -276,6 +295,22 @@ HeritageSystem ;
 Effects de population ;
 
 PopulationEffectApplicator.
+
+TECH-002 — Boucle de vie minimale
+
+Documente l'implémentation d'ENGINE-009 :
+
+LifeSession / LifeSessionState ;
+
+orchestration du Scheduler ;
+
+détection de la mort via Lifecycle ;
+
+lecture observable de la transmission ;
+
+continuité du contrôle avec l'héritier ;
+
+tests QA et intégration v0.3.
 
 QA
 
@@ -371,6 +406,18 @@ RelationSystemTests.cs
 ↓
 TECH-001
 
+Autre chaîne désormais validée :
+
+PROD v0.3
+↓
+ENGINE-009
+↓
+LifeSession.cs
+↓
+LifeSessionTests.cs
+↓
+TECH-002
+
 Chaque niveau possède ici un rôle différent.
 
 Ordre de lecture recommandé
@@ -455,4 +502,6 @@ comment son implémentation est validée ;
 
 quelles parties restent encore à construire.
 
-Version : 1.1Statut : OfficielBibliothèque racine : CHRONIQUES
+Version : 1.2
+Statut : Officiel
+Bibliothèque racine : CHRONIQUES

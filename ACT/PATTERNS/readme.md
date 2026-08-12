@@ -1,6 +1,6 @@
 # PATTERNS — Catalogue des Patterns d'Actions
 
-> Version : 1.6
+> Version : 1.7
 > Statut : Active
 > Type : Sous-bibliothèque ACT
 > Maturité : 2
@@ -57,7 +57,8 @@ Contrat : entrées consommées → sortie produite + provenance.
 ## PAT-004 — Transfert
 
 ```text
-Proposition / Maturité 2
+Officiel / Maturité 4
+Validation : 224 / 224
 Échange → Transfert → VERB-004 Donner une denrée
 ```
 
@@ -79,8 +80,6 @@ avec :
 - opportunité contextuelle autorisée ;
 - aucun prix ni paiement implicite.
 
-PAT-004 reste Proposition/M2 jusqu'à validation moteur.
-
 ---
 
 # État actuel
@@ -89,7 +88,7 @@ PAT-004 reste Proposition/M2 jusqu'à validation moteur.
 PAT-001  Repos         Officiel / M4
 PAT-002  Alimentation  Officiel / M4
 PAT-003  Production    Officiel / M4
-PAT-004  Transfert     Proposition / M2
+PAT-004  Transfert     Officiel / M4
 ```
 
 La sous-bibliothèque PATTERNS reste ouverte.
@@ -104,11 +103,17 @@ Chaque Pattern catalogué représente-t-il une mécanique réellement distincte,
 
 # Historique
 
+## Version 1.7
+
+- PAT-004 passe à **Officiel / Maturité 4** ;
+- validation locale enregistrée à **224 / 224 tests réussis** ;
+- transfert conservatif multi-habitants confirmé ;
+- PATTERNS reste ouverte.
+
 ## Version 1.6
 
 - PAT-004 synchronisé avec GDB-005E v1.3 / GDB-005F v1.2 ;
-- invariant `stock source ≠ stock destination` enregistré ;
-- PAT-004 reste Proposition / Maturité 2 avant validation locale.
+- invariant `stock source ≠ stock destination` enregistré.
 
 ## Version 1.5
 

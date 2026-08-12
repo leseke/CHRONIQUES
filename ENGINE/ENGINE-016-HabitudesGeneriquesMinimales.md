@@ -1,10 +1,11 @@
 # ENGINE-016 — Habitudes génériques minimales
 
-> Version : 1.0
+> Version : 1.1
 > Statut : Proposition
 > Maturité : 2
 > Bibliothèque : ENGINE
 > Dépendances : GDB-004A v1.3, GDB-004D v1.3, GDB-004E v1.2, ACT-002-H, ENGINE-010, ENGINE-015
+> Implémentation candidate : `CHRONIQUES-ENGINE`
 
 ---
 
@@ -34,7 +35,7 @@ activation tracée
 renforcement uniquement après réussite
 ```
 
-Le framework doit également permettre l'érosion déterministe d'une Habitude inactive.
+Le framework permet également l'érosion déterministe d'une Habitude inactive.
 
 ---
 
@@ -50,13 +51,13 @@ ENGINE-016 n'introduit aucun comportement concret tel que :
 
 Ces exemples exigent chacun une règle GDB concrète avant d'être fournis comme configuration de production.
 
-Les tests ENGINE-016 peuvent utiliser des règles factices déterministes afin de valider le framework, sans donner à ces règles un statut canonique.
+Les tests ENGINE-016 utilisent uniquement des règles factices déterministes afin de valider le framework, sans donner à ces règles un statut canonique.
 
 ---
 
-# 3. HabitComponent
+# 3. Données persistantes
 
-Le moteur introduit une donnée persistante :
+Le moteur ajoute :
 
 ```csharp
 public sealed class HabitComponent : IComponent
@@ -66,7 +67,7 @@ public sealed class HabitComponent : IComponent
 }
 ```
 
-Une Habitude formée est représentée par :
+Une Habitude formée :
 
 ```csharp
 public sealed record HabitState(
@@ -78,7 +79,7 @@ public sealed record HabitState(
     Tick CreatedAt);
 ```
 
-Une trace de formation conserve :
+Une trace de formation :
 
 ```csharp
 public sealed class HabitFormationTrace
@@ -90,15 +91,15 @@ public sealed class HabitFormationTrace
 }
 ```
 
-`LastActivatedAt = null` signifie qu'une Habitude vient d'être formée mais n'a pas encore elle-même été sélectionnée comme source d'Intent.
+`LastActivatedAt = null` signifie que l'Habitude vient d'être formée mais n'a pas encore elle-même produit d'Intent.
 
-`HabitComponent` reste de la donnée pure et ne décide rien.
+Le Component reste de la donnée pure.
 
 ---
 
 # 4. Identité d'une Habitude
 
-Dans ce premier lot, une Habitude est identifiée au sein d'un habitant par le triplet :
+Le premier lot identifie une Habitude par :
 
 ```text
 HabitTypeId
@@ -108,15 +109,15 @@ IntentObjective
 FormationSignature
 ```
 
-Deux traces ayant ce même triplet appartiennent à la même séquence de formation.
+Deux observations de ce même triplet alimentent la même séquence de formation.
 
-Une fois l'Habitude formée, le moteur ne crée pas de doublon du même triplet.
+Une Habitude déjà formée empêche la création d'un doublon de même identité.
 
 ---
 
-# 5. IHabitRule
+# 5. Règle concrète injectée
 
-Chaque type concret d'Habitude doit fournir une règle injectée :
+Chaque type concret d'Habitude doit fournir :
 
 ```csharp
 public interface IHabitRule
@@ -143,19 +144,21 @@ public interface IHabitRule
 }
 ```
 
-`ObserveFormation` fournit la Signature de formation déterministe exigée par GDB-004E ou retourne `null` lorsque l'Intent observé n'appartient pas à ce type d'Habitude.
+`ObserveFormation` fournit la Signature déterministe ou `null` si l'Intent observé n'appartient pas à ce type.
 
-`IsTriggered` évalue uniquement le Déclencheur concret.
+Une candidate dont `HabitTypeId` ne correspond pas à la règle qui l'a produite est ignorée.
 
-`IsIntentTreatable` empêche une Habitude de produire un faux Intent lorsqu'aucun Plan réellement exécutable n'est disponible.
+`IsTriggered` évalue le Déclencheur concret.
 
-Le framework ne fournit aucune règle `IHabitRule` de production par défaut.
+`IsIntentTreatable` empêche tout faux Intent.
+
+Aucune implémentation métier `IHabitRule` n'est fournie par défaut.
 
 ---
 
 # 6. Formation
 
-La configuration de formation est fournie par type :
+Les paramètres sont résolus par type :
 
 ```csharp
 public sealed record HabitFormationParameters(
@@ -163,8 +166,6 @@ public sealed record HabitFormationParameters(
     long WindowTicks,
     double InitialForce);
 ```
-
-Le moteur injecte un resolver :
 
 ```csharp
 public interface IHabitFormationParameterResolver
@@ -177,9 +178,9 @@ public interface IHabitFormationParameterResolver
 }
 ```
 
-Cette frontière permet ultérieurement à GDB-004D de modifier le seuil de répétitions via un mapping Trait/Habitude concret sans introduire de coefficient implicite dans ENGINE-016.
+Cette frontière pourra intégrer plus tard un mapping Trait/Habitude explicitement autorisé par GDB-004D.
 
-Une observation appartient à la fenêtre courante lorsque :
+Une observation appartient à la fenêtre lorsque :
 
 ```text
 currentTick - observedTick < WindowTicks
@@ -187,33 +188,33 @@ currentTick - observedTick < WindowTicks
 
 Les observations plus anciennes sont retirées avant comptage.
 
-Lorsque le nombre d'observations du même triplet atteint `RequiredRepetitions`, une Habitude est créée avec `InitialForce`, bornée par contrat dans `[0,100]`, puis la trace correspondante est retirée.
+Contraintes du premier lot :
 
-La formation compte les Intents ayant traversé le pipeline jusqu'à une `ActionInstance` terminée, indépendamment de son Outcome métier. Une exception technique du pipeline ne constitue pas une observation de formation validée.
+- `RequiredRepetitions > 0` ;
+- `WindowTicks > 0` ;
+- `InitialForce` finie et strictement comprise entre 0 et 100.
 
-Cette distinction est technique : un `OutcomeForme.Echec` est un résultat simulé valide ; une exception est une exécution avortée.
+Lorsque le seuil est atteint, l'Habitude est créée puis la trace correspondante supprimée.
+
+La formation compte les Intents dont le pipeline retourne une `ActionInstance` terminée, y compris un `OutcomeForme.Echec`.
+
+Une exception technique du pipeline ne valide aucune observation de formation.
 
 ---
 
-# 7. HabitSelectionRegistry
+# 7. Registre runtime de sélection
 
-ACT `Intent` reste indépendant de sa source. ENGINE-016 n'ajoute donc aucun identifiant d'Habitude dans `Intent`.
+ACT `Intent` reste indépendant de sa source.
 
-Un registre runtime non persistant relie temporairement la sélection d'une Habitude à l'exécution qui suit :
-
-```csharp
-public sealed class HabitSelectionRegistry
-```
-
-Il enregistre au minimum :
+`HabitSelectionRegistry` relie temporairement :
 
 - Acteur ;
-- triplet d'identité de l'Habitude ;
+- identité de l'Habitude ;
 - Tick de sélection.
 
-Il ne modifie pas le World.
+Le registre n'est pas persisté et ne modifie jamais le World.
 
-Le registre est consommé par l'observer d'apprentissage et nettoyé après exécution ou abandon technique.
+Il est consommé par `HabitLearningObserver` après exécution ou abandon technique.
 
 ---
 
@@ -221,63 +222,60 @@ Le registre est consommé par l'observer d'apprentissage et nettoyé après exé
 
 `HabitIntentSource` implémente `IAutonomousIntentSource`.
 
-Il :
+Elle :
 
 1. lit `HabitComponent` ;
-2. ignore toute Habitude dont `Force <= 0` ;
-3. retrouve la règle correspondant à `HabitTypeId` ;
-4. exige `IsTriggered == true` ;
-5. exige `IsIntentTreatable == true` ;
-6. départage les candidates par Force décroissante ;
-7. en cas d'égalité, choisit `CreatedAt` le plus ancien ;
-8. enregistre la sélection dans `HabitSelectionRegistry` ;
-9. retourne exactement un `Intent` portant `IntentObjective`.
+2. ignore `Force <= 0` ;
+3. exige une `IHabitRule` correspondante ;
+4. exige un Déclencheur vrai ;
+5. exige un Intent actuellement traitable ;
+6. trie par Force décroissante ;
+7. départage une égalité par `CreatedAt` le plus ancien ;
+8. enregistre la sélection runtime ;
+9. produit exactement un Intent.
 
-La source ne modifie jamais `HabitComponent` ni aucune autre donnée du World.
+La source ne modifie jamais le World ni `LastActivatedAt`.
 
-La `Priorite` technique de l'Intent reste neutre dans ce lot : l'ordre entre familles est déjà assuré par `CompositeAutonomousIntentSource` conformément à GDB-004A.
+La `Priorite` technique de l'Intent reste neutre ; l'ordre inter-familles appartient à GDB-004A et `CompositeAutonomousIntentSource`.
 
 ---
 
 # 9. HabitLearningObserver
 
-`HabitLearningObserver` implémente `IAutonomousIntentExecutionObserver`.
+`HabitLearningObserver` implémente `IAutonomousIntentExecutionObserver` d'ENGINE-015.
 
 ## BeforeExecution
 
-Il capture en mémoire runtime les `HabitFormationCandidate` retournés par les règles pour le contexte pré-Effects.
+Les candidates de formation sont capturées en mémoire runtime sur le World pré-Effects.
 
-Il ne modifie pas encore le World.
+Aucune donnée persistante n'est créée lorsqu'aucune candidate et aucune sélection d'Habitude n'existent.
 
 ## AfterExecution
 
-Il réalise deux opérations indépendantes.
+Les candidates capturées sont ajoutées aux traces de formation, y compris pour un échec métier normal.
 
-### Formation
+Si l'Intent provenait d'une Habitude :
 
-Les candidates capturées sont ajoutées aux traces de formation, même si l'Outcome métier est `Echec`, car l'Action a été réellement terminée et observée.
-
-### Activation / renforcement
-
-Si `HabitSelectionRegistry` indique que l'Intent provenait d'une Habitude :
-
-- `LastActivatedAt` reçoit le Tick de sélection, quel que soit l'Outcome métier ;
-- si `OutcomeForme` n'est pas `Echec`, la Force est renforcée via la politique injectée ;
-- si l'Outcome est `Echec`, la Force n'est pas renforcée.
+- `LastActivatedAt` reçoit toujours le Tick de sélection ;
+- `Reussite` et `ReussitePartielle` peuvent renforcer la Force ;
+- `Echec` et `Interruption` ne renforcent pas.
 
 ## ExecutionAborted
 
-Les captures temporaires et la sélection runtime sont nettoyées.
+Une exception technique :
 
-Aucune observation de formation ni renforcement n'est commis pour une exécution techniquement avortée.
+- ne forme pas ;
+- ne renforce pas ;
+- conserve cependant l'activation si l'Habitude avait déjà été sélectionnée et avait produit son Intent ;
+- nettoie les données runtime temporaires.
+
+Cette distinction respecte GDB-004E : activation et réussite sont deux faits différents.
 
 ---
 
-# 10. IHabitStrengthPolicy
+# 10. Politique de Force
 
-La forme exacte du renforcement et de l'érosion reste paramétrable conformément à GDB-004E.
-
-ENGINE-016 introduit :
+La forme numérique du renforcement et de l'érosion reste injectée :
 
 ```csharp
 public interface IHabitStrengthPolicy
@@ -298,52 +296,75 @@ public interface IHabitStrengthPolicy
 
 Chaque méthode retourne la nouvelle Force souhaitée.
 
-Le framework applique ensuite un Clamp `[0,100]`.
+Le framework :
 
-Aucune formule de renforcement ou d'érosion par défaut n'est imposée par ENGINE-016.
+- exige une valeur finie ;
+- applique un Clamp `[0,100]` ;
+- interdit à `Reinforce` de diminuer la Force ;
+- interdit à `Erode` de l'augmenter.
+
+Aucune formule par défaut n'est imposée.
 
 ---
 
 # 11. HabitEvolutionSystem
 
-`HabitEvolutionSystem` applique l'érosion.
-
-Il reçoit :
+`HabitEvolutionSystem` reçoit :
 
 ```csharp
 long InactivityThresholdTicks
 IHabitStrengthPolicy
 ```
 
-Une Habitude dont `LastActivatedAt` est `null` utilise `CreatedAt` comme point de départ de l'inactivité.
+La référence d'inactivité est :
+
+```text
+LastActivatedAt
+si présent
+
+sinon
+CreatedAt
+```
 
 L'érosion devient applicable lorsque :
 
 ```text
-currentTick - référenceInactivité > InactivityThresholdTicks
+currentTick - référence > InactivityThresholdTicks
 ```
 
-Lorsque la Force obtenue atteint `0`, l'Habitude est retirée.
+Une Force ramenée à 0 supprime l'Habitude.
 
-Le System n'avance jamais le Tick lui-même.
+Le System n'avance jamais le Tick.
 
 ---
 
 # 12. Persistance
 
-`HabitComponent`, ses Habitudes et ses traces de formation sont ajoutés à `EntitySnapshot` comme champ optionnel.
+`HabitComponent` est ajouté à `EntitySnapshot` comme champ optionnel.
 
-Lorsque l'Entity ne possède pas `HabitComponent`, le champ est omis du JSON afin de préserver la forme historique des sauvegardes.
+Sans `HabitComponent`, le champ `Habits` est omis du JSON afin de préserver la forme historique des sauvegardes.
 
-Les règles `IHabitRule`, les politiques et le `HabitSelectionRegistry` sont des services runtime et ne sont jamais sérialisés.
+Sont persistés :
+
+- Habitudes formées ;
+- Force ;
+- Ticks de création/activation ;
+- traces de formation et leurs Ticks.
+
+Ne sont pas persistés :
+
+- `IHabitRule` ;
+- politiques ;
+- resolver de paramètres ;
+- `HabitSelectionRegistry`.
 
 ---
 
 # 13. Composition autonome
 
-ENGINE-016 ne modifie pas `CompositeAutonomousIntentSource`.
+Aucun changement de `CompositeAutonomousIntentSource` n'est requis.
 
-La composition attendue devient :
+La composition compatible devient :
 
 ```text
 NeedsIntentSource
@@ -357,11 +378,40 @@ HabitIntentSource
 future AmbitionIntentSource
 ```
 
-ENGINE-016 n'implémente pas encore la dernière source.
+ENGINE-016 n'implémente pas encore les Ambitions.
 
 ---
 
-# 14. Non-objectifs
+# 14. Implémentation candidate
+
+Fichiers ajoutés :
+
+```text
+Components/
+└── HabitComponent.cs
+
+Autonomy/
+├── IHabitRule.cs
+├── IHabitFormationParameterResolver.cs
+├── IHabitStrengthPolicy.cs
+├── HabitSelectionRegistry.cs
+├── HabitIntentSource.cs
+├── HabitLearningObserver.cs
+└── HabitEvolutionSystem.cs
+```
+
+Fichiers étendus :
+
+```text
+Persistence/WorldSnapshot.cs
+Persistence/WorldRepository.cs
+```
+
+Aucun Pattern ou Verbe ACT n'est ajouté.
+
+---
+
+# 15. Non-objectifs
 
 ENGINE-016 ne définit pas :
 
@@ -374,59 +424,110 @@ ENGINE-016 ne définit pas :
 - nouveau Pattern ou Verbe ACT ;
 - score cognitif global.
 
-La perturbation significative reste différée jusqu'à ce qu'un besoin concret l'exige.
-
 ---
 
-# 15. Invariants
+# 16. Invariants
 
-- Aucune Habitude concrète n'est créée sans `IHabitRule` injectée.
+- Aucune Habitude concrète n'est créée sans règle injectée.
 - Une règle absente ne produit aucun faux Intent.
 - La source d'Intent ne mute jamais le World.
 - L'Intent ne contient aucune métadonnée d'Habitude.
-- La Force ne compare que des Habitudes candidates.
+- La Force compare uniquement des Habitudes.
 - L'arbitrage interne suit Force puis ancienneté.
-- Formation, activation et renforcement sont trois faits distincts.
-- Un échec métier peut compter pour la formation et l'activation mais jamais pour le renforcement.
-- Une exception technique ne forme ni ne renforce.
-- Les règles de dynamique de Force sont injectées.
-- Toute Force est bornée entre 0 et 100.
+- Formation, activation et renforcement sont distincts.
+- Un échec métier peut compter pour formation et activation, jamais pour renforcement.
+- Une exception technique ne forme ni ne renforce, mais ne nie pas une activation déjà survenue.
+- Renforcement ne diminue jamais la Force.
+- Érosion ne l'augmente jamais.
+- Toute Force reste dans `[0,100]`.
 - Une Force à 0 supprime l'Habitude lors de l'évolution.
-- Le framework ne crée aucun nouveau Verbe ACT.
+- Aucun nouveau Verbe ACT n'est créé.
 
 ---
 
-# 16. Critère de validation
+# 17. QA candidate
 
-ENGINE-016 pourra passer Validée / Maturité 4 lorsque le moteur démontrera, avec uniquement des règles factices de test :
+Deux fichiers de tests sont ajoutés :
 
-- persistance des Habitudes et traces ;
-- formation déterministe par répétition/signature/fenêtre ;
-- absence de doublons ;
-- sélection Force puis ancienneté ;
-- absence de faux Intent si Déclencheur/règle/traitabilité échoue ;
-- absence de mutation du World par la source ;
-- activation distincte du renforcement ;
-- renforcement seulement après réussite ;
-- érosion et suppression à Force 0 ;
-- intégration `formation → Habitude → Intent → Action` sans nouveau Verbe.
+```text
+Engine016HabitTests.cs
+→ 24 tests
 
-Base validée avant ce lot :
+Engine016HabitInvariantTests.cs
+→ 3 tests
+```
+
+Soit **27 nouveaux tests**.
+
+Ils couvrent notamment :
+
+1. round-trip de persistance des Habitudes/traces ;
+2. omission JSON sans HabitComponent ;
+3. absence de faux Intent sans Component/règle/Déclencheur/traitabilité ;
+4. Force nulle non candidate ;
+5. sélection Force puis ancienneté ;
+6. absence de mutation de LastActivatedAt par la source ;
+7. formation au seuil de répétitions ;
+8. séparation de signatures ;
+9. éviction des observations hors fenêtre ;
+10. absence de doublon ;
+11. échec métier compté comme observation terminée ;
+12. exception technique non comptée pour la formation ;
+13. activation sur échec métier ;
+14. renforcement sur réussite + clamp 100 ;
+15. activation conservée sur abort technique ;
+16. érosion seulement après seuil ;
+17. suppression à Force 0 ;
+18. CreatedAt utilisé avant première activation ;
+19. absence de HabitComponent vide ;
+20. rejet d'un renforcement décroissant ;
+21. rejet d'une érosion croissante ;
+22. scénario complet `répétition → formation → HabitIntentSource → Action`.
+
+Base validée :
 
 ```text
 233 / 233
 ```
 
+Total attendu avant validation locale :
+
+```text
+260 / 260
+```
+
+---
+
+# 18. Critère de validation
+
+ENGINE-016 pourra passer Validée / Maturité 4 lorsque :
+
+- le build réussit ;
+- les 233 tests historiques restent verts ;
+- les 27 nouveaux tests sont verts ;
+- le round-trip de persistance est confirmé ;
+- la formation et l'arbitrage sont déterministes ;
+- activation, renforcement et érosion respectent leurs frontières ;
+- le scénario complet fonctionne sans introduire une Habitude canonique ni un nouveau Verbe.
+
 ---
 
 # HISTORIQUE
+
+## Version 1.1
+
+- synchronisation avec l'implémentation candidate ;
+- persistance HabitComponent ajoutée ;
+- formation, sélection, activation, renforcement et érosion implémentés ;
+- activation conservée après abandon technique ;
+- monotonie du renforcement et de l'érosion verrouillée ;
+- 27 tests ajoutés ;
+- total attendu fixé à **260 / 260**.
 
 ## Version 1.0
 
 - création d'ENGINE-016 ;
 - premier framework générique d'Habitudes ;
-- séparation explicite entre règle concrète, données persistantes et services runtime ;
-- formation, activation, renforcement et érosion spécifiés ;
 - aucun comportement d'Habitude canonique introduit.
 
 ---

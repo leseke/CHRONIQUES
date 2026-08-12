@@ -1,6 +1,6 @@
 # TECH
 
-> Version : 1.4  
+> Version : 1.6  
 > Statut : Active  
 > Type : Bibliothèque  
 > Maturité : 2  
@@ -10,19 +10,11 @@
 
 ## Rôle
 
-Le dossier **TECH** regroupe la documentation des implémentations techniques réellement présentes et validées dans Chroniques.
+Le dossier **TECH** documente les implémentations techniques réellement présentes et validées dans `CHRONIQUES-ENGINE`.
 
-TECH ne définit pas les règles métier.
+TECH décrit l'implémentation ; il ne crée jamais une règle métier.
 
-Il documente la manière dont les spécifications validées sont effectivement traduites dans :
-
-```text
-CHRONIQUES-ENGINE
-```
-
----
-
-## Position documentaire
+Position documentaire :
 
 ```text
 MASTER
@@ -42,186 +34,173 @@ Tests
 TECH
 ```
 
-### GDB
-
-Définit les règles de simulation.
-
-### ACT
-
-Définit les contrats relatifs aux Actions.
-
-### ENGINE
-
-Définit l'architecture attendue du moteur.
-
-### CHRONIQUES-ENGINE
-
-Contient l'implémentation exécutable.
-
-### TECH
-
-Documente l'implémentation réellement obtenue et validée.
+Conformément à MASTER-006 v1.1, TECH est consolidé lorsqu'un jalon significatif est atteint et peut regrouper plusieurs lots ENGINE cohérents.
 
 ---
 
-## Règle fondamentale
+# Documents actuels
 
-Un document TECH :
-
-```text
-décrit
-```
-
-mais ne :
-
-```text
-prescrit pas une nouvelle règle métier
-```
-
-Toute nouvelle règle doit d'abord être définie dans sa bibliothèque d'autorité.
-
-Conformément à MASTER-006 v1.1, TECH n'est pas nécessairement régénéré après chaque incrément validé.
-
-Un document TECH peut consolider plusieurs lots ENGINE lorsque ceux-ci forment une capacité technique cohérente et qu'un point de consolidation documentaire significatif est atteint.
-
----
-
-## Contenu actuel
-
-### TECH-001 — Systems de population
-
-Statut : Validé.
-
-Spécification :
+## TECH-001 — Systems de population
 
 ```text
 ENGINE-008
+→ relations + compétences + héritage minimal
+→ validation initiale 122 / 122
 ```
 
-Documente notamment :
+Statut : Validé / M4.
 
-- `RelationComponent` / `RelationSystem` ;
-- `SkillComponent` / `SkillSystem` ;
-- `HeritageSystem` ;
-- Effects de population ;
-- `PopulationEffectApplicator`.
-
-Validation initiale :
-
-```text
-122 / 122 tests réussis
-```
-
----
-
-### TECH-002 — Boucle de vie minimale
-
-Statut : Validé.
-
-Spécification :
+## TECH-002 — Boucle de vie minimale
 
 ```text
 ENGINE-009
+→ LifeSession + mort + héritier + continuité
+→ validation initiale 134 / 134
 ```
 
-Documente notamment :
+Statut : Validé / M4.
 
-- `LifeSession` ;
-- `LifeSessionState` ;
-- orchestration de `Scheduler.Tick(World)` ;
-- détection de la mort via `Lifecycle` ;
-- continuité du contrôle avec l'héritier ;
-- terminaison sans successeur ;
-- invariants QA et déterminisme de la séquence de contrôle.
-
-Validation initiale :
-
-```text
-134 / 134 tests réussis
-```
-
----
-
-### TECH-003 — Orchestration des habitants autonomes
-
-Statut : Validé.
-
-Spécification :
+## TECH-003 — Orchestration des habitants autonomes
 
 ```text
 ENGINE-010
+→ IAutonomousIntentSource
+→ IAutonomousIntentExecutor
+→ AutonomousActionSystem
+→ validation initiale 146 / 146
 ```
 
-Documente notamment :
+Statut : Validé / M4.
 
-- `IAutonomousIntentSource` ;
-- `IAutonomousIntentExecutor` ;
-- `AutonomousActionSystem` ;
-- ordre déterministe des Acteurs autonomes ;
-- filtrage Entity absente / morte ;
-- cohérence `intent.Acteur` ;
-- absence d'avancement autonome du Tick ;
-- intégration réelle Scheduler → autonomie → ENGINE-006 → World ;
-- résolution technique d'ENGINE-C06.
-
-Validation initiale :
+## TECH-004 — Décision autonome par besoins
 
 ```text
-146 / 146 tests réussis
+ENGINE-011 / ENGINE-012
+→ repos + alimentation + arbitrage par besoins
+→ validation de consolidation 178 / 178
 ```
+
+Statut : Validé / M4.
+
+## TECH-005 — Production et circulation autonomes
+
+```text
+ENGINE-013 / ENGINE-014
+→ production réelle
+→ provenance
+→ transfert volontaire entre habitants
+→ production → transfert → consommation
+```
+
+Repères de validation :
+
+```text
+ENGINE-013 → 201 / 201
+ENGINE-014 → 224 / 224
+suite au point de consolidation → 291 / 291
+```
+
+Statut : Validé / M4.
+
+## TECH-006 — Cognition autonome générique
+
+```text
+ENGINE-015 / ENGINE-016 / ENGINE-017
+→ observation Intent → Action → Outcome
+→ Habitudes génériques
+→ Ambitions génériques
+```
+
+Repères de validation :
+
+```text
+ENGINE-015 → 233 / 233
+ENGINE-016 → 260 / 260
+ENGINE-017 → 291 / 291
+```
+
+Statut : Validé / M4.
 
 ---
 
-### TECH-004 — Décision autonome par besoins
+# État technique consolidé
 
-Statut : Validé.
-
-Spécifications :
+La suite de référence au 12 août 2026 est :
 
 ```text
-ENGINE-011
-ENGINE-012
+dotnet build
+→ succès
+
+dotnet test
+→ 291 / 291 tests réussis
+→ 0 échec
 ```
 
-TECH-004 consolide le premier bloc de décision autonome réellement exploitable :
+Le moteur relie désormais :
 
 ```text
-Fatigue → se_reposer
-Faim + nourriture accessible → manger
+besoins
+↓
+production
+↓
+circulation entre habitants
+↓
+consommation
++
+observation d'exécution
+↓
+Habitudes
+↓
+Ambitions
 ```
 
-Il documente notamment :
-
-- `NeedsIntentSource` ;
-- seuils configurables de Fatigue et Faim ;
-- arbitrage déterministe entre besoins actionnables ;
-- `FoodProductComponent` ;
-- `IAccessibleFoodResolver` ;
-- Cibles portées par `PlanStep` ;
-- `NeedsPlanner` ;
-- `NeedsExecutionEngine` ;
-- `MangerDefinition` ;
-- séparation du `PipelineRunner` et des applicateurs d'Effects ;
-- consommation réelle d'une portion alimentaire ;
-- restauration de Faim ;
-- persistance du produit alimentaire ;
-- conservation de la compatibilité avec `VERB-001 — Se reposer`.
-
-Validation de consolidation :
-
-```text
-178 / 178 tests réussis
-```
+Cette chaîne ne signifie pas que tous les comportements concrets sont définis : les frameworks Habitudes/Ambitions restent génériques et les règles concrètes doivent être autorisées en GDB avant spécialisation.
 
 ---
 
-## Contenu futur
-
-Les prochains documents TECH seront créés lorsqu'un ensemble technique suffisamment stable nécessite une documentation d'implémentation.
+# Traçabilité courante
 
 ```text
-TECH-005
-TECH-006
+GDB / ACT
+↓
+ENGINE-013 à ENGINE-017
+↓
+CHRONIQUES-ENGINE
+↓
+291 / 291
+↓
+TECH-005 / TECH-006
+```
+
+`TECH-005` couvre le substrat économique matériel.
+
+`TECH-006` couvre le substrat cognitif générique.
+
+---
+
+# Frontières maintenues
+
+TECH ne devient pas l'autorité sur :
+
+- prix, monnaie ou marché ;
+- métiers et carrières concrets ;
+- Habitudes narratives concrètes ;
+- Types d'Ambitions concrets ;
+- personnalité ;
+- mémoire narrative du monde ;
+- règles de Game Design nouvelles.
+
+Ces sujets restent soumis à leurs autorités amont.
+
+---
+
+# Contenu futur
+
+Les prochains documents seront créés lorsqu'une nouvelle capacité technique cohérente atteint un point de consolidation pertinent.
+
+```text
+TECH-007
+TECH-008
 ...
 ```
 
@@ -229,148 +208,51 @@ Aucun sujet n'est réservé à l'avance.
 
 ---
 
-## Ce que TECH peut documenter
-
-TECH peut notamment couvrir :
-
-- architecture logicielle réelle ;
-- structure des projets ;
-- implémentations des Systems ;
-- persistance ;
-- sérialisation ;
-- mécanismes d'Actions ;
-- autonomie technique ;
-- performance ;
-- diagnostic ;
-- outils de développement ;
-- choix de structures de données ;
-- contraintes techniques observées.
-
----
-
-## Ce que TECH ne doit pas définir
-
-TECH ne doit pas devenir l'autorité sur :
-
-- comportement métier des habitants ;
-- économie ;
-- relations ;
-- psychologie ;
-- actions conceptuelles ;
-- Game Design ;
-- règles de progression.
-
----
-
-## Convention
-
-Chaque document utilise un identifiant unique.
-
-```text
-TECH-001
-TECH-002
-TECH-003
-TECH-004
-...
-```
-
-Documents actuels :
-
-```text
-TECH-001 — Systems de population.md
-TECH-002 — Boucle de vie minimale.md
-TECH-003 — Orchestration des habitants autonomes.md
-TECH-004 — Décision autonome par besoins.md
-```
-
----
-
-## Traçabilité
-
-Chaque document TECH identifie lorsque possible :
-
-```text
-Spécification source
-↓
-Code concerné
-↓
-Tests concernés
-↓
-TECH
-```
-
-Exemple de consolidation courant :
-
-```text
-GDB-004B / GDB-005E
-↓
-PAT/VERB 001-002
-↓
-ENGINE-011 / ENGINE-012
-↓
-CHRONIQUES-ENGINE
-↓
-178 / 178
-↓
-TECH-004
-```
-
----
-
 # État actuel
 
 ```text
-Documents numérotés : 4
+Documents numérotés : 6
 
-TECH-001
-→ Systems de population
-→ Validé
-
-TECH-002
-→ Boucle de vie minimale
-→ Validé
-
-TECH-003
-→ Orchestration des habitants autonomes
-→ Validé
-
-TECH-004
-→ Décision autonome par besoins
-→ Validé
+TECH-001  ✅ Systems de population
+TECH-002  ✅ Boucle de vie minimale
+TECH-003  ✅ Orchestration autonome
+TECH-004  ✅ Décision autonome par besoins
+TECH-005  ✅ Production et circulation autonomes
+TECH-006  ✅ Cognition autonome générique
 ```
 
 ---
 
 # Historique
 
+## Version 1.6
+
+- ajout de TECH-005 et TECH-006 au point de consolidation suivant ENGINE-017 ;
+- documentation des lots ENGINE-013 à ENGINE-017 jusque-là non consolidés dans TECH ;
+- validation globale de référence portée à 291 / 291 ;
+- nombre de documents numérotés porté à 6.
+
+## Version 1.5
+
+- réservée implicitement par la progression documentaire entre les consolidations ; aucun état officiel distinct n'avait été publié.
+
 ## Version 1.4
 
-- ajout de `TECH-004 — Décision autonome par besoins` au premier point de consolidation suivant ENGINE-011 et ENGINE-012 ;
-- documentation consolidée des comportements autonomes `se_reposer` et `manger` ;
-- validation moteur portée à **178 / 178 tests réussis** ;
-- prise en compte de MASTER-006 v1.1 : TECH peut consolider plusieurs incréments cohérents au lieu d'être généré après chaque petite validation ;
-- nombre de documents numérotés porté à 4.
+- ajout de TECH-004 ;
+- consolidation ENGINE-011/012 à 178 / 178 ;
+- prise en compte de MASTER-006 v1.1.
 
 ## Version 1.3
 
-- ajout de `TECH-003 — Orchestration des habitants autonomes` ;
-- enregistrement de la validation ENGINE-010 ;
-- validation moteur portée à **146 / 146 tests réussis** pour ce lot ;
-- résolution technique d'ENGINE-C06 documentée ;
-- nombre de documents numérotés porté à 3.
+- ajout de TECH-003 ; validation ENGINE-010 à 146 / 146.
 
 ## Version 1.2
 
-- ajout de `TECH-002 — Boucle de vie minimale` ;
-- validation ENGINE-009 enregistrée ;
-- validation portée à 134 / 134 ;
-- nombre de documents numérotés porté à 2.
+- ajout de TECH-002 ; validation ENGINE-009 à 134 / 134.
 
 ## Version 1.1
 
-- bibliothèque passée de Fondation à Active ;
-- création de TECH-001 ;
-- clarification du rôle de TECH et de la traçabilité.
+- activation de la bibliothèque et création de TECH-001.
 
 ## Version 1.0
 

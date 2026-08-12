@@ -1,6 +1,6 @@
 # ENGINE — Catalogue
 
-> Version : 1.28
+> Version : 1.29
 > Statut : Foundation
 > Maturité : 1
 > Bibliothèque : ENGINE
@@ -39,11 +39,14 @@ ENGINE-015  Observation de l'exécution autonome      Validée / M4
 ENGINE-016  Habitudes génériques minimales           Validée / M4
 ENGINE-017  Ambitions génériques minimales           Validée / M4
 ENGINE-018  Personnalité générique minimale          Validée / M4
+ENGINE-019  Mémoire du Monde minimale                Proposition / M2
 ```
 
 ---
 
 # Validation courante
+
+Base localement validée avant ENGINE-019 :
 
 ```text
 dotnet build
@@ -104,110 +107,115 @@ ENGINE-016 — Habitudes génériques minimales
 ENGINE-017 — Ambitions génériques minimales
 → 291 / 291 à validation
 
-TECH-006 — Cognition autonome générique
+ENGINE-018 — Personnalité générique minimale
+→ 330 / 330 à validation
 ```
+
+`ENGINE-018` ajoute Traits, Poids de référence, stabilisation, Inflexions et causalité persistante sans mapping cognitif concret.
 
 ---
 
-# ENGINE-018 — Personnalité générique minimale
+# ENGINE-019 — Mémoire du Monde minimale
 
-Statut : **Validée / Maturité 4**.
+Statut : Proposition / Maturité 2.
 
-Spécification : `ENGINE-018 v1.2`.
+Spécification : `ENGINE-019 v1.1`.
 
 Autorité principale :
 
 ```text
-GDB-004D v1.3
+GDB-002B v1.3
 ```
 
-Briques validées :
+Audit préalable :
 
 ```text
-PersonalityComponent
-PersonalityTraitState
-PersonalityInflexionTrace
-PersonalityInflexionKind
-PersonalityTraitCreationCandidate
-PersonalityInflexion
-IPersonalityTraitRule
-IPersonalityStabilizationParameterResolver
-PersonalityEvolutionSystem
+AUDIT/AUDIT-MEMOIRE-DU-MONDE-Implementabilite.md
+→ Clos / M4
 ```
 
-Flux validé :
+Briques candidates :
 
 ```text
-règle de Trait injectée
-↓
-formation déterministe
-↓
-Valeur + Poids de référence
-↓
-Inflexion identifiable ?
-├── oui → déplacement + trace persistante
-└── non → stabilisation vers la référence
+WorldMemoryComponent
+WorldMemoryTier
+WorldMemoryTransitionTrace
+WorldMemoryCreationCandidate
+WorldMemoryGenerationEvidence
+IWorldMemoryRule
+IWorldMemoryGenerationResolver
+WorldMemoryEvolutionSystem
 ```
 
-Invariants confirmés :
-
-- aucun Trait métier concret par défaut ;
-- Valeur et Poids bornés `[0,100]` ;
-- aucune duplication de Trait ;
-- pas de stabilisation au Tick de création ;
-- convergence sans dépassement ;
-- cause obligatoire pour toute Inflexion ;
-- même cause appliquée une seule fois au même Trait ;
-- Inflexion légère : référence inchangée ;
-- Inflexion profonde : nouvelle référence durable ;
-- aucune lecture automatique de `World.Events` ;
-- aucun mapping Trait/Habitude ou Trait/Ambition ;
-- aucune source d'Intent ;
-- aucun nouveau Pattern ou Verbe ACT.
-
-Persistance validée :
+Architecture candidate :
 
 ```text
-EntitySnapshot.Personality
+fait qualifié par une règle concrète
+↓
+Entity + WorldMemoryComponent
+↓
+Anecdote
+↓
+preuves générationnelles injectées
+↓
+Souvenir / Légende / Tradition / oublié
+```
+
+Invariants :
+
+- `World` reste sans donnée métier de mémoire ;
+- aucun Event n'est mémorisé automatiquement ;
+- aucun score universel de significativité ;
+- toute mémoire possède Type + Key + sources stables ;
+- tout nouvel élément commence Anecdote active ;
+- aucun saut de palier ;
+- une transition maximum par génération ;
+- générations sautées rejouées une par une ;
+- règle absente : mémoire persistée mais non évoluée ;
+- oubli conservé comme trace technique inactive ;
+- aucune durée `N Ticks = génération` inventée ;
+- aucun Type concret de mémoire fourni par défaut.
+
+Persistance candidate :
+
+```text
+EntitySnapshot.WorldMemory
 WorldRepository
 ```
 
 ---
 
-# Couverture QA ENGINE-018
+# Couverture QA ENGINE-019
 
 ```text
-Engine018PersonalityTests.cs
-→ 22 tests
+Engine019WorldMemoryTests.cs
+→ 24 tests
 
-Engine018PersonalityInvariantTests.cs
-→ 17 tests
+Engine019WorldMemoryInvariantTests.cs
+→ 16 tests
 ```
 
-Nouveaux tests : **39**.
+Nouveaux tests : **40**.
 
-Base précédente :
+Base :
 
 ```text
-291 / 291
+330 / 330
 ```
 
-Validation locale confirmée :
+Total attendu avant validation locale :
 
 ```text
-dotnet build
-→ succès
-
-dotnet test
-→ 330 / 330 tests réussis
-→ 0 échec
+370 / 370
 ```
+
+Aucun passage M4 ne sera enregistré avant confirmation locale.
 
 ---
 
 # Persistance étendue
 
-Le World persiste maintenant notamment :
+Le World persiste maintenant ou, pour ENGINE-019, candidate à persister :
 
 ```text
 FoodProductComponent
@@ -216,6 +224,7 @@ ProductionProvenanceComponent
 HabitComponent
 AmbitionComponent
 PersonalityComponent
+WorldMemoryComponent
 ```
 
 Les resolvers, rules, policies et registres runtime restent hors sauvegarde.
@@ -231,7 +240,7 @@ Transformation → PAT-003 Production → VERB-003 Produire une denrée
 Échange → PAT-004 Transfert → VERB-004 Donner une denrée
 ```
 
-ENGINE-015 à 018 n'ajoutent aucun Pattern ou Verbe.
+ENGINE-015 à 019 n'ajoutent aucun Pattern ou Verbe.
 
 ---
 
@@ -239,6 +248,9 @@ ENGINE-015 à 018 n'ajoutent aucun Pattern ou Verbe.
 
 Ne sont toujours pas autorisés ou implémentés comme capacités validées :
 
+- Type concret de Mémoire du Monde ;
+- génération universelle intégrée ;
+- événements mondiaux autonomes complets ;
 - catalogue concret de Traits ;
 - mapping Trait/Habitude ;
 - mapping Trait/Ambition ;
@@ -247,7 +259,6 @@ Ne sont toujours pas autorisés ou implémentés comme capacités validées :
 - Habitudes narratives concrètes ;
 - Types d'Ambitions concrets ;
 - prix, monnaie, vente et marché ;
-- Mémoire du Monde opérationnelle ;
 - fairness inter-familles ;
 - autonomie crédible sur plusieurs générations achevée.
 
@@ -257,22 +268,26 @@ ENGINE-007 reste réservé au Resource Manager technique et demeure non créé.
 
 # Historique
 
+## Version 1.29
+
+- audit d'implémentabilité de GDB-002B/C/D réalisé ;
+- GDB-002B porté à v1.3 pour rendre significativité, preuves, générations et transitions déterministes ;
+- création et enregistrement d'ENGINE-019 en Proposition / M2 ;
+- framework générique de Mémoire du Monde implémenté en candidate ;
+- persistance `WorldMemoryComponent` ajoutée ;
+- 40 tests candidats ajoutés ;
+- total attendu fixé à **370 / 370** ;
+- aucun Type concret de mémoire ni durée arbitraire de génération introduits.
+
 ## Version 1.28
 
-- ENGINE-018 passe à **Validée / Maturité 4** ;
-- suite globale portée à **330 / 330 tests réussis** ;
-- 39 tests ENGINE-018 validés ;
-- création, persistance, stabilisation, Inflexions légères/profondes et causalité idempotente confirmées ;
-- aucun Trait concret, mapping Trait/Habitude, mapping Trait/Ambition ou nouveau Pattern/Verbe ACT introduit ;
-- aucune consolidation TECH/roadmap/README déclenchée automatiquement sur ce seul lot.
+- ENGINE-018 passe à Validée / Maturité 4 ;
+- suite globale portée à 330 / 330 tests réussis ;
+- 39 tests ENGINE-018 validés.
 
 ## Version 1.27
 
-- création et enregistrement d'ENGINE-018 en Proposition / M2 ;
-- framework générique de Personnalité implémenté en candidate ;
-- Traits, stabilisation, Inflexions et causalité persistante couverts ;
-- 39 tests ajoutés ;
-- total attendu fixé à 330 / 330.
+- création et enregistrement d'ENGINE-018 en Proposition / M2.
 
 ## Version 1.26
 

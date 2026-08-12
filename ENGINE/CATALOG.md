@@ -1,6 +1,6 @@
 # ENGINE — Catalogue
 
-> Version : 1.21
+> Version : 1.22
 > Statut : Foundation
 > Maturité : 1
 > Bibliothèque : ENGINE
@@ -36,35 +36,22 @@ ENGINE-012  Alimentation autonome minimale           Validée / M4
 ENGINE-013  Production autonome minimale             Validée / M4
 ENGINE-014  Circulation autonome minimale            Validée / M4
 ENGINE-015  Observation de l'exécution autonome      Validée / M4
+ENGINE-016  Habitudes génériques minimales           Proposition / M2
 ```
 
 ---
 
 # Validation courante
 
+Base localement validée avant ENGINE-016 :
+
 ```text
 233 / 233 tests réussis
-```
-
-Le moteur sait désormais relier :
-
-```text
-besoins
-+
-production
-+
-circulation entre habitants
-+
-consommation
-+
-observation fiable Intent → Action → Outcome
 ```
 
 ---
 
 # Arbitrage GDB courant
-
-Depuis GDB-004A v1.3 :
 
 ```text
 besoins physiologiques actionnables
@@ -80,198 +67,170 @@ Ambitions candidates
 aucun Intent
 ```
 
-Force et Intensité restent des priorités internes à leurs familles respectives ; aucun score universel inter-familles n'est défini.
+GDB-004A v1.3 reste l'autorité sur cet ordre. Force et Intensité restent internes à leurs familles.
 
 ---
 
-# ENGINE-014 — Circulation autonome minimale
+# ENGINE-015 — Observation autonome
 
 Statut : Validée / M4.
 
 Validation :
 
 ```text
-224 / 224
+233 / 233
 ```
 
-Chaîne validée :
-
-```text
-ressource
-↓
-production par A
-↓
-stock A
-↓
-transfert volontaire A → B
-↓
-stock B
-↓
-consommation par B
-```
-
-La frontière commerciale reste inchangée : prix, monnaie, vente, troc réciproque et marché ne sont pas implémentés.
+ENGINE-015 fournit l'observation pré/post exécution nécessaire aux systèmes d'apprentissage sans modifier `IAutonomousIntentExecutor`, `AutonomousActionSystem`, `PipelineRunner` ou ACT `Intent`.
 
 ---
 
-# ENGINE-015 — Observation de l'exécution autonome
+# ENGINE-016 — Habitudes génériques minimales
 
-Statut : **Validée / Maturité 4**.
+Statut : Proposition / Maturité 2.
 
-Spécification : `ENGINE-015 v1.2`.
+Spécification : `ENGINE-016 v1.1`.
 
 Autorités :
 
 ```text
 GDB-004A v1.3
+GDB-004D v1.3
 GDB-004E v1.2
-GDB-004F v1.2
 ACT-002-H
-ENGINE-006
-ENGINE-010 à ENGINE-014
+ENGINE-010
+ENGINE-015
 ```
 
-Problème traité :
+Le lot introduit un framework générique, pas une Habitude métier canonique.
+
+Briques candidates :
 
 ```text
-AutonomousActionSystem
-↓
-IAutonomousIntentExecutor.Execute(...)
-↓
-void
+HabitComponent
+IHabitRule
+IHabitFormationParameterResolver
+IHabitStrengthPolicy
+HabitSelectionRegistry
+HabitIntentSource
+HabitLearningObserver
+HabitEvolutionSystem
 ```
 
-Le contrat historique masque l'Action et son Outcome aux futurs systèmes d'apprentissage.
-
-ENGINE-015 ajoute sans casser ce contrat :
-
-- `IAutonomousIntentExecutionObserver` ;
-- `PipelineAutonomousIntentExecutor`.
-
-Flux validé :
+Persistance étendue :
 
 ```text
-Intent autonome
-↓
-BeforeExecution
-↓
-PipelineRunner.Execute
-├── exception → ExecutionAborted → rethrow
-└── Action terminée
-    ↓
-    AfterExecution
+EntitySnapshot
+WorldRepository
 ```
 
-Invariants confirmés :
+Flux cible :
 
-- `IAutonomousIntentExecutor` inchangé ;
-- `AutonomousActionSystem` inchangé ;
-- `PipelineRunner` inchangé ;
-- ACT `Intent` inchangé ;
-- contexte pré-Effects observable ;
-- Action archivée + Outcome post-Effects observables ;
-- échec métier normal observé par `AfterExecution` ;
-- exception technique observée par `ExecutionAborted` puis relancée ;
-- ordre des observateurs déterministe ;
-- aucun comportement d'Habitude ou d'Ambition inventé.
+```text
+Intent exécuté
+↓
+répétition + Signature déterministe
+↓
+formation d'une Habitude
+↓
+Déclencheur concret
+↓
+HabitIntentSource
+↓
+Intent
+↓
+ACT
+↓
+Outcome
+↓
+activation / renforcement
+```
+
+Invariants :
+
+- aucune règle concrète par défaut ;
+- aucune métadonnée d'Habitude ajoutée à ACT Intent ;
+- source d'Intent sans mutation du World ;
+- sélection Force puis ancienneté ;
+- échec métier : formation/activation possibles, pas de renforcement ;
+- exception technique : pas de formation/renforcement, activation déjà produite conservée ;
+- renforcement monotone non décroissant ;
+- érosion monotone non croissante ;
+- Force bornée `[0,100]` ;
+- suppression à Force 0 ;
+- aucun nouveau Pattern ou Verbe ACT.
 
 ---
 
-# Validation technique ENGINE-015
-
-Nouveau fichier de tests :
+# Couverture QA ENGINE-016
 
 ```text
-Engine015AutonomousExecutionObservationTests.cs
-→ 9 tests
+Engine016HabitTests.cs
+→ 24 tests
+
+Engine016HabitInvariantTests.cs
+→ 3 tests
 ```
 
-Base précédente :
+Nouveaux tests : **27**.
+
+Base :
 
 ```text
-224 / 224
+233 / 233
 ```
 
-Validation locale confirmée :
+Total attendu avant validation locale :
 
 ```text
-dotnet build
-→ succès
-
-dotnet test
-→ 233 / 233 tests réussis
-→ 0 échec
+260 / 260
 ```
 
-ENGINE-015 est donc fermée en M4.
+Aucun passage M4 ne sera enregistré avant confirmation locale.
 
 ---
 
-# Frontière avec les Habitudes
+# Frontière restante
 
-ENGINE-015 prépare GDB-004E mais ne crée pas encore :
+ENGINE-016 ne fournit encore :
 
-- `HabitComponent` ;
-- Déclencheur concret ;
-- Signature de formation concrète ;
-- formation ;
-- renforcement ;
-- érosion.
-
-Il fournit uniquement la frontière technique permettant à un futur système autorisé de distinguer le contexte avant Action du résultat réel après Action.
-
----
-
-# Frontière avec les Ambitions
-
-Aucun `AmbitionComponent`, Type concret d'Ambition, évaluateur de Progrès ou Intent d'Ambition n'est introduit par ENGINE-015.
-
-GDB-004F reste l'autorité sur ces futurs contrats.
+- aucune Habitude concrète ;
+- aucune perturbation par événement significatif ;
+- aucun mapping Trait/Habitude concret ;
+- aucune Ambition ;
+- aucune fairness inter-familles.
 
 ---
 
 # ENGINE-007
 
-ENGINE-007 reste réservé aux ressources techniques du moteur et n'a aucun lien avec les ressources économiques ou les Habitudes.
+ENGINE-007 reste réservé aux ressources techniques du moteur.
 
 ---
 
 # HISTORIQUE
 
+## Version 1.22
+
+- création et enregistrement d'ENGINE-016 en Proposition / M2 ;
+- framework générique d'Habitudes implémenté ;
+- persistance des Habitudes et traces ajoutée ;
+- formation, sélection, activation, renforcement et érosion couverts ;
+- 27 tests ajoutés ;
+- total attendu fixé à **260 / 260** ;
+- aucune Habitude métier ni nouveau Verbe ACT introduits.
+
 ## Version 1.21
 
-- ENGINE-015 passe à **Validée / Maturité 4** ;
-- suite globale portée à **233 / 233 tests réussis** ;
-- observation pré/post exécution autonome validée ;
-- compatibilité des contrats historiques confirmée ;
-- aucune Habitude ou Ambition concrète créée ;
-- aucune consolidation TECH/roadmap/README déclenchée automatiquement.
+- ENGINE-015 validée / M4 à 233 / 233.
 
 ## Version 1.20
 
-- création et enregistrement d'ENGINE-015 en Proposition / M2 ;
-- ajout de la frontière d'observation avant/après/abandon autour du pipeline autonome ;
-- 9 tests ajoutés, total attendu **233 / 233** ;
-- aucune modification des contrats historiques d'ENGINE-010 ou d'ACT.
+- création d'ENGINE-015.
 
-## Version 1.19
+## Versions 1.0 à 1.19
 
-- ENGINE-014 validée / M4 ;
-- suite portée à 224 / 224 ;
-- PAT-004 / VERB-004 validés ;
-- circulation autonome entre habitants confirmée.
-
-## Versions 1.16 à 1.18
-
-- création, QA et synchronisation d'ENGINE-014.
-
-## Version 1.15
-
-- ENGINE-013 validée à 201 / 201.
-
-## Versions 1.0 à 1.14
-
-- construction progressive des fondations et de l'autonomie jusqu'à la production minimale.
+- construction progressive des fondations et de l'autonomie jusqu'à la circulation économique minimale.
 
 ---
 

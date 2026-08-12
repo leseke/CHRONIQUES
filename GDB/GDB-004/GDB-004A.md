@@ -1,6 +1,6 @@
 # GDB-004A — Les Habitants du Monde
 
-> Version : 1.2
+> Version : 1.3
 > Statut : Officiel
 > Type : Population du Monde
 > Maturité : 2
@@ -10,210 +10,149 @@
 
 # OBJECTIF
 
-Définir les principes qui gouvernent les habitants de Chroniques et préciser le premier contrat minimal permettant à un habitant de répondre à ses besoins, faire circuler une denrée et mener une activité productive sans intervention du joueur.
+Définir les principes qui gouvernent les habitants de Chroniques et l'ordre minimal des familles de décisions autonomes actuellement spécifiées.
 
-Les habitants donnent vie au monde. Ils ne sont pas de simples distributeurs de quêtes ou de services.
-
----
-
-# PRINCIPE
-
-Chaque habitant est un individu appartenant à une société.
-
-Il possède un contexte, des besoins, des relations et une place dans le monde.
+Les habitants poursuivent leur existence même lorsque le joueur n'interagit pas avec eux. Une capacité conceptuelle n'autorise jamais le moteur à inventer silencieusement sa règle d'exécution.
 
 ---
 
-# IDENTITÉ
+# IDENTITÉ ET VIE AUTONOME
 
-Chaque habitant est notamment défini par :
+Un habitant possède notamment une identité, des besoins, des relations, des compétences, une personnalité, des Habitudes, des Ambitions et des contraintes.
 
-- son identité ;
-- son mode de vie ;
-- ses compétences ;
-- ses relations ;
-- ses ambitions ;
-- ses contraintes.
+Il peut notamment répondre à ses besoins, travailler, échanger, apprendre, agir selon ses Habitudes, poursuivre des Ambitions, se déplacer et vieillir.
 
 Toutes ces dimensions n'ont pas à être implémentées simultanément.
 
 ---
 
-# VIE AUTONOME
+# FAMILLES DÉJÀ SPÉCIFIÉES
 
-Les habitants poursuivent leur existence même lorsque le joueur n'interagit pas avec eux.
+## Entretien
 
-Ils peuvent notamment :
+Les besoins physiologiques actionnables suivent GDB-004B. Un besoin sans réponse exécutable ne produit aucun faux Intent.
 
-- travailler ;
-- se déplacer ;
-- échanger ;
-- apprendre ;
-- vieillir.
+## Échange volontaire
 
-Une capacité conceptuelle n'autorise cependant pas le moteur à inventer silencieusement sa règle d'exécution. Chaque comportement autonome doit posséder une réponse GDB/ACT suffisamment définie avant code.
+Une Action d'échange autonome exige une opportunité de transfert volontaire explicitement disponible et encore exécutable conformément à GDB-005F. L'absence d'opportunité ne devient jamais une volonté implicite de donner.
+
+## Production
+
+Une activité productive autonome exige une opération productive explicitement disponible et réellement exécutable conformément à GDB-005C et GDB-012B. Le moteur ne choisit pas silencieusement un métier ou une carrière.
+
+## Habitudes
+
+Une Habitude devient candidate conformément à GDB-004E : elle existe réellement, son déclencheur déterministe est satisfait, sa Force est strictement positive et son objectif d'Intent est traitable par le contexte.
+
+## Ambitions
+
+Une Ambition devient candidate conformément à GDB-004F : elle existe réellement, n'est ni accomplie ni abandonnée, possède une règle concrète déterministe d'évaluation de son objectif/progrès et son objectif d'Intent est traitable par le contexte.
 
 ---
 
-# OPPORTUNITÉ D'ÉCHANGE COURANTE
+# ARBITRAGE AUTONOME COURANT
 
-Le premier lot de circulation économique ne choisit pas encore automatiquement une stratégie commerciale, une négociation ou un marché.
-
-Il peut fonctionner à partir d'une **opportunité de transfert volontaire explicitement disponible** dans le contexte de l'habitant conformément à GDB-005F.
+Pour v0.4, l'ordre des familles est fixe :
 
 ```text
-habitant
-+
-opportunité de transfert volontaire disponible
-+
-transfert encore exécutable
-→ candidat à une Action d'échange
+besoins physiologiques actionnables
+↓
+transfert volontaire exécutable
+↓
+activité productive exécutable
+↓
+Habitudes actives
+↓
+Ambitions candidates
+↓
+aucun Intent
 ```
 
-Cette opportunité identifie le destinataire et les stocks concernés dans le contexte compétent.
+La première famille qui produit un Intent exécutable gagne pour ce passage de décision. Les familles suivantes ne produisent pas de second Intent concurrent pendant le même passage.
 
-Elle peut provenir ultérieurement de relations, d'une organisation, d'une demande, d'un marché, d'un contrat ou d'un autre système compétent.
+Cet ordre de familles est distinct des règles internes :
 
-Cette version n'impose aucune représentation technique de sa provenance et ne transforme jamais l'absence d'opportunité en volonté implicite de donner.
+- GDB-004B départage les besoins actionnables ;
+- GDB-004E départage les Habitudes par Force puis ancienneté ;
+- GDB-004F départage les Ambitions par Intensité, puis Progrès, puis ancienneté.
 
----
+**Force et Intensité sont des priorités internes à leur famille.** Elles ne forment pas un score universel permettant de comparer directement un besoin, un transfert, une production, une Habitude et une Ambition.
 
-# ACTIVITÉ PRODUCTIVE COURANTE
-
-Le premier lot productif de v0.4 ne choisit pas encore automatiquement une carrière ou un métier.
-
-Il peut fonctionner à partir d'une **activité productive courante explicitement disponible** dans le contexte de l'habitant.
-
-Cette disponibilité signifie qu'une opération productive réelle peut être tentée maintenant conformément à GDB-012B et GDB-005C.
-
-```text
-habitant
-+
-activité productive disponible
-+
-opération exécutable
-→ candidat à une activité de travail
-```
-
-L'activité productive courante peut provenir ultérieurement d'un métier, d'une organisation, d'un lieu, d'un projet ou d'un autre système compétent.
-
-Cette version n'impose aucune représentation technique de cette provenance.
+Le champ `Priorite` d'un Intent reste conforme à ACT, mais cette version ne définit aucun calcul transversal entre familles.
 
 ---
 
-# ARBITRAGE MINIMAL ENTRE ENTRETIEN, ÉCHANGE ET TRAVAIL
+# ABSENCE DE FAIRNESS IMPLICITE
 
-Le premier monde autonome économique conserve une priorité minimale et déterministe :
+Si une famille située plus haut reste continuellement exécutable, elle peut différer les familles situées plus bas.
 
-1. répondre d'abord aux besoins physiologiques actuellement actionnables déjà couverts par GDB-004B ;
-2. si aucun de ces besoins ne produit d'Intent exécutable, permettre un transfert volontaire déjà disponible ;
-3. si aucun transfert n'est exécutable, permettre une activité productive disponible ;
-4. si aucune de ces possibilités n'est exécutable, ne rien inventer.
+Le moteur ne doit pas inventer de round-robin, quota, vieillissement de priorité, bonus de frustration ou score psychologique global.
 
-```text
-Intent d'entretien exécutable ?
-├── oui → entretien
-└── non
-    ↓
-transfert volontaire exécutable ?
-├── oui → échange
-└── non
-    ↓
-activité productive exécutable ?
-├── oui → travail
-└── non → aucun Intent
-```
-
-L'échange précède ici la production parce qu'il fait circuler une valeur déjà créée au lieu de produire indéfiniment alors qu'une opportunité volontaire de distribution existe déjà.
-
-Cette règle est volontairement minimale et propre au premier socle de v0.4.
-
-Elle ne définit pas encore :
-
-- une motivation commerciale ;
-- une générosité psychologique ;
-- un salaire ;
-- un horaire de travail ;
-- une ambition de carrière ;
-- un prix ;
-- une négociation ;
-- un marché ;
-- une pondération psychologique universelle entre travail, échange et loisirs.
-
-Elle fournit uniquement un ordre stable pour rendre possible le premier monde productif et circulant sans inventer ces systèmes.
+Toute future règle de fairness ou d'arbitrage transversal devra être spécifiée explicitement dans GDB avant code.
 
 ---
 
-# RELATIONS
+# PERSONNALITÉ
 
-Les relations évoluent selon les interactions et les conséquences.
+La personnalité n'est pas une famille d'Intent et n'entre pas directement dans la chaîne précédente.
 
-Elles ne sont jamais figées.
+Conformément à GDB-004D, elle agit en amont uniquement lorsque le lien concret est spécifié :
 
-Le premier transfert volontaire n'introduit pas encore automatiquement un effet relationnel : une telle conséquence devra être spécifiée séparément si elle devient nécessaire.
+- modulation du seuil de formation d'une Habitude ;
+- modulation de l'Intensité d'une Ambition.
+
+Elle ne court-circuite jamais l'ordre des familles.
 
 ---
 
-# DIVERSITÉ
+# RELATIONS ET DIVERSITÉ
 
-Deux habitants exerçant le même métier ou participant au même type d'échange ne doivent pas être interchangeables à terme.
+Les relations évoluent selon les interactions et leurs conséquences. Un transfert volontaire n'applique pas automatiquement un effet relationnel tant qu'une règle distincte ne le spécifie pas.
 
-Leur personnalité, leur histoire et leurs choix créent cette différence.
-
-Les premiers lots minimaux ne sont pas tenus d'implémenter immédiatement toutes ces sources de diversité.
+Deux habitants placés dans un contexte proche peuvent diverger par leur personnalité, leur histoire, leurs Habitudes, leurs Ambitions, leurs relations et leurs compétences.
 
 ---
 
 # INVARIANTS
 
 - Un habitant peut agir sans intervention du joueur.
-- Un transfert autonome doit correspondre à une opportunité volontaire réellement exécutable.
-- Une activité productive autonome doit correspondre à une opération réellement exécutable.
-- Une opportunité ou activité indisponible ne génère aucun faux Intent.
-- Le premier arbitrage minimal suit `entretien → échange volontaire → travail`.
-- Le moteur ne choisit pas silencieusement un métier, une carrière, un prix ou une volonté de donner.
-- À état et configuration identiques, l'ordre d'arbitrage reste identique.
-
----
-
-# RÈGLES DE CONCEPTION
-
-Tout habitant devra :
-
-1. avoir une raison crédible d'exister ;
-2. appartenir à un environnement cohérent ;
-3. pouvoir évoluer ;
-4. renforcer l'immersion ;
-5. participer aux histoires émergentes ;
-6. ne jamais produire une activité autonome que le contexte ne rend pas réellement exécutable ;
-7. ne jamais transférer une valeur sans opportunité volontaire explicitement disponible.
+- Toute famille autonome produit au maximum un Intent avant ACT.
+- Une réponse indisponible ne génère aucun faux Intent.
+- L'ordre courant est `entretien → échange volontaire → travail → Habitudes → Ambitions → aucun Intent`.
+- Force et Intensité restent internes à leur famille.
+- Aucun score ou mécanisme de fairness inter-familles n'est implicite.
+- La personnalité n'est pas une source directe d'Intent.
+- Le moteur n'invente ni volonté, ni métier, ni prix, ni Habitude, ni Ambition absente.
+- À état et configuration identiques, la décision reste déterministe.
 
 ---
 
 # CRITÈRE DE VALIDATION
 
-Cet habitant paraît-il vivre pour lui-même, répondre à ses besoins, faire circuler des ressources lorsque le contexte le justifie et participer réellement au monde avant de servir le joueur ?
+L'habitant peut-il produire une décision autonome unique, déterministe et réellement exécutable à partir des familles spécifiées, sans que le moteur invente un score, une volonté, une ressource ou un objectif absent des autorités ?
 
-Si la réponse est non, il devra être repensé.
+Si la réponse est non, le modèle doit être repensé.
 
 ---
 
 # HISTORIQUE
 
+## Version 1.3
+
+- synchronisation avec GDB-004D/E/F ;
+- extension de l'ordre à `entretien → échange volontaire → travail → Habitudes → Ambitions → aucun Intent` ;
+- Force et Intensité limitées à l'arbitrage interne de leur famille ;
+- absence de fairness inter-familles implicite ;
+- personnalité confirmée comme influence amont, jamais comme source directe d'Intent.
+
 ## Version 1.2
 
-- ajout de l'opportunité de transfert volontaire courante ;
-- extension de l'arbitrage autonome minimal à `entretien → échange volontaire → travail → aucun Intent` ;
-- interdiction d'inventer volonté de donner, prix ou négociation dans le moteur ;
-- maintien de la séparation entre comportement minimal et future psychologie/économie commerciale.
+- ajout du transfert volontaire avant la production ;
+- interdiction d'inventer volonté de donner, prix ou négociation.
 
 ## Version 1.1
 
-- en-tête mis en conformité avec MASTER-004 ;
-- formalisation de l'activité productive courante comme capacité contextuelle explicite ;
-- interdiction d'inventer automatiquement métier ou carrière ;
-- définition du premier arbitrage minimal `entretien actionnable → travail → aucun Intent` ;
-- ajout des invariants nécessaires au premier lot productif autonome de v0.4.
+- formalisation de l'activité productive courante et du premier arbitrage minimal.
 
 ## Version 1.0
 

@@ -2,7 +2,7 @@
 
 **Chaque vie raconte une Chronique.**
 
-> Version : 1.4  
+> Version : 1.5  
 > Statut : Officiel  
 > Bibliothèque racine : CHRONIQUES
 
@@ -10,29 +10,15 @@
 
 # Présentation
 
-Bienvenue dans le dépôt documentaire officiel de **Chroniques**.
+Ce dépôt constitue la base documentaire officielle de **Chroniques**.
 
-Ce dépôt constitue la base de connaissances centrale du projet. Il regroupe les documents définissant la vision, les règles de simulation, les contrats d'Actions, l'architecture du moteur, la validation et la production.
-
-Le code exécutable vit dans le dépôt séparé :
+Le code exécutable vit dans :
 
 ```text
 CHRONIQUES-ENGINE
 ```
 
----
-
-# Philosophie
-
-Chroniques suit une approche **Documentation First**.
-
-Une règle ou une architecture structurante doit être reliée à sa bibliothèque d'autorité avant son implémentation, sauf lorsqu'un document ENGINE est explicitement rédigé rétroactivement pour documenter un code historique déjà existant.
-
-La documentation constitue la source de vérité conceptuelle et architecturale.
-
-Le code constitue la vérité de l'implémentation exécutable.
-
-TECH documente cette implémentation après validation, à un point de consolidation pertinent conformément à MASTER-006 v1.1.
+Chroniques suit une approche **Documentation First** : les règles métier, contrats d'Actions et architectures attendues sont définis dans leurs autorités avant implémentation, sauf documentation ENGINE explicitement rétroactive d'un code historique.
 
 ---
 
@@ -60,9 +46,9 @@ Aucune couche aval ne doit contredire une autorité amont applicable.
 
 ---
 
-# Gouvernance de validation
+# Validation et consolidation
 
-Chroniques distingue désormais officiellement :
+MASTER-006 v1.1 distingue :
 
 ```text
 validation courante
@@ -70,102 +56,58 @@ validation courante
 consolidation documentaire
 ```
 
-Une validation courante synchronise immédiatement les sources de vérité directement concernées.
-
-Une consolidation transverse intervient à un jalon significatif : capacité majeure, fin de bloc cohérent, changement de phase/version, fermeture de bibliothèque/sous-ensemble ou audit critique.
-
-Cette règle est portée par :
-
-```text
-MASTER-006 v1.1
-```
+Le jalon courant constitue un point de consolidation significatif : le moteur a fermé un bloc cohérent allant de la **production autonome** aux **Ambitions génériques**.
 
 ---
 
-# Architecture du dépôt
+# Architecture documentaire
 
 ```text
 CHRONIQUES/
 │
-├── MASTER/
-├── CORE/
-├── GDB/
-├── ACT/
-├── ENGINE/
-├── TECH/
+├── MASTER/   gouvernance
+├── CORE/     primitives
+├── GDB/      règles de simulation
+├── ACT/      langage des Actions
+├── ENGINE/   architecture attendue
+├── TECH/     implémentation validée
 ├── QA/
+├── PROD/     roadmap
+├── AUDIT/
+├── ADR/
 ├── UX/
 ├── LORE/
-├── PROD/
 ├── ART/
 ├── AUDIO/
 ├── MKT/
-├── ADR/
-├── AUDIT/
 └── README.md
 ```
 
 ---
 
-# Responsabilités
-
-## MASTER
-
-Gouvernance, standards, phases, qualité et cohérence du projet.
-
-## CORE
-
-Primitives fondamentales : Entity, Component, Value, State, Relation, Event, Time, Lifecycle.
-
-## GDB
-
-Règles de simulation : monde, habitants, besoins, relations, compétences, économie, transmission, systèmes sociaux, événements émergents.
-
-## ACT
-
-Langage universel des Actions : Intent, Plan, Pattern, Verbe, Action, Outcome, Effects et contrats associés.
-
-## ENGINE
-
-Architecture attendue du moteur de simulation.
-
-## CHRONIQUES-ENGINE
-
-Implémentation C#/.NET déterministe et indépendante du rendu.
-
-## TECH
-
-Documentation de l'implémentation réellement obtenue et validée.
-
-## AUDIT
-
-Contrôles de cohérence, divergences et clôtures de constats ou de jalons transverses.
-
----
-
-# Catalogue ENGINE actuel
+# État ENGINE actuel
 
 ```text
-ENGINE-000  Principes d'architecture
-ENGINE-001  Journal World.Events
-ENGINE-002  Kernel
-ENGINE-003  Scheduler et boucle de simulation
-ENGINE-004  Systems
-ENGINE-005  Persistence / Serialization
-ENGINE-006  Action Pipeline                    ✅ Maturité 4
-ENGINE-007  Resource Manager — réservé
-ENGINE-008  Systems de population              ✅ Maturité 4
-ENGINE-009  Boucle de vie minimale             ✅ Maturité 4
-ENGINE-010  Orchestration habitants autonomes  ✅ Maturité 4
-ENGINE-011  Décision autonome par besoins      ✅ Maturité 4
-ENGINE-012  Alimentation autonome minimale     ✅ Maturité 4
+ENGINE-006  Action Pipeline                          ✅ M4
+ENGINE-008  Systems de population                    ✅ M4
+ENGINE-009  Boucle de vie minimale                   ✅ M4
+ENGINE-010  Orchestration habitants autonomes        ✅ M4
+ENGINE-011  Décision autonome par besoins            ✅ M4
+ENGINE-012  Alimentation autonome minimale           ✅ M4
+ENGINE-013  Production autonome minimale             ✅ M4
+ENGINE-014  Circulation autonome minimale            ✅ M4
+ENGINE-015  Observation de l'exécution autonome      ✅ M4
+ENGINE-016  Habitudes génériques minimales           ✅ M4
+ENGINE-017  Ambitions génériques minimales           ✅ M4
 ```
+
+`ENGINE-007` reste réservé au Resource Manager technique et n'est pas créé.
 
 ---
 
-# ACT concret actuel
+# ACT concret validé
 
-Les sous-bibliothèques PATTERNS et VERBS sont ouvertes et possèdent désormais deux chaînes validées :
+Quatre chaînes concrètes sont désormais officielles :
 
 ```text
 Entretien
@@ -183,297 +125,268 @@ PAT-002 — Alimentation
 VERB-002 — Manger
 ```
 
-Les quatre documents sont Officiels / Maturité 4 dans leur périmètre validé.
+```text
+Transformation
+↓
+PAT-003 — Production
+↓
+VERB-003 — Produire une denrée
+```
+
+```text
+Échange
+↓
+PAT-004 — Transfert
+↓
+VERB-004 — Donner une denrée
+```
+
+Habitudes et Ambitions n'ajoutent pas de Verbe par elles-mêmes : elles produisent des Intents dirigés vers des Actions déjà traitables.
 
 ---
 
 # État moteur validé
 
-Le moteur contient notamment :
-
-```text
-Kernel
-World / Entity
-Components
-Lifecycle
-Scheduler
-Persistence
-Action Pipeline
-Relations
-Compétences
-Héritage minimal
-Effects de population
-LifeSession
-AutonomousActionSystem
-NeedsIntentSource
-FoodProductComponent
-NeedsPlanner
-NeedsExecutionEngine
-ActionEffectDispatcher
-```
-
-Validation globale actuelle communiquée le 11 août 2026 :
+Validation de référence au **12 août 2026** :
 
 ```text
 dotnet build
 → succès
 
 dotnet test
-→ 178 / 178 tests réussis
+→ 291 / 291 tests réussis
 → 0 échec
 ```
 
----
-
-# v0.3 — Boucle de vie minimale
-
-La continuité architecturale suivante est validée :
+Le moteur contient maintenant notamment :
 
 ```text
-Action joueur
-↓
-évolution temporelle
-↓
-vieillissement
-↓
-mort
-↓
-héritage minimal
-↓
-continuité avec l'héritier
+Kernel / World / Entity / Components
+Lifecycle / Scheduler / Persistence
+Action Pipeline
+Relations / Compétences / Héritage
+LifeSession
+AutonomousActionSystem
+CompositeAutonomousIntentSource
+NeedsIntentSource
+VoluntaryFoodTransferIntentSource
+ProductiveActivityIntentSource
+HabitIntentSource
+AmbitionIntentSource
+PipelineAutonomousIntentExecutor
+HabitLearningObserver
+HabitEvolutionSystem
+AmbitionEvolutionSystem
 ```
-
-Cette chaîne est portée notamment par ENGINE-009 et TECH-002.
 
 ---
 
 # v0.4 — Le monde vivant
 
-v0.4 comporte désormais deux lots validés.
-
-## Lot 1 — Orchestration autonome
+Le monde peut désormais produire une décision autonome suivant l'ordre défini par GDB-004A v1.3 :
 
 ```text
-Scheduler.Tick
+besoins physiologiques
 ↓
-AutonomousActionSystem
+transfert volontaire
 ↓
-IAutonomousIntentSource
+production
 ↓
-Intent?
+Habitudes
 ↓
-IAutonomousIntentExecutor
+Ambitions
 ↓
-ENGINE-006
-↓
-World
+aucun Intent
 ```
 
-Porté par ENGINE-010 et TECH-003.
+La première famille capable de produire un Intent exécutable gagne.
 
-## Lot 2 — Décision autonome par besoins
+Aucun score universel ne compare ces familles.
+
+---
+
+# Substrat économique matériel
+
+Le moteur sait démontrer :
 
 ```text
-Fatigue < seuil
+ressource réelle
 ↓
-Intent se_reposer
+production autonome
 ↓
-VERB-001
+stock A
 ↓
-Fatigue restaurée
+transfert volontaire A → B
+↓
+stock B
+↓
+consommation par B
+```
+
+Cette capacité repose principalement sur ENGINE-013/014 et est consolidée dans :
+
+```text
+TECH-005 — Production et circulation autonomes
+```
+
+Elle ne constitue pas encore une économie commerciale complète.
+
+Restent notamment absents : monnaie, prix, vente, marché, salaire, employeur et formule offre/demande.
+
+---
+
+# Substrat cognitif générique
+
+Le moteur sait également :
+
+```text
+observer Intent → Action → Outcome
+↓
+former des Habitudes par répétition
+↓
+les persister / sélectionner / renforcer / éroder
 ```
 
 et :
 
 ```text
-Faim < seuil
-+
-nourriture accessible
+créer des Ambitions via des Types injectés
 ↓
-Intent manger
+évaluer leur Progrès
 ↓
-VERB-002
+les accomplir / abandonner
 ↓
-portion consommée
-+
-Faim restaurée
+les sélectionner par Intensité → Progrès → ancienneté
 ```
 
-Lorsque les deux besoins sont actionnables, le moteur choisit le besoin dont la satisfaction est la plus basse ; l'égalité est départagée de manière déterministe.
+Cette capacité repose sur ENGINE-015/016/017 et est consolidée dans :
 
-Cette capacité est portée par ENGINE-011, ENGINE-012 et TECH-004.
+```text
+TECH-006 — Cognition autonome générique
+```
+
+Aucune Habitude narrative concrète ni Type d'Ambition narratif n'est fourni par défaut.
 
 ---
 
-# Ressource alimentaire minimale
+# Persistance actuelle
 
-L'alimentation ne crée jamais gratuitement une ressource.
-
-Le bloc validé impose :
+Le World persiste notamment :
 
 ```text
-produit alimentaire réel
-+
-accessible
-+
-portion disponible
-↓
-Action Manger réussie
-↓
-portion - 1
-+
-Faim restaurée
+FoodProductComponent
+ResourceStockComponent
+ProductionProvenanceComponent
+HabitComponent
+AmbitionComponent
 ```
 
-L'accès est isolé derrière `IAccessibleFoodResolver` afin de ne pas inventer prématurément un système général d'inventaire ou de propriété.
+Les règles et services runtime restent injectés et ne sont pas sérialisés.
 
 ---
 
-# ENGINE-C06
-
-Le constat historique portant sur l'absence de raccordement entre Scheduler et Actions autonomes est :
-
-```text
-ENGINE-C06
-→ Clos
-```
-
-Sa clôture concerne l'orchestration et reste documentée dans :
-
-```text
-AUDIT/ENGINE-C06-Cloture.md
-```
-
----
-
-# TECH
-
-La bibliothèque TECH est active.
+# TECH actuel
 
 ```text
 TECH-001 — Systems de population
-→ ENGINE-008
-→ 122 / 122 à validation initiale
-
 TECH-002 — Boucle de vie minimale
-→ ENGINE-009
-→ 134 / 134 à validation initiale
-
 TECH-003 — Orchestration des habitants autonomes
-→ ENGINE-010
-→ 146 / 146 à validation initiale
-
 TECH-004 — Décision autonome par besoins
-→ ENGINE-011 + ENGINE-012
-→ 178 / 178 à consolidation
+TECH-005 — Production et circulation autonomes
+TECH-006 — Cognition autonome générique
 ```
 
 ---
 
-# Audit de jalon
+# Audit de jalon courant
 
-Le premier bloc de décision autonome a reçu un contrôle de concordance dédié :
+La progression ENGINE-013 à ENGINE-017 est contrôlée dans :
 
 ```text
-AUDIT/AUDIT-AUTONOMIE-BESOINS-Consolidation.md
-→ Clos
+AUDIT/AUDIT-MONDE-VIVANT-AUTONOMIE-Consolidation.md
+→ Clos / M4
 ```
 
-Ce contrôle confirme la chaîne GDB → ACT → ENGINE → code → tests → TECH dans le périmètre repos + alimentation.
+Le contrôle confirme la concordance GDB → ACT → ENGINE → code → tests → TECH à **291 / 291**.
 
-La synthèse haute d'`AUDIT-GLOBALE.md` reste historique et devra être réconciliée lors d'un futur passage global sans écraser son backlog.
+`AUDIT-GLOBALE.md` conserve une synthèse historique ancienne et ne doit pas être interprété comme l'état courant tant qu'un audit global complet n'a pas réconcilié son en-tête sans écraser son backlog.
 
 ---
 
-# Chaîne de traçabilité autonomie actuelle
+# Roadmap
+
+La roadmap officielle est désormais :
 
 ```text
-MASTER-005 Phase 3
-↓
-GDB-004B v1.2
+PROD/FeuilleDeRoute.md
+→ V2.7
+```
+
+v0.4 reste ouverte : le critère de sortie exige encore une évolution crédible du monde sur plusieurs générations sans intervention permanente du joueur.
+
+---
+
+# Prochaine frontière
+
+Le prochain bloc cognitif naturel est l'audit de :
+
+```text
+GDB-004D — Les Personnalités
+```
+
+Objectif potentiel :
+
+```text
+PersonalityComponent
 +
-GDB-005E v1.1
-↓
-PAT-001 / VERB-001
-PAT-002 / VERB-002
-↓
-ENGINE-010 / 011 / 012
-↓
-CHRONIQUES-ENGINE
-↓
-178 / 178
-↓
-TECH-003 / TECH-004
-```
-
----
-
-# Étape actuelle
-
-Le projet poursuit **v0.4 — Le monde vivant**.
-
-Le bloc d'**autonomie physiologique minimale** est consolidé.
-
-La prochaine frontière recommandée n'est pas l'ajout mécanique d'un troisième besoin, mais un pas vers un monde capable de fonctionner réellement sans le joueur :
-
-```text
-travail autonome
+Traits 0..100
 +
-économie autonome minimale
+Poids de référence
++
+Inflexions identifiables
 ```
 
-Les autorités à auditer avant code comprennent notamment :
+sans encore inventer de mapping Trait/Habitude ou Trait/Ambition concret.
 
-```text
-GDB-004A — Habitants du Monde
-GDB-004B — Besoins
-GDB-005 — Économie
-GDB-012 — Métiers et activités
-GDB-019 — Mécanismes économiques et commerciaux
-ACT/PATTERNS
-ACT/VERBS
-```
+En parallèle, l'économie commerciale reste bloquée tant que GDB-019 ne fournit pas des contrats déterministes suffisants pour prix, monnaie et marchés.
 
 ---
 
-# Objectif
+# Objectif long terme
 
-Construire une base documentaire et un moteur suffisamment clairs, cohérents et durables pour accompagner Chroniques sur plusieurs années, avec une traçabilité complète entre :
+Construire un moteur capable de faire vivre un monde autonome où :
 
-```text
-règle
-→ architecture
-→ code
-→ tests
-→ documentation technique
-```
+- chaque personnage poursuit ses propres objectifs ;
+- les relations évoluent ;
+- l'économie fonctionne indépendamment du joueur ;
+- les générations se succèdent ;
+- le monde conserve une mémoire narrative ;
+- les événements émergent de la simulation.
 
 ---
 
 # Historique
 
+## Version 1.5
+
+- état moteur porté à 291 / 291 ;
+- ENGINE-013 à ENGINE-017 intégrés au README ;
+- production, circulation, observation, Habitudes et Ambitions consolidées ;
+- TECH-005 et TECH-006 ajoutés ;
+- audit de jalon autonomie productive et cognitive enregistré ;
+- roadmap V2.7 enregistrée ;
+- prochaine frontière identifiée : Personnalité générique.
+
 ## Version 1.4
 
-- MASTER-006 v1.1 formalise validation courante vs consolidation documentaire ;
-- ENGINE-011 et ENGINE-012 validées / Maturité 4 ;
-- PAT/VERB 001 et 002 validés ;
-- validation globale portée à **178 / 178 tests réussis** ;
-- TECH-004 créé ;
-- bloc autonomie repos + alimentation consolidé ;
-- audit de jalon créé ;
-- prochaine frontière v0.4 recentrée sur travail autonome et économie minimale.
+- autonomie par besoins ENGINE-011/012 consolidée à 178 / 178 ;
+- TECH-004 ajouté ;
+- MASTER-006 v1.1 enregistré.
 
 ## Version 1.3
 
-- ENGINE-010 validée / Maturité 4 ;
-- premier lot d'autonomie v0.4 validé ;
-- validation globale portée à 146 / 146 ;
-- TECH-003 créé ;
-- ENGINE-C06 clos ;
-- état courant et prochaine frontière v0.4 synchronisés.
+- ENGINE-010 validée à 146 / 146 ; TECH-003 ajouté.
 
 ## Version 1.2
 
-- ENGINE-009 validée ;
-- TECH-002 créé ;
-- validation portée à 134 / 134.
+- ENGINE-009 validée à 134 / 134 ; TECH-002 ajouté.

@@ -1,6 +1,6 @@
 # ENGINE — Catalogue
 
-> Version : 1.23
+> Version : 1.24
 > Statut : Foundation
 > Maturité : 1
 > Bibliothèque : ENGINE
@@ -37,30 +37,17 @@ ENGINE-013  Production autonome minimale             Validée / M4
 ENGINE-014  Circulation autonome minimale            Validée / M4
 ENGINE-015  Observation de l'exécution autonome      Validée / M4
 ENGINE-016  Habitudes génériques minimales           Validée / M4
+ENGINE-017  Ambitions génériques minimales           Proposition / M2
 ```
 
 ---
 
 # Validation courante
 
+Base localement validée avant ENGINE-017 :
+
 ```text
 260 / 260 tests réussis
-```
-
-Le moteur sait désormais relier :
-
-```text
-besoins
-+
-production
-+
-circulation entre habitants
-+
-consommation
-+
-observation fiable Intent → Action → Outcome
-+
-formation et évolution génériques d'Habitudes
 ```
 
 ---
@@ -85,50 +72,47 @@ GDB-004A v1.3 reste l'autorité sur cet ordre. Force et Intensité restent inter
 
 ---
 
-# ENGINE-015 — Observation autonome
+# ENGINE-016 — Habitudes génériques minimales
 
 Statut : Validée / M4.
 
 Validation :
 
 ```text
-233 / 233
+260 / 260
 ```
 
-ENGINE-015 fournit l'observation pré/post exécution nécessaire aux systèmes d'apprentissage sans modifier `IAutonomousIntentExecutor`, `AutonomousActionSystem`, `PipelineRunner` ou ACT `Intent`.
+Le moteur sait désormais former, persister, sélectionner, activer, renforcer et éroder des Habitudes génériques à partir de règles injectées, sans Habitude métier canonique ni nouveau Verbe ACT.
 
 ---
 
-# ENGINE-016 — Habitudes génériques minimales
+# ENGINE-017 — Ambitions génériques minimales
 
-Statut : **Validée / Maturité 4**.
+Statut : Proposition / Maturité 2.
 
-Spécification : `ENGINE-016 v1.2`.
+Spécification : `ENGINE-017 v1.1`.
 
 Autorités :
 
 ```text
 GDB-004A v1.3
 GDB-004D v1.3
-GDB-004E v1.2
+GDB-004F v1.2
 ACT-002-H
 ENGINE-010
-ENGINE-015
+ENGINE-016
 ```
 
-Le lot introduit un framework générique, pas une Habitude métier canonique.
-
-Briques validées :
+Briques candidates :
 
 ```text
-HabitComponent
-IHabitRule
-IHabitFormationParameterResolver
-IHabitStrengthPolicy
-HabitSelectionRegistry
-HabitIntentSource
-HabitLearningObserver
-HabitEvolutionSystem
+AmbitionComponent
+AmbitionState
+AmbitionCreationCandidate
+AmbitionEvaluation
+IAmbitionRule
+AmbitionEvolutionSystem
+AmbitionIntentSource
 ```
 
 Persistance étendue :
@@ -138,90 +122,84 @@ EntitySnapshot
 WorldRepository
 ```
 
-Flux validé :
+Flux candidat :
 
 ```text
-Intent exécuté
+règle d'Ambition injectée
 ↓
-répétition + Signature déterministe
+création déterministe
 ↓
-formation d'une Habitude
+Ambition persistante
 ↓
-Déclencheur concret
+évaluation du Progrès
 ↓
-HabitIntentSource
+Ambition candidate
+↓
+Intensité → Progrès → ancienneté
+↓
+AmbitionIntentSource
 ↓
 Intent
 ↓
 ACT
-↓
-Outcome
-↓
-activation / renforcement
-↓
-érosion éventuelle en cas d'inactivité
 ```
 
-Invariants confirmés :
+Invariants :
 
-- aucune règle concrète par défaut ;
-- aucune métadonnée d'Habitude ajoutée à ACT Intent ;
+- aucun Type d'Ambition concret par défaut ;
+- Objectif porté par payload opaque ;
+- identité technique `AmbitionTypeId + InstanceKey` ;
+- aucune duplication ;
+- Progrès et Intensité bornés `[0,100]` ;
+- Intensité 0 supprimée par l'évolution ;
+- accomplissement et abandon non candidats ;
+- règle absente ou Intent non traitable : aucun faux Intent ;
+- sélection Intensité → Progrès → ancienneté ;
 - source d'Intent sans mutation du World ;
-- sélection Force puis ancienneté ;
-- échec métier : formation/activation possibles, pas de renforcement ;
-- exception technique : pas de formation/renforcement, activation déjà produite conservée ;
-- renforcement monotone non décroissant ;
-- érosion monotone non croissante ;
-- Force bornée `[0,100]` ;
-- suppression à Force 0 ;
-- aucun nouveau Pattern ou Verbe ACT.
+- aucun PersonalityComponent, Opportunité PNJ, nouveau Pattern ou Verbe ACT.
 
 ---
 
-# Validation technique ENGINE-016
+# Couverture QA ENGINE-017
 
 ```text
-Engine016HabitTests.cs
-→ 24 tests
+Engine017AmbitionTests.cs
+→ 25 tests
 
-Engine016HabitInvariantTests.cs
-→ 3 tests
+Engine017AmbitionInvariantTests.cs
+→ 6 tests
 ```
 
-Soit **27 nouveaux tests**.
+Nouveaux tests : **31**.
 
-Base précédente :
+Base :
 
 ```text
-233 / 233
+260 / 260
 ```
 
-Validation locale confirmée :
+Total attendu avant validation locale :
 
 ```text
-dotnet build
-→ succès
-
-dotnet test
-→ 260 / 260 tests réussis
-→ 0 échec
+291 / 291
 ```
 
-Les 233 tests historiques restent verts et le scénario complet `répétition → formation → Habitude → Intent → Action` est validé.
+Aucun passage M4 ne sera enregistré avant confirmation locale.
 
 ---
 
-# Frontière restante
+# Frontières restantes
 
-ENGINE-016 ne fournit encore :
+Le moteur ne fournit encore :
 
-- aucune Habitude concrète canonique ;
-- aucune perturbation par événement significatif ;
-- aucun mapping Trait/Habitude concret ;
-- aucune Ambition ;
+- aucun Type concret d'Ambition ;
+- aucun PersonalityComponent ;
+- aucun mapping Trait/Ambition concret ;
+- aucune formule universelle d'évolution de l'Intensité ;
+- aucune Opportunité PNJ générique ;
 - aucune fairness inter-familles.
 
-Le prochain lot cognitif doit donc rester soumis aux règles concrètes GDB correspondantes avant toute spécialisation métier.
+Les frontières commerciales de prix, monnaie, vente, troc réciproque et marché restent également inchangées.
 
 ---
 
@@ -233,22 +211,23 @@ ENGINE-007 reste réservé aux ressources techniques du moteur.
 
 # HISTORIQUE
 
+## Version 1.24
+
+- création et enregistrement d'ENGINE-017 en Proposition / M2 ;
+- framework générique d'Ambitions implémenté ;
+- création, Progrès, accomplissement, abandon, sélection et persistance couverts ;
+- 31 tests ajoutés ;
+- total attendu fixé à **291 / 291** ;
+- aucun Type concret, Trait, Opportunité PNJ ou nouveau Verbe ACT introduit.
+
 ## Version 1.23
 
-- ENGINE-016 passe à **Validée / Maturité 4** ;
-- suite globale portée à **260 / 260 tests réussis** ;
-- 27 tests ENGINE-016 validés ;
-- persistance, formation, arbitrage, activation, renforcement, érosion et réutilisation des Habitudes confirmés ;
-- aucune Habitude métier canonique ni nouveau Pattern/Verbe ACT introduits ;
-- aucune consolidation TECH/roadmap/README déclenchée automatiquement.
+- ENGINE-016 validée / M4 à 260 / 260 ;
+- framework générique d'Habitudes fermé.
 
 ## Version 1.22
 
-- création et enregistrement d'ENGINE-016 en Proposition / M2 ;
-- framework générique d'Habitudes implémenté ;
-- persistance des Habitudes et traces ajoutée ;
-- 27 tests ajoutés ;
-- total attendu fixé à 260 / 260.
+- création d'ENGINE-016.
 
 ## Version 1.21
 

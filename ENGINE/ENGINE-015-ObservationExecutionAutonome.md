@@ -1,10 +1,11 @@
 # ENGINE-015 — Observation de l'exécution autonome
 
-> Version : 1.0
+> Version : 1.1
 > Statut : Proposition
 > Maturité : 2
 > Bibliothèque : ENGINE
 > Dépendances : GDB-004A v1.3, GDB-004E v1.2, GDB-004F v1.2, ACT-002-H, ENGINE-006, ENGINE-010 à ENGINE-014
+> Implémentation candidate : `CHRONIQUES-ENGINE`
 
 ---
 
@@ -39,11 +40,7 @@ public interface IAutonomousIntentExecutor
 
 Cette abstraction est correcte pour ENGINE-010, mais son `void` masque l'`ActionInstance` et son `Outcome`.
 
-Or GDB-004E exige notamment de distinguer :
-
-- activation d'une Habitude ;
-- exécution réussie de son Intent ;
-- renforcement uniquement après réussite.
+GDB-004E exige pourtant de distinguer activation, exécution et réussite avant de pouvoir former ou renforcer une Habitude.
 
 La source d'Intent ne peut pas résoudre ce problème en mutant le World : ENGINE-010 lui interdit d'être une seconde couche d'Effects.
 
@@ -55,19 +52,18 @@ ENGINE-015 **ne modifie pas** `IAutonomousIntentExecutor`.
 
 Il ajoute un adaptateur concret vers `PipelineRunner` capable de notifier des observateurs avant et après l'exécution.
 
-Ainsi :
+Ainsi restent inchangés :
 
-- tous les exécuteurs historiques restent compatibles ;
-- `AutonomousActionSystem` reste inchangé ;
-- `PipelineRunner` reste inchangé ;
-- ACT `Intent` reste inchangé ;
-- aucune métadonnée de source n'est ajoutée à l'Intent.
+- `IAutonomousIntentExecutor` ;
+- `AutonomousActionSystem` ;
+- `PipelineRunner` ;
+- ACT `Intent`.
+
+Aucune métadonnée de source n'est ajoutée à l'Intent.
 
 ---
 
 # 4. IAutonomousIntentExecutionObserver
-
-Contrat :
 
 ```csharp
 public interface IAutonomousIntentExecutionObserver
@@ -96,11 +92,7 @@ public interface IAutonomousIntentExecutionObserver
 
 ## BeforeExecution
 
-Appelé avant `PipelineRunner.Execute`.
-
-Il permet à un futur système d'apprentissage de capturer les données de contexte **avant** que les Effects de l'Action modifient le World.
-
-Un observateur ne doit pas utiliser cette phase comme une seconde source d'Action ou d'Effects.
+Appelé avant `PipelineRunner.Execute`. Cette phase permet de capturer le contexte pré-Effects et ne constitue pas une seconde source d'Action ou d'Effects.
 
 ## AfterExecution
 
@@ -113,27 +105,17 @@ Appelé uniquement si `PipelineRunner.Execute` retourne une `ActionInstance`.
 - les Effects d'une réussite ont déjà été appliqués ;
 - un échec métier normal reste observable via `OutcomeForme.Echec`.
 
-Cette phase peut ultérieurement permettre à un système autorisé de mettre à jour ses propres données d'apprentissage, mais elle ne peut jamais réappliquer ou modifier rétroactivement les Effects de l'Action terminée.
+Un futur système autorisé pourra alors mettre à jour ses propres données d'apprentissage, sans réappliquer ni modifier rétroactivement les Effects de l'Action terminée.
 
 ## ExecutionAborted
 
-Appelé lorsque le pipeline lève une exception au lieu de retourner une Action.
-
-Cette notification permet à un observateur ayant capturé un contexte en `BeforeExecution` de nettoyer son état temporaire.
-
-L'exception originale est ensuite relancée.
+Appelé lorsque le pipeline lève une exception au lieu de retourner une Action. L'observateur peut nettoyer son contexte temporaire, puis l'exception originale est relancée.
 
 ---
 
 # 5. PipelineAutonomousIntentExecutor
 
-Le nouvel adaptateur implémente toujours :
-
-```csharp
-IAutonomousIntentExecutor
-```
-
-Flux :
+Le nouvel adaptateur implémente toujours `IAutonomousIntentExecutor`.
 
 ```text
 Execute(Intent, World)
@@ -155,7 +137,21 @@ Les observateurs sont appelés dans leur ordre d'enregistrement.
 
 ---
 
-# 6. Invariants
+# 6. Implémentation candidate
+
+Fichiers ajoutés dans `CHRONIQUES-ENGINE` :
+
+```text
+Simulation/Chroniques.Simulation/Autonomy/
+├── IAutonomousIntentExecutionObserver.cs
+└── PipelineAutonomousIntentExecutor.cs
+```
+
+Aucun fichier historique d'ENGINE-010/012/013/014 n'a besoin d'être modifié pour introduire cette capacité.
+
+---
+
+# 7. Invariants
 
 - Aucun changement de `IAutonomousIntentExecutor`.
 - Aucun changement de `AutonomousActionSystem`.
@@ -164,14 +160,14 @@ Les observateurs sont appelés dans leur ordre d'enregistrement.
 - Un Actor absent du World est rejeté avant toute observation.
 - `BeforeExecution` voit le World avant les Effects.
 - `AfterExecution` voit l'Action archivée et le World après les Effects.
-- Un `OutcomeForme.Echec` est une exécution terminée et déclenche `AfterExecution`, pas `ExecutionAborted`.
+- `OutcomeForme.Echec` déclenche `AfterExecution`, pas `ExecutionAborted`.
 - Une exception du pipeline déclenche `ExecutionAborted`, puis est relancée.
 - L'ordre des observateurs est déterministe.
 - ENGINE-015 ne crée aucune Habitude, Ambition, règle de formation ou comportement concret.
 
 ---
 
-# 7. Pourquoi cette brique précède les Habitudes
+# 8. Pourquoi cette brique précède les Habitudes
 
 GDB-004E v1.2 distingue :
 
@@ -188,11 +184,9 @@ La formation et le renforcement futurs doivent donc pouvoir lire le résultat r�
 - déduire le succès depuis un Event métier particulier ;
 - dupliquer `PipelineRunner`.
 
-ENGINE-015 fournit cette frontière une seule fois pour les systèmes futurs.
-
 ---
 
-# 8. Non-objectifs
+# 9. Non-objectifs
 
 ENGINE-015 ne définit pas :
 
@@ -207,41 +201,61 @@ ENGINE-015 ne définit pas :
 
 ---
 
-# 9. Contrat QA
+# 10. Contrat QA
 
-La validation doit vérifier au minimum :
+Le fichier ajouté est :
+
+```text
+Tests/Chroniques.Simulation.Tests/
+└── Engine015AutonomousExecutionObservationTests.cs
+```
+
+Il contient **9 nouveaux tests** vérifiant :
 
 1. exécution normale sans observateur ;
 2. Actor absent rejeté avant observation ;
 3. `BeforeExecution` avant application des Effects ;
 4. `AfterExecution` après archivage et Effects ;
-5. un échec métier normal observé par `AfterExecution` ;
+5. échec métier normal observé par `AfterExecution` ;
 6. ordre déterministe de plusieurs observateurs ;
 7. exception du pipeline → `ExecutionAborted` ;
 8. exception originale relancée et aucun `AfterExecution` ;
 9. intégration `AutonomousActionSystem → PipelineAutonomousIntentExecutor → PipelineRunner` sans Tick supplémentaire.
 
-Base validée avant ce lot :
+Base validée :
 
 ```text
 224 / 224
 ```
 
+Total attendu avant validation locale :
+
+```text
+233 / 233
+```
+
 ---
 
-# 10. Critère de validation
+# 11. Critère de validation
 
-ENGINE-015 pourra passer M4 lorsque la suite historique reste verte et que le moteur démontre qu'un système futur peut observer le contexte pré-exécution et l'Outcome post-exécution sans modifier les contrats historiques d'autonomie ou d'ACT.
+ENGINE-015 pourra passer Validée / Maturité 4 lorsque le build réussit, que les 224 tests historiques restent verts et que les 9 nouveaux tests démontrent l'observation pré/post exécution sans modification des contrats historiques.
 
 ---
 
 # HISTORIQUE
 
+## Version 1.1
+
+- synchronisation avec l'implémentation candidate ;
+- deux nouvelles briques techniques enregistrées ;
+- 9 tests ajoutés ;
+- total attendu fixé à **233 / 233**.
+
 ## Version 1.0
 
 - création d'ENGINE-015 ;
 - ajout du contrat d'observation avant/après/abandon ;
-- maintien intégral de `IAutonomousIntentExecutor`, `AutonomousActionSystem`, `PipelineRunner` et ACT `Intent`.
+- maintien intégral des contrats historiques.
 
 ---
 

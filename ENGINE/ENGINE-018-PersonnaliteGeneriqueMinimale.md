@@ -1,10 +1,11 @@
 # ENGINE-018 — Personnalité générique minimale
 
-> Version : 1.0
+> Version : 1.1
 > Statut : Proposition
 > Maturité : 2
 > Bibliothèque : ENGINE
 > Dépendances : GDB-004A v1.3, GDB-004D v1.3, ENGINE-003, ENGINE-004, ENGINE-016, ENGINE-017
+> Implémentation candidate : `CHRONIQUES-ENGINE`
 
 ---
 
@@ -12,57 +13,33 @@
 
 Implémenter le premier framework générique de Personnalité sans inventer de Trait métier concret ni de mapping Trait/Habitude ou Trait/Ambition.
 
-Le moteur doit pouvoir représenter et faire évoluer :
-
 ```text
 règle de Trait injectée
 ↓
-création déterministe du Trait
+création déterministe
 ↓
 Valeur + Poids de référence persistants
 ↓
-absence d'Inflexion
-→ convergence bornée vers le Poids de référence
-
-ou
-
-cause identifiable
-↓
-Inflexion légère / profonde
-↓
-Valeur déplacée
-+
-Poids de référence conservé ou remplacé
-↓
-trace persistante de la cause
+Inflexion identifiable ?
+├── oui → déplacement + trace causale
+└── non → convergence bornée vers la référence
 ```
 
-La Personnalité reste en amont de l'arbitrage autonome et ne produit jamais directement d'Intent.
+La Personnalité reste en amont de GDB-004A et ne produit jamais directement d'Intent.
 
 ---
 
 # 2. Frontière métier
 
-ENGINE-018 ne crée aucun Trait concret tel que :
+Aucun Trait concret n'est fourni par défaut.
 
-- courage ;
-- générosité ;
-- ambition ;
-- prudence ;
-- sociabilité ;
-- agressivité.
+ENGINE-018 ne déduit jamais qu'un événement est traumatique, heureux, formateur ou suffisamment profond pour modifier durablement une personnalité.
 
-Il ne déduit pas non plus qu'un événement est traumatique, heureux, formateur ou suffisamment profond pour modifier une personnalité.
-
-Ces décisions appartiennent aux règles concrètes autorisées par GDB.
-
-Les tests utilisent uniquement des règles factices déterministes.
+Les tests utilisent uniquement des Traits factices déterministes.
 
 ---
 
-# 3. PersonalityComponent
-
-Le moteur ajoute une donnée persistante :
+# 3. Données persistantes
 
 ```csharp
 public sealed class PersonalityComponent : IComponent
@@ -72,8 +49,6 @@ public sealed class PersonalityComponent : IComponent
 }
 ```
 
-Un Trait est représenté par :
-
 ```csharp
 public sealed record PersonalityTraitState(
     string Name,
@@ -82,9 +57,9 @@ public sealed record PersonalityTraitState(
     Tick CreatedAt);
 ```
 
-Le Component reste de la donnée pure.
+Le Nom est l'identité du Trait au sein d'un habitant. Deux dispositions opposées restent donc deux Traits distincts.
 
-Le Nom est l'identité du Trait au sein d'un habitant. Deux dispositions opposées sont donc deux Noms distincts conformément à GDB-004D.
+Valeur et Poids de référence sont finis et bornés dans `[0,100]`.
 
 ---
 
@@ -102,19 +77,17 @@ public sealed record PersonalityTraitCreationCandidate(
 Contraintes :
 
 - `TraitName` non vide ;
-- le nom retourné correspond à la règle productrice ;
-- `InitialValue` et `ReferenceWeight` sont finis et compris dans `[0,100]` ;
-- un Trait de même Nom n'est jamais dupliqué.
+- correspondance exacte avec la règle productrice ;
+- valeurs finies dans `[0,100]` ;
+- aucune duplication d'un même Nom.
 
-Le premier lot représente la phase de formation par un état initial pouvant être éloigné du Poids de référence. La stabilisation ultérieure fait converger la Valeur vers cette référence.
+Le Trait nouvellement créé conserve exactement son état initial pendant son Tick de création. La stabilisation ne commence qu'à un Tick ultérieur.
 
-Aucun Trait n'est créé si aucune règle n'en fournit un.
+Aucun `PersonalityComponent` vide n'est créé lorsqu'aucune règle ne fournit réellement de Trait.
 
 ---
 
-# 5. IPersonalityTraitRule
-
-Chaque Trait concret doit être fourni par une règle injectée :
+# 5. Règle concrète
 
 ```csharp
 public interface IPersonalityTraitRule
@@ -134,17 +107,13 @@ public interface IPersonalityTraitRule
 }
 ```
 
-Le framework ne fournit aucune implémentation métier par défaut.
+Aucune implémentation métier n'est fournie en production.
 
-`FindInflexion` retourne `null` lorsqu'aucune cause identifiable ne justifie de déplacement à ce Tick.
-
-ENGINE-018 ne scanne pas automatiquement `World.Events` et ne confond pas Mémoire du Monde et causalité de simulation. Une règle concrète peut utiliser les données autorisées par son propre contrat.
+ENGINE-018 ne scanne pas automatiquement `World.Events`. Une règle concrète est seule responsable d'identifier une cause pertinente à partir des données qu'une autorité lui permet de lire.
 
 ---
 
 # 6. Stabilisation
-
-La vitesse de convergence reste paramétrable :
 
 ```csharp
 public interface IPersonalityStabilizationParameterResolver
@@ -157,28 +126,25 @@ public interface IPersonalityStabilizationParameterResolver
 }
 ```
 
-Le résultat doit être fini et strictement positif.
+La vitesse résolue doit être finie et strictement positive lorsqu'une convergence est nécessaire.
 
-En l'absence d'Inflexion applicable :
+Sans Inflexion applicable :
 
 ```text
 distance = ReferenceWeight - Value
 
-variation appliquée
-= signe(distance) × min(abs(distance), MaxConvergencePerTick)
+mouvement = min(abs(distance), MaxConvergencePerTick)
+
+Value += signe(distance) × mouvement
 ```
 
-La Valeur ne dépasse donc jamais la référence pendant une convergence normale.
-
-Le résultat est Clamp dans `[0,100]`.
+La Valeur ne dépasse jamais le Poids de référence pendant une stabilisation normale.
 
 Aucun bruit aléatoire implicite n'est ajouté.
 
 ---
 
 # 7. Inflexions
-
-Le framework distingue :
 
 ```csharp
 public enum PersonalityInflexionKind
@@ -188,8 +154,6 @@ public enum PersonalityInflexionKind
 }
 ```
 
-Une règle peut produire :
-
 ```csharp
 public sealed record PersonalityInflexion(
     string CauseId,
@@ -198,34 +162,28 @@ public sealed record PersonalityInflexion(
     double? NewReferenceWeight = null);
 ```
 
-`CauseId` est un identifiant opaque mais stable de la cause reconnue par la règle. ENGINE-018 ne lui attribue aucune sémantique narrative.
+`CauseId` est opaque mais stable.
 
-Contraintes :
+## Légère
 
-## Inflexion légère
+- cause non vide ;
+- delta fini et non nul ;
+- aucun nouveau Poids de référence ;
+- déplacement réel de Valeur obligatoire après Clamp ;
+- référence inchangée.
 
-- `CauseId` non vide ;
-- `ValueDelta` fini et non nul ;
-- `NewReferenceWeight` doit être absent ;
-- la Valeur est déplacée puis bornée `[0,100]` ;
-- le Poids de référence reste inchangé.
+## Profonde
 
-## Inflexion profonde
+- mêmes exigences de cause et déplacement ;
+- nouveau Poids présent, fini et dans `[0,100]` ;
+- nouveau Poids différent de l'ancien ;
+- la nouvelle référence devient durable.
 
-- `CauseId` non vide ;
-- `ValueDelta` fini et non nul ;
-- `NewReferenceWeight` présent, fini, dans `[0,100]` ;
-- le nouveau Poids doit différer de l'ancien ;
-- la Valeur est déplacée puis bornée `[0,100]` ;
-- le nouveau Poids devient permanent.
-
-Lorsqu'une Inflexion est appliquée, aucune convergence supplémentaire n'est appliquée au même Trait pendant ce Tick. La convergence reprend aux Ticks suivants si aucune nouvelle Inflexion n'est applicable.
+Une Inflexion appliquée remplace la stabilisation normale pour ce Trait pendant le Tick courant.
 
 ---
 
-# 8. Traçabilité des Inflexions
-
-Chaque Inflexion appliquée ajoute :
+# 8. Trace causale persistante
 
 ```csharp
 public sealed record PersonalityInflexionTrace(
@@ -238,157 +196,199 @@ public sealed record PersonalityInflexionTrace(
     Tick AppliedAt);
 ```
 
-La trace rend la cause identifiable après sauvegarde/rechargement.
+`ValueDelta` enregistre le déplacement réellement appliqué après Clamp, pas seulement le delta demandé par la règle.
 
-Pour une Inflexion légère :
+Une même paire :
 
 ```text
-PreviousReferenceWeight == NewReferenceWeight
+TraitName + CauseId
 ```
 
-Pour une Inflexion profonde, les deux valeurs diffèrent.
+n'est appliquée qu'une seule fois.
 
-Une même paire `TraitName + CauseId` n'est appliquée qu'une fois. Si la règle repropose la même cause à un Tick ultérieur, le framework l'ignore.
+Une cause déjà consommée n'empêche pas la stabilisation de reprendre au Tick suivant.
+
+Les traces persistées sont validées : cause et Trait non vides, valeurs finies, référence inchangée pour une Inflexion légère et modifiée pour une Inflexion profonde.
 
 ---
 
 # 9. PersonalityEvolutionSystem
 
-`PersonalityEvolutionSystem` reçoit :
+Le System reçoit :
 
 - une collection ordonnée de `IPersonalityTraitRule` ;
 - un `IPersonalityStabilizationParameterResolver`.
 
-Pour chaque habitant et Tick :
+Pour chaque Entity :
 
-1. demander à chaque règle un candidat de création ;
-2. créer uniquement les Traits valides et absents ;
-3. ne créer `PersonalityComponent` que si au moins un Trait est réellement créé ;
-4. pour chaque Trait dont la règle existe, chercher une Inflexion ;
-5. appliquer au maximum une Inflexion au Trait pour ce passage ;
-6. sinon appliquer la convergence vers le Poids de référence ;
-7. ne jamais avancer le Tick lui-même.
+1. demander les candidats de création ;
+2. valider puis ajouter les Traits absents ;
+3. préserver exactement les Traits créés pendant ce Tick ;
+4. valider l'état persistant existant ;
+5. pour chaque Trait disposant de sa règle, rechercher une Inflexion ;
+6. appliquer une nouvelle cause au maximum une fois ;
+7. sinon stabiliser vers le Poids de référence ;
+8. laisser inchangé un Trait dont la règle n'est plus enregistrée.
 
-Deux règles portant le même `TraitName` sont rejetées à la construction du System.
+Deux règles portant le même `TraitName` sont rejetées.
 
-Un Trait persisté dont la règle n'est plus enregistrée reste présent mais n'évolue pas.
+Le System n'avance jamais le Tick et ne publie aucun Event implicite.
 
 ---
 
 # 10. Persistance
 
-`PersonalityComponent` est ajouté à `EntitySnapshot` comme champ optionnel.
+`PersonalityComponent` est ajouté à `EntitySnapshot` comme champ optionnel et pris en charge par `WorldRepository`.
 
-Sans PersonalityComponent, le champ est omis du JSON.
+Sans PersonalityComponent :
 
-Sont persistés :
+```text
+champ Personality absent du JSON
+```
 
-- Nom du Trait ;
-- Valeur ;
-- Poids de référence ;
-- Tick de création ;
-- historique des Inflexions et leurs causes.
+Sont persistés : Traits, Valeurs, Poids de référence, Ticks de création et historique causal des Inflexions.
 
-Les règles et resolvers restent runtime et ne sont jamais sérialisés.
+Les règles et resolvers restent runtime.
 
 ---
 
 # 11. Frontière avec Habitudes et Ambitions
 
-ENGINE-018 ne modifie pas :
+ENGINE-018 ne modifie aucun contrat d'ENGINE-016/017.
 
-- `HabitIntentSource` ;
-- `HabitLearningObserver` ;
-- `IHabitFormationParameterResolver` ;
-- `AmbitionEvolutionSystem` ;
-- `AmbitionIntentSource` ;
-- ACT `Intent`.
-
-Aucun mapping n'est créé.
-
-Les futures modulations autorisées par GDB-004D devront être introduites par des règles concrètes distinctes :
+Aucun mapping n'est introduit.
 
 ```text
 Trait + Type d'Habitude explicitement mappés
-→ éventuelle modulation du seuil de formation
+→ future modulation possible du seuil de formation
 
 Trait + Type d'Ambition explicitement mappés
-→ éventuelle modulation de l'Intensité
+→ future modulation possible de l'Intensité
 ```
 
-Ces deux extensions sont hors ENGINE-018.
+Ces extensions exigent leurs propres règles concrètes et restent hors du lot.
 
 ---
 
-# 12. Non-objectifs
+# 12. Implémentation candidate
 
-ENGINE-018 ne définit pas :
+Fichiers ajoutés :
 
-- catalogue de Traits ;
-- états émotionnels ;
-- score psychologique global ;
-- personnalité comme source d'Intent ;
-- mapping Trait/Habitude ;
-- mapping Trait/Ambition ;
-- influence directe sur besoin, transfert ou production ;
-- significativité narrative automatique ;
-- aléatoire implicite ;
-- nouveau Pattern ou Verbe ACT.
+```text
+Components/PersonalityComponent.cs
+Autonomy/IPersonalityTraitRule.cs
+Autonomy/IPersonalityStabilizationParameterResolver.cs
+Autonomy/PersonalityEvolutionSystem.cs
+```
+
+Fichiers étendus :
+
+```text
+Persistence/WorldSnapshot.cs
+Persistence/WorldRepository.cs
+```
+
+Aucun Pattern, Verbe ou Intent supplémentaire n'est créé.
 
 ---
 
 # 13. Invariants
 
-- Un Trait possède Nom, Valeur et Poids de référence.
-- Valeur et Poids restent dans `[0,100]`.
-- Aucun Trait concret n'existe sans règle injectée.
-- Une règle ne peut créer qu'un Trait portant son propre Nom.
-- Une Inflexion exige une cause non vide.
-- Une même cause ne s'applique qu'une fois au même Trait.
-- Une Inflexion légère ne modifie jamais le Poids de référence.
-- Une Inflexion profonde modifie le Poids de référence.
-- Sans Inflexion, la Valeur converge sans dépasser sa référence.
-- La personnalité ne produit jamais d'Intent.
-- Aucun mapping cognitif n'est implicite.
-- Le System ne lit pas automatiquement `World.Events` pour inventer des causes.
-- Le System n'avance jamais le Tick.
+- aucun Trait concret sans règle injectée ;
+- identité d'un Trait = Nom ;
+- Valeur et Poids dans `[0,100]` ;
+- création sans doublon ;
+- pas de stabilisation au Tick de création ;
+- convergence déterministe sans dépassement ;
+- Inflexion toujours causée ;
+- même cause appliquée une seule fois au même Trait ;
+- légère : référence inchangée ;
+- profonde : référence modifiée ;
+- déplacement réel obligatoire ;
+- aucune lecture automatique de `World.Events` ;
+- aucune modification implicite d'Habitude ou d'Ambition ;
+- aucune source d'Intent ;
+- aucun Event implicite ;
+- aucun avancement du Tick.
 
 ---
 
-# 14. Critère de validation
+# 14. QA candidate
 
-ENGINE-018 pourra passer Validée / Maturité 4 lorsque, avec uniquement des règles factices déterministes, le moteur démontrera :
+```text
+Engine018PersonalityTests.cs
+→ 22 tests comportementaux
 
-- création contrôlée de Traits ;
-- absence de doublons ;
-- persistance complète ;
-- convergence vers le Poids de référence dans les deux directions ;
-- absence de dépassement ;
-- Inflexion légère avec référence inchangée ;
-- Inflexion profonde avec nouvelle référence durable ;
-- cause persistée et non réappliquée ;
-- rejet des données invalides ;
-- Trait sans règle conservé mais non évolué ;
-- intégration Scheduler ;
-- absence totale de production d'Intent ou de modulation implicite d'Habitudes/Ambitions.
+Engine018PersonalityInvariantTests.cs
+→ 17 tests d'invariants
+```
 
-Base validée avant ce lot :
+Soit **39 nouveaux tests**.
+
+Ils couvrent notamment :
+
+- round-trip de persistance ;
+- omission JSON sans personnalité ;
+- absence de Component vide ;
+- création exacte et absence de stabilisation immédiate ;
+- absence de doublon ;
+- Trait sans règle conservé ;
+- convergence montante/descendante sans dépassement ;
+- Inflexion légère ;
+- Inflexion profonde ;
+- Clamp et delta réellement appliqué ;
+- idempotence d'une cause ;
+- causes distinctes ;
+- Traits distincts et évolution indépendante ;
+- Scheduler ;
+- absence d'Event implicite ;
+- absence de modulation Habitudes/Ambitions ;
+- déterminisme ;
+- rejet des règles, paramètres, états et Inflexions invalides.
+
+Base validée :
 
 ```text
 291 / 291
 ```
 
+Total attendu avant validation locale :
+
+```text
+330 / 330
+```
+
+---
+
+# 15. Critère de validation
+
+ENGINE-018 pourra passer Validée / Maturité 4 lorsque :
+
+- le build réussit ;
+- les 291 tests historiques restent verts ;
+- les 39 nouveaux tests sont verts ;
+- la persistance est confirmée ;
+- formation, stabilisation et Inflexions sont déterministes ;
+- aucune règle de Trait métier ni mapping cognitif n'est introduit.
+
 ---
 
 # HISTORIQUE
+
+## Version 1.1
+
+- synchronisation avec l'implémentation candidate ;
+- persistance PersonalityComponent ajoutée ;
+- création, stabilisation et Inflexions implémentées ;
+- causalité persistante et idempotente verrouillée ;
+- absence de stabilisation au Tick de création explicitée ;
+- 39 tests ajoutés ;
+- total attendu fixé à **330 / 330**.
 
 ## Version 1.0
 
 - création d'ENGINE-018 ;
 - premier framework générique de Personnalité ;
-- modèle Traits / Valeur / Poids de référence ;
-- stabilisation déterministe ;
-- Inflexions légères/profondes avec cause persistante ;
 - mappings Habitudes/Ambitions explicitement différés.
 
 ---

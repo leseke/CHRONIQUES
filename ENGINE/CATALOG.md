@@ -1,6 +1,6 @@
 # ENGINE — Catalogue
 
-> Version : 1.22
+> Version : 1.23
 > Statut : Foundation
 > Maturité : 1
 > Bibliothèque : ENGINE
@@ -36,17 +36,31 @@ ENGINE-012  Alimentation autonome minimale           Validée / M4
 ENGINE-013  Production autonome minimale             Validée / M4
 ENGINE-014  Circulation autonome minimale            Validée / M4
 ENGINE-015  Observation de l'exécution autonome      Validée / M4
-ENGINE-016  Habitudes génériques minimales           Proposition / M2
+ENGINE-016  Habitudes génériques minimales           Validée / M4
 ```
 
 ---
 
 # Validation courante
 
-Base localement validée avant ENGINE-016 :
+```text
+260 / 260 tests réussis
+```
+
+Le moteur sait désormais relier :
 
 ```text
-233 / 233 tests réussis
+besoins
++
+production
++
+circulation entre habitants
++
+consommation
++
+observation fiable Intent → Action → Outcome
++
+formation et évolution génériques d'Habitudes
 ```
 
 ---
@@ -87,9 +101,9 @@ ENGINE-015 fournit l'observation pré/post exécution nécessaire aux systèmes 
 
 # ENGINE-016 — Habitudes génériques minimales
 
-Statut : Proposition / Maturité 2.
+Statut : **Validée / Maturité 4**.
 
-Spécification : `ENGINE-016 v1.1`.
+Spécification : `ENGINE-016 v1.2`.
 
 Autorités :
 
@@ -104,7 +118,7 @@ ENGINE-015
 
 Le lot introduit un framework générique, pas une Habitude métier canonique.
 
-Briques candidates :
+Briques validées :
 
 ```text
 HabitComponent
@@ -124,7 +138,7 @@ EntitySnapshot
 WorldRepository
 ```
 
-Flux cible :
+Flux validé :
 
 ```text
 Intent exécuté
@@ -144,9 +158,11 @@ ACT
 Outcome
 ↓
 activation / renforcement
+↓
+érosion éventuelle en cas d'inactivité
 ```
 
-Invariants :
+Invariants confirmés :
 
 - aucune règle concrète par défaut ;
 - aucune métadonnée d'Habitude ajoutée à ACT Intent ;
@@ -162,7 +178,7 @@ Invariants :
 
 ---
 
-# Couverture QA ENGINE-016
+# Validation technique ENGINE-016
 
 ```text
 Engine016HabitTests.cs
@@ -172,21 +188,26 @@ Engine016HabitInvariantTests.cs
 → 3 tests
 ```
 
-Nouveaux tests : **27**.
+Soit **27 nouveaux tests**.
 
-Base :
+Base précédente :
 
 ```text
 233 / 233
 ```
 
-Total attendu avant validation locale :
+Validation locale confirmée :
 
 ```text
-260 / 260
+dotnet build
+→ succès
+
+dotnet test
+→ 260 / 260 tests réussis
+→ 0 échec
 ```
 
-Aucun passage M4 ne sera enregistré avant confirmation locale.
+Les 233 tests historiques restent verts et le scénario complet `répétition → formation → Habitude → Intent → Action` est validé.
 
 ---
 
@@ -194,11 +215,13 @@ Aucun passage M4 ne sera enregistré avant confirmation locale.
 
 ENGINE-016 ne fournit encore :
 
-- aucune Habitude concrète ;
+- aucune Habitude concrète canonique ;
 - aucune perturbation par événement significatif ;
 - aucun mapping Trait/Habitude concret ;
 - aucune Ambition ;
 - aucune fairness inter-familles.
+
+Le prochain lot cognitif doit donc rester soumis aux règles concrètes GDB correspondantes avant toute spécialisation métier.
 
 ---
 
@@ -210,15 +233,22 @@ ENGINE-007 reste réservé aux ressources techniques du moteur.
 
 # HISTORIQUE
 
+## Version 1.23
+
+- ENGINE-016 passe à **Validée / Maturité 4** ;
+- suite globale portée à **260 / 260 tests réussis** ;
+- 27 tests ENGINE-016 validés ;
+- persistance, formation, arbitrage, activation, renforcement, érosion et réutilisation des Habitudes confirmés ;
+- aucune Habitude métier canonique ni nouveau Pattern/Verbe ACT introduits ;
+- aucune consolidation TECH/roadmap/README déclenchée automatiquement.
+
 ## Version 1.22
 
 - création et enregistrement d'ENGINE-016 en Proposition / M2 ;
 - framework générique d'Habitudes implémenté ;
 - persistance des Habitudes et traces ajoutée ;
-- formation, sélection, activation, renforcement et érosion couverts ;
 - 27 tests ajoutés ;
-- total attendu fixé à **260 / 260** ;
-- aucune Habitude métier ni nouveau Verbe ACT introduits.
+- total attendu fixé à 260 / 260.
 
 ## Version 1.21
 

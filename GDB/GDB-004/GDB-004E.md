@@ -1,216 +1,253 @@
-GDB-004E --- Les Habitudes
+# GDB-004E --- Les Habitudes
 
-Version : 1.1
-Statut : Officiel
-Type : Population du Monde
-Maturité : 2
-Bibliothèque : GDB
-⸻
+> Version : 1.2
+> Statut : Officiel
+> Type : Population du Monde
+> Maturité : 2
+> Bibliothèque : GDB
 
+---
 
-OBJECTIF
+# OBJECTIF
 
-Définir les principes qui gouvernent les habitudes des habitants de
-Chroniques, avec une précision suffisante pour être implémentées sans
-interprétation (MASTER-007, Maturité 2).
+Définir un modèle d'Habitudes implémentable sans interprétation floue du contexte ni score transversal entre familles d'Intent.
 
-Les habitudes rendent les comportements cohérents, prévisibles sans être
-répétitifs, et donnent l'impression d'un monde vivant.
-⸻
-PRINCIPE
+---
 
-Chaque habitant développe des habitudes au fil du temps.
+# PRINCIPE
 
-Elles résultent de son mode de vie, de sa personnalité, de son métier et
-de son environnement.
-⸻
-DÉFINITION
+Une Habitude est un comportement acquis par répétition. Elle peut produire un Intent lorsque son contexte d'activation est satisfait, sans produire directement une Action Instance.
 
-Une Habitude est une règle de comportement acquise : lorsque le
-contexte correspond à son déclencheur, l'habitant produit un Intent
-spécifique sans passer par l'évaluation complète de ses besoins ou
-ambitions. Elle réduit le coût cognitif de la décision pour les
-situations familières.
+Une Habitude n'est jamais un script imposé et ne court-circuite pas l'ordre des familles défini par GDB-004A.
 
-Une Habitude n'est jamais un script imposé. Elle constitue une
-suggestion prioritaire que les besoins urgents ou une perturbation
-suffisante peuvent interrompre.
-⸻
-MODÈLE
+---
 
-Chaque Habitude d'un habitant possède cinq attributs :
+# MODÈLE
 
-- **Déclencheur.** La condition contextuelle minimale qui rend l'Habitude
-  candidate : un moment de la journée, une saison, un lieu, une
-  relation présente, un seuil de besoin atteint. Le déclencheur est
-  toujours une donnée vérifiable dans le World à l'instant du Tick.
-  Il ne peut jamais être « toujours » (ce serait un Intent permanent,
-  pas une Habitude).
+Chaque Habitude possède au minimum :
 
-- **Intent produit.** L'objectif que l'Habitude soumet au pipeline ACT
-  si elle est activée. Il suit le même contrat qu'un Intent ordinaire :
-  un acteur, un objectif, une priorité. L'Habitude ne produit jamais
-  directement une Action Instance --- elle alimente ACT comme toute
-  autre source d'Intent [réf: GDB-004B, ACT-002].
+- **Déclencheur** : règle déterministe lisant le World et le Tick courant ;
+- **Objectif d'Intent** : objectif soumis à ACT si l'Habitude est sélectionnée ;
+- **Force** : valeur continue bornée de 0 à 100 ;
+- **Tick de dernière activation** ;
+- **Tick de création** ;
+- **Signature de formation** : identité déterministe du contexte dans lequel les répétitions sont comptées pour former cette Habitude.
 
-- **Force.** Valeur continue bornée entre 0 et 100. Elle exprime la
-  solidité de l'Habitude : à Force élevée, l'Habitude est candidate
-  dès que son déclencheur est satisfait ; à Force basse, elle ne se
-  manifeste que si aucune autre source d'Intent ne produit de résultat
-  exécutable. La Force ne représente jamais une durée ni une
-  fréquence --- seulement la priorité relative de l'Habitude face aux
-  autres sources d'Intent.
+Le Déclencheur ne peut pas être une condition vague comme « quand cela semble approprié ». Il doit être évalué comme vrai ou faux à état et Tick identiques.
 
-- **Tick de dernière activation.** Le Tick auquel l'Habitude a
-  produit un Intent pour la dernière fois, qu'il ait été exécuté avec
-  succès ou non. Sert exclusivement au calcul de l'érosion (voir
-  ÉVOLUTION).
+Il ne peut pas être « toujours » dans le modèle minimal : un comportement permanent appartient à une autre règle de décision.
 
-- **Tick de création.** Le Tick auquel l'Habitude a été formée.
-  Sert au tie-break déterministe (voir ARBITRAGE).
-⸻
-FORMATION
+---
 
-Une Habitude se forme lorsqu'un même Intent est produit dans un contexte
-similaire un nombre de fois suffisant, sur une fenêtre temporelle
-suffisante. Les deux seuils (nombre de répétitions, fenêtre en Ticks)
-ne sont pas fixés par ce document --- ce sont des paramètres
-d'équilibrage, comme les seuils de besoins dans GDB-004B.
+# SIGNATURE DE FORMATION
 
-Une Habitude formée démarre à une Force initiale modérée --- elle
-n'est jamais immédiatement aussi solide qu'une habitude de longue date.
-La valeur exacte de la Force initiale est un paramètre d'équilibrage.
-⸻
-ÉVOLUTION
+La formation ne repose jamais sur une notion implicite de « contexte similaire ».
 
-La Force d'une Habitude évolue selon deux mécanismes distincts, à
-distinguer strictement :
+Chaque type concret d'Habitude fournit une règle déterministe permettant de produire une **Signature de formation** à partir du contexte pertinent.
 
-1. **Renforcement.** Chaque fois que le déclencheur est satisfait et
-   que l'Intent produit est exécuté avec succès, la Force augmente d'un
-   montant fixe. Le gain décroît à mesure que la Force approche 100 ---
-   une Habitude très ancrée se consolide plus lentement qu'une jeune
-   Habitude en formation (même logique que GDB-004H, MODÈLE DE
-   PROGRESSION des Compétences).
-
-2. **Érosion.** En l'absence d'activation dépassant un seuil d'inactivité
-   (exprimé en Ticks), la Force diminue progressivement. L'érosion cesse
-   dès qu'une nouvelle activation a lieu. Une Habitude dont la Force
-   atteint 0 disparaît.
-
-La Force reste toujours bornée entre 0 et 100 (Clamp).
-
-PERTURBATION --- Un événement d'ampleur suffisante [réf: GDB-002B, seuils
-de significativité ; GDB-004D, Inflexion] peut modifier le déclencheur
-d'une Habitude, réduire fortement sa Force ou la supprimer directement.
-Ce mécanisme garantit que les habitudes évoluent avec l'histoire de
-l'individu plutôt que de devenir des comportements figés. La perturbation
-est toujours causée par un fait identifiable, jamais par une dérive
-silencieuse (invariant partagé avec GDB-004D).
-⸻
-ARBITRAGE AVEC LES AUTRES SOURCES D'INTENT
-
-Une Habitude est une source d'Intent parmi d'autres. Son activation suit
-l'ordre général de priorité défini par GDB-004B et GDB-004A :
-
+```text
+même objectif d'Intent
++
+même Signature de formation
+→ répétitions comptées ensemble
 ```
-besoins physiologiques urgents (GDB-004B)
+
+```text
+signature différente
+→ séquence de formation distincte
+```
+
+La signature peut dépendre, selon le type d'Habitude, d'un lieu, d'une plage temporelle, d'une relation, d'une activité, d'une saison ou d'autres données explicitement choisies par la règle concrète.
+
+Le moteur générique ne calcule jamais une distance de similarité entre contextes.
+
+---
+
+# FORMATION
+
+Une Habitude se forme lorsqu'un même objectif d'Intent est observé avec la même Signature de formation un nombre de fois suffisant dans une fenêtre temporelle configurée.
+
+Les valeurs exactes restent paramétrables :
+
+- nombre de répétitions ;
+- taille de fenêtre ;
+- Force initiale.
+
+La Force initiale reste inférieure au maximum.
+
+Conformément à GDB-004D, un Trait peut modifier le seuil de répétitions uniquement lorsqu'un mapping concret Trait/Habitude le spécifie.
+
+La personnalité ne modifie pas automatiquement le Déclencheur d'une Habitude déjà formée.
+
+---
+
+# CANDIDATURE
+
+Une Habitude est candidate si :
+
+```text
+Habitude existante
++
+Force > 0
++
+Déclencheur = vrai
++
+objectif d'Intent actuellement traitable
+→ candidate
+```
+
+Une Habitude dont l'objectif ne peut pas être planifié/exécuté dans le contexte courant ne produit aucun faux Intent et ne bloque pas les autres Habitudes candidates.
+
+---
+
+# ARBITRAGE INTERNE
+
+Lorsque plusieurs Habitudes sont candidates :
+
+1. Force la plus élevée ;
+2. en cas d'égalité, Tick de création le plus bas.
+
+La Force exprime **uniquement la priorité relative entre Habitudes candidates**.
+
+Elle ne compare jamais directement une Habitude à :
+
+- un besoin ;
+- un transfert ;
+- une production ;
+- une Ambition.
+
+L'ordre entre familles appartient exclusivement à GDB-004A.
+
+---
+
+# PLACE DANS L'ARBITRAGE GÉNÉRAL
+
+La place courante est :
+
+```text
+besoins physiologiques actionnables
 ↓
-transfert volontaire exécutable (GDB-004A)
+transfert volontaire exécutable
 ↓
-activité productive exécutable (GDB-004A)
+activité productive exécutable
 ↓
 Habitudes actives
 ↓
-Ambitions (GDB-004F)
+Ambitions candidates
 ↓
 aucun Intent
 ```
 
-Les Habitudes se situent donc après les besoins urgents et les
-opportunités économiques immédiates --- conformément à GDB-004A, qui
-établit que l'entretien précède toujours le travail ou l'échange.
+Une Habitude forte ne dépasse donc pas une famille située plus haut dans cette version.
 
-Lorsque plusieurs Habitudes sont simultanément candidates (déclencheur
-satisfait et Force non nulle), la priorité suit :
+Aucune fairness transversale n'est implicite.
 
-1. Force la plus élevée.
-2. En cas d'égalité de Force : Habitude créée au Tick le plus bas
-   (la plus ancienne).
+---
 
-Ce tie-break est déterministe. Il ne constitue pas une hiérarchie
-narrative entre Habitudes.
-⸻
-FRONTIÈRE AVEC GDB-004D (PERSONNALITÉS)
+# ÉVOLUTION
 
-La personnalité influence la formation des Habitudes (elle peut
-accélérer ou ralentir le seuil de répétition nécessaire, ou rendre
-certains déclencheurs plus sensibles) mais elle ne définit pas elle-même
-les Habitudes. GDB-004D reste l'autorité sur les traits ; GDB-004E
-reste l'autorité sur les Habitudes comme comportements acquis par
-la répétition.
-⸻
-FRONTIÈRE AVEC GDB-004F (AMBITIONS)
+## Renforcement
 
-Une Ambition est une direction de vie durable ; une Habitude est un
-comportement contextuel acquis. Une Habitude peut avoir été formée en
-réponse à une Ambition (répéter une activité productive parce qu'on
-aspire à en devenir expert), mais elle ne représente pas l'Ambition
-elle-même. GDB-004F reste l'autorité sur les directions de vie ;
-GDB-004E sur les comportements routiniers.
-⸻
-IMPACT
+Après exécution réussie de l'Intent produit dans le contexte attendu, la Force peut augmenter. Le gain diminue à mesure que la Force approche 100.
 
-Les habitudes influencent :
+## Érosion
 
-- les rencontres ;
-- l'économie locale ;
-- les routines des villes ;
-- les opportunités offertes au joueur ;
-- la crédibilité des comportements autonomes.
-⸻
-PARAMÈTRES D'IMPLÉMENTATION
+Après une durée d'inactivité supérieure à un seuil configuré, la Force diminue progressivement. Une activation ultérieure interrompt l'érosion.
 
-Les valeurs suivantes ne sont pas fixées par ce document : seuil de
-répétitions pour formation, fenêtre temporelle de formation, Force
-initiale, montant de renforcement par succès, taux d'érosion par Tick
-inactif, seuil d'inactivité déclenchant l'érosion, amplitude minimale
-d'un événement pour perturber une Habitude. Même posture que
-GDB-004C, GDB-004H : le modèle est fixé, les constantes restent des
-paramètres d'équilibrage.
-⸻
-RÈGLES DE CONCEPTION
+Une Force atteignant 0 entraîne la disparition de l'Habitude.
 
-Toute mécanique liée aux habitudes devra :
+## Perturbation
 
-1. rester cohérente avec la personnalité ;
-2. évoluer progressivement ;
-3. éviter les routines artificielles ;
-4. enrichir l'immersion ;
-5. favoriser les histoires émergentes.
-⸻
-CRITÈRE DE VALIDATION
+Un événement significatif identifiable peut modifier le Déclencheur, réduire la Force ou supprimer l'Habitude si une règle concrète le prévoit.
 
-Cette mécanique donne-t-elle l'impression que les habitants vivent
-selon leurs propres habitudes plutôt que selon des scripts visibles ?
+Aucune perturbation n'est déclenchée par une dérive silencieuse.
 
-Si la réponse est non, elle devra être repensée.
-⸻
+---
+
+# ACTIVATION ET TICK DE DERNIÈRE ACTIVATION
+
+Le Tick de dernière activation est mis à jour lorsqu'une Habitude sélectionnée produit effectivement son Intent.
+
+Le renforcement, lui, exige la réussite de l'exécution associée. Activation et réussite restent donc deux faits distincts.
+
+---
+
+# FRONTIÈRE AVEC GDB-004D
+
+La personnalité peut modifier la formation d'une Habitude via un mapping concret de seuil de répétition.
+
+GDB-004D ne décide ni du Déclencheur courant, ni de la Force courante, ni de l'ordre de familles.
+
+---
+
+# FRONTIÈRE AVEC GDB-004F
+
+Une Habitude est un comportement contextuel acquis ; une Ambition est une direction de vie durable.
+
+Une Habitude peut se former à partir d'Actions répétées motivées par une Ambition, mais les deux données restent indépendantes.
+
+---
+
+# PARAMÈTRES D'IMPLÉMENTATION
+
+Restent paramétrables :
+
+- seuil de répétitions ;
+- fenêtre de formation ;
+- Force initiale ;
+- gain de renforcement ;
+- forme de décroissance du gain ;
+- seuil d'inactivité ;
+- taux d'érosion ;
+- règles concrètes de perturbation ;
+- mappings Trait/Habitude.
+
+La définition de chaque Déclencheur et de chaque Signature de formation appartient au type concret d'Habitude.
+
+---
+
+# INVARIANTS
+
+- Une Habitude possède un Déclencheur déterministe et une Signature de formation déterministe.
+- Aucune similarité contextuelle implicite n'est calculée par le moteur générique.
+- Une Habitude produit au maximum un Intent, jamais une Action Instance.
+- Force est bornée entre 0 et 100.
+- Force départage uniquement les Habitudes.
+- L'ordre entre familles appartient à GDB-004A.
+- Une Habitude non exécutable ne produit aucun faux Intent.
+- La personnalité ne modifie pas implicitement l'activation d'une Habitude existante.
+- Renforcement et érosion suivent des règles déterministes paramétrées.
+- Toute perturbation significative possède une cause identifiable.
+
+---
+
+# CRITÈRE DE VALIDATION
+
+Le système peut-il former, sélectionner et faire évoluer une Habitude à partir de règles contextuelles entièrement déterministes, sans inventer une similarité de contexte ni comparer sa Force aux autres familles d'Intent ?
+
+Si la réponse est non, il doit être repensé.
+
+---
+
+# HISTORIQUE
+
+## Version 1.2
+
+- synchronisation avec GDB-004A v1.3 et GDB-004D v1.3 ;
+- ajout de la Signature de formation déterministe ;
+- suppression de la notion floue de « contexte similaire » ;
+- Force limitée à l'arbitrage interne entre Habitudes ;
+- exigence d'un objectif d'Intent actuellement traitable ;
+- personnalité limitée à la modulation explicite du seuil de formation.
+
+## Version 1.1
+
+- passage en Maturité 2 ; modèle Force/Ticks, formation, évolution et premier arbitrage.
+
+## Version 1.0
+
+- création du document.
+
+---
+
 Fin du document
-
-Statut : Validé -- Référence officielle.
-⸻
-HISTORIQUE
-
-Version 1.1 : passage en Maturité 2. Ajout du MODÈLE (cinq attributs :
-Déclencheur, Intent produit, Force 0-100, Tick de dernière activation,
-Tick de création), des règles de FORMATION (seuils paramétrisés, Force
-initiale modérée), d'ÉVOLUTION (renforcement décroissant, érosion par
-inactivité, perturbation par événement significatif), d'ARBITRAGE (place
-des Habitudes dans la chaîne GDB-004A/B, tie-break déterministe par
-Force puis ancienneté), et des frontières explicites avec GDB-004D
-(Personnalités) et GDB-004F (Ambitions). Section PARAMÈTRES
-D'IMPLÉMENTATION ajoutée. En-tête mis en conformité avec MASTER-004
-(Maturité et Bibliothèque absents de la v1.0).
-
-Version 1.0 : création du document.

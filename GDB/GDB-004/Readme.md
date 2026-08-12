@@ -1,6 +1,6 @@
 # GDB-004
 
-> Version : 1.1
+> Version : 1.2
 > Statut : Officiel
 > Type : Série
 > Maturité : 1
@@ -14,69 +14,79 @@
 
 # Présentation
 
-La série **GDB-004** définit l'ensemble des principes qui régissent les habitants de Chroniques.
+La série **GDB-004** définit les principes qui régissent les habitants : besoins, relations, personnalité, Habitudes, Ambitions, connaissances, compétences, réputation et transmission.
 
-Elle décrit leur fonctionnement individuel, leurs comportements, leurs interactions sociales, leurs connaissances et leur évolution au cours de leur existence.
-
-Cette série constitue la référence officielle concernant la population du monde.
-
----
-
-# Objectif
-
-La série GDB-004 répond à la question :
-
-> **Comment les habitants vivent-ils, évoluent-ils et interagissent-ils dans Chroniques ?**
-
----
-
-# Cette série couvre
-
-- les habitants ;
-- leurs besoins ;
-- leurs relations sociales ;
-- leurs personnalités ;
-- leurs habitudes ;
-- leurs ambitions ;
-- leurs connaissances ;
-- leurs compétences ;
-- leur réputation ;
-- la transmission entre générations.
-
----
-
-# Cette série ne couvre pas
-
-Cette série ne décrit pas :
-
-- les organisations ;
-- l'économie ;
-- les entreprises ;
-- les systèmes techniques ;
-- les mécaniques d'implémentation.
+Elle constitue la référence officielle concernant la population du monde.
 
 ---
 
 # Documents
 
-| Document | Sujet |
-|-----------|-------|
-| GDB-004A | Les Habitants du Monde |
-| GDB-004B | Les Besoins des Habitants |
-| GDB-004C | Les Relations Sociales |
-| GDB-004D | Les Personnalités |
-| GDB-004E | Les Habitudes |
-| GDB-004F | Les Ambitions |
-| GDB-004G | Les Connaissances |
-| GDB-004H | Les Compétences |
-| GDB-004I | La Réputation |
-| GDB-004J | La Transmission |
+| Document | Sujet | État courant |
+|---|---|---|
+| GDB-004A | Les Habitants du Monde | v1.3 / M2 |
+| GDB-004B | Les Besoins des Habitants | v1.3 / M2 |
+| GDB-004C | Les Relations Sociales | v1.1 / M2 |
+| GDB-004D | Les Personnalités | v1.3 / M2 |
+| GDB-004E | Les Habitudes | v1.2 / M2 |
+| GDB-004F | Les Ambitions | v1.2 / M2 |
+| GDB-004G | Les Connaissances | Officiel |
+| GDB-004H | Les Compétences | v1.2 / M2 |
+| GDB-004I | La Réputation | Officiel |
+| GDB-004J | La Transmission | Officiel |
 
 ---
 
-# Relations
+# Arbitrage autonome courant
 
-Cette série s'appuie sur les fondations de **GDB-001** et interagit avec les séries relatives au monde, à l'économie, aux organisations et à la simulation.
+GDB-004A fait autorité sur l'ordre des familles :
+
+```text
+besoins physiologiques actionnables
+↓
+transfert volontaire exécutable
+↓
+activité productive exécutable
+↓
+Habitudes actives
+↓
+Ambitions candidates
+↓
+aucun Intent
+```
+
+Les priorités internes restent locales à chaque famille :
+
+- besoins : satisfaction/urgence selon GDB-004B ;
+- Habitudes : Force puis ancienneté selon GDB-004E ;
+- Ambitions : Intensité, Progrès puis ancienneté selon GDB-004F.
+
+Aucun score universel inter-familles n'est défini.
+
+---
+
+# Personnalité, Habitudes et Ambitions
+
+## Personnalité
+
+GDB-004D définit des Traits `Nom + Valeur + Poids de référence` et leur cycle d'Inflexion. La personnalité agit en amont, via des mappings concrets vers la formation des Habitudes ou l'Intensité des Ambitions. Elle n'est pas une source directe d'Intent.
+
+## Habitudes
+
+GDB-004E définit un modèle générique incluant Déclencheur déterministe, Signature de formation, Force et Ticks de suivi. Un type concret d'Habitude doit fournir ses règles contextuelles ; le moteur générique ne devine jamais une similarité de contexte.
+
+## Ambitions
+
+GDB-004F définit un modèle générique incluant Type, Objectif, Intensité, Progrès, Intent et Tick de création. Chaque Type concret doit fournir son évaluateur déterministe d'objectif/progrès et ses conditions de création.
+
+---
+
+# Frontières
+
+- GDB-002E reste consacré aux Opportunités joueur et n'est pas recyclé implicitement pour les PNJ.
+- Les exemples d'Habitudes ou d'Ambitions ne deviennent jamais des règles concrètes par leur seule présence dans la documentation.
+- Les constantes numériques restent des paramètres d'équilibrage lorsque la forme du modèle est déjà fixée.
+- Les systèmes techniques restent du ressort d'ENGINE après validation des contrats GDB applicables.
 
 ---
 
@@ -88,23 +98,31 @@ Les habitants doivent être :
 - cohérents ;
 - persistants ;
 - évolutifs ;
-- crédibles.
+- crédibles ;
+- déterministes à état et configuration identiques.
 
 ---
 
-Version : 1.0
+# HISTORIQUE
 
-Statut : Officiel
+## Version 1.2
 
----
-
-# Historique
+- synchronisation de GDB-004A/B/D/E/F après leur montée en précision ;
+- ordre des familles autonomes fixé dans GDB-004A ;
+- Personnalité séparée de l'arbitrage direct ;
+- Signature de formation déterministe ajoutée aux Habitudes ;
+- Type et évaluateur déterministe ajoutés aux Ambitions ;
+- frontière GDB-002E / Opportunités PNJ clarifiée.
 
 ## Version 1.1
 
 - en-tête mis en conformité avec MASTER-004 ;
-- GDB-004G/H (frontière Connaissance/Compétence), GDB-004D (cycle de vie des traits) et GDB-004J (cas d'échec de la transmission) enrichis, suite à la clôture de GDB-004-C01, C02 et C03.
+- enrichissements précédents de GDB-004D/G/H/J.
 
 ## Version 1.0
 
-- Création du document.
+- création du document.
+
+---
+
+Fin du document

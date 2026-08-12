@@ -1,6 +1,6 @@
 # ENGINE — Catalogue
 
-> Version : 1.27
+> Version : 1.28
 > Statut : Foundation
 > Maturité : 1
 > Bibliothèque : ENGINE
@@ -38,21 +38,19 @@ ENGINE-014  Circulation autonome minimale            Validée / M4
 ENGINE-015  Observation de l'exécution autonome      Validée / M4
 ENGINE-016  Habitudes génériques minimales           Validée / M4
 ENGINE-017  Ambitions génériques minimales           Validée / M4
-ENGINE-018  Personnalité générique minimale          Proposition / M2
+ENGINE-018  Personnalité générique minimale          Validée / M4
 ```
 
 ---
 
 # Validation courante
 
-Base localement validée avant ENGINE-018 :
-
 ```text
 dotnet build
 → succès
 
 dotnet test
-→ 291 / 291 tests réussis
+→ 330 / 330 tests réussis
 → 0 échec
 ```
 
@@ -113,9 +111,9 @@ TECH-006 — Cognition autonome générique
 
 # ENGINE-018 — Personnalité générique minimale
 
-Statut : Proposition / Maturité 2.
+Statut : **Validée / Maturité 4**.
 
-Spécification : `ENGINE-018 v1.1`.
+Spécification : `ENGINE-018 v1.2`.
 
 Autorité principale :
 
@@ -123,7 +121,7 @@ Autorité principale :
 GDB-004D v1.3
 ```
 
-Briques candidates :
+Briques validées :
 
 ```text
 PersonalityComponent
@@ -137,7 +135,7 @@ IPersonalityStabilizationParameterResolver
 PersonalityEvolutionSystem
 ```
 
-Flux candidat :
+Flux validé :
 
 ```text
 règle de Trait injectée
@@ -151,7 +149,7 @@ Inflexion identifiable ?
 └── non → stabilisation vers la référence
 ```
 
-Invariants :
+Invariants confirmés :
 
 - aucun Trait métier concret par défaut ;
 - Valeur et Poids bornés `[0,100]` ;
@@ -167,7 +165,7 @@ Invariants :
 - aucune source d'Intent ;
 - aucun nouveau Pattern ou Verbe ACT.
 
-Persistance candidate étendue :
+Persistance validée :
 
 ```text
 EntitySnapshot.Personality
@@ -188,25 +186,28 @@ Engine018PersonalityInvariantTests.cs
 
 Nouveaux tests : **39**.
 
-Base :
+Base précédente :
 
 ```text
 291 / 291
 ```
 
-Total attendu avant validation locale :
+Validation locale confirmée :
 
 ```text
-330 / 330
-```
+dotnet build
+→ succès
 
-Aucun passage M4 ne sera enregistré avant confirmation locale.
+dotnet test
+→ 330 / 330 tests réussis
+→ 0 échec
+```
 
 ---
 
 # Persistance étendue
 
-Le World persiste maintenant ou, pour ENGINE-018, candidate à persister :
+Le World persiste maintenant notamment :
 
 ```text
 FoodProductComponent
@@ -236,7 +237,7 @@ ENGINE-015 à 018 n'ajoutent aucun Pattern ou Verbe.
 
 # Frontières restantes
 
-Ne sont toujours pas autorisés par ENGINE-018 :
+Ne sont toujours pas autorisés ou implémentés comme capacités validées :
 
 - catalogue concret de Traits ;
 - mapping Trait/Habitude ;
@@ -256,14 +257,22 @@ ENGINE-007 reste réservé au Resource Manager technique et demeure non créé.
 
 # Historique
 
+## Version 1.28
+
+- ENGINE-018 passe à **Validée / Maturité 4** ;
+- suite globale portée à **330 / 330 tests réussis** ;
+- 39 tests ENGINE-018 validés ;
+- création, persistance, stabilisation, Inflexions légères/profondes et causalité idempotente confirmées ;
+- aucun Trait concret, mapping Trait/Habitude, mapping Trait/Ambition ou nouveau Pattern/Verbe ACT introduit ;
+- aucune consolidation TECH/roadmap/README déclenchée automatiquement sur ce seul lot.
+
 ## Version 1.27
 
 - création et enregistrement d'ENGINE-018 en Proposition / M2 ;
 - framework générique de Personnalité implémenté en candidate ;
 - Traits, stabilisation, Inflexions et causalité persistante couverts ;
 - 39 tests ajoutés ;
-- total attendu fixé à **330 / 330** ;
-- aucun Trait concret, mapping cognitif ou nouveau Verbe introduit.
+- total attendu fixé à 330 / 330.
 
 ## Version 1.26
 

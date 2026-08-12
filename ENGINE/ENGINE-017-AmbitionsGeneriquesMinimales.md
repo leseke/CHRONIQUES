@@ -1,10 +1,11 @@
 # ENGINE-017 — Ambitions génériques minimales
 
-> Version : 1.0
+> Version : 1.1
 > Statut : Proposition
 > Maturité : 2
 > Bibliothèque : ENGINE
 > Dépendances : GDB-004A v1.3, GDB-004D v1.3, GDB-004F v1.2, ACT-002-H, ENGINE-010, ENGINE-016
+> Implémentation candidate : `CHRONIQUES-ENGINE`
 
 ---
 
@@ -12,10 +13,8 @@
 
 Implémenter le premier framework générique d'Ambitions sans inventer un Type d'Ambition métier concret.
 
-Le moteur doit pouvoir :
-
 ```text
-règle concrète d'Ambition injectée
+règle concrète injectée
 ↓
 conditions de création satisfaites
 ↓
@@ -27,37 +26,28 @@ Progrès mis à jour
 ↓
 Ambition candidate
 ↓
-arbitrage Intensité → Progrès → ancienneté
+Intensité → Progrès → ancienneté
 ↓
 Intent
 ↓
 ACT
 ```
 
-Le framework doit également représenter l'accomplissement et l'abandon sans inventer leur logique métier.
+ENGINE-017 représente également accomplissement et abandon sans inventer leur logique métier.
 
 ---
 
 # 2. Frontière métier
 
-ENGINE-017 ne crée aucun Type concret tel que :
+Aucun Type concret n'est fourni par défaut.
 
-- devenir riche ;
-- obtenir un logement ;
-- atteindre une Compétence donnée ;
-- améliorer une Relation ;
-- posséder un stock ;
-- réussir une carrière.
+Ne sont notamment pas créés : ambition de richesse, logement, Compétence, Relation, stock ou carrière.
 
-Les tests peuvent utiliser des règles factices déterministes afin de valider le framework.
-
-La présence d'un exemple dans GDB-004F ne suffit jamais à créer un Type concret en production.
+Les tests utilisent uniquement des règles factices déterministes.
 
 ---
 
-# 3. AmbitionComponent
-
-Le moteur ajoute une donnée persistante :
+# 3. Données persistantes
 
 ```csharp
 public sealed class AmbitionComponent : IComponent
@@ -65,8 +55,6 @@ public sealed class AmbitionComponent : IComponent
     public List<AmbitionState> Ambitions { get; set; } = new();
 }
 ```
-
-Une Ambition persistante est représentée par :
 
 ```csharp
 public sealed record AmbitionState(
@@ -80,35 +68,27 @@ public sealed record AmbitionState(
     Tick CreatedAt);
 ```
 
-`AmbitionComponent` reste de la donnée pure.
+Le Component reste de la donnée pure.
 
 ---
 
-# 4. Type, instance et Objectif
+# 4. Identité et Objectif
 
-`AmbitionTypeId` identifie la règle concrète qui sait interpréter l'Ambition.
-
-`InstanceKey` identifie de façon stable une instance d'Ambition au sein d'un habitant.
-
-L'identité technique du premier lot est :
+Une instance est identifiée par :
 
 ```text
-AmbitionTypeId
-+
-InstanceKey
+AmbitionTypeId + InstanceKey
 ```
 
-`ObjectivePayload` est une donnée opaque persistée. ENGINE-017 ne l'interprète jamais et ne déduit jamais un Type à partir de ce payload.
+`ObjectivePayload` est persisté mais reste totalement opaque pour ENGINE-017. Seule la règle associée au `AmbitionTypeId` sait le produire et l'interpréter.
 
-La règle concrète du Type est seule responsable de produire et lire ce payload.
-
-Cette frontière permet à de futurs Types de représenter leurs données propres sans introduire un modèle universel de logement, relation, compétence ou stock dans ENGINE.
+Le moteur ne déduit jamais un Type d'Ambition depuis un texte ou un payload.
 
 ---
 
-# 5. AmbitionCreationCandidate
+# 5. Création
 
-Une règle concrète peut proposer :
+Une règle peut produire :
 
 ```csharp
 public sealed record AmbitionCreationCandidate(
@@ -119,20 +99,17 @@ public sealed record AmbitionCreationCandidate(
     double InitialIntensity);
 ```
 
-Contraintes du framework :
+Contraintes :
 
-- `AmbitionTypeId`, `InstanceKey` et `IntentObjective` non vides ;
-- le `AmbitionTypeId` retourné doit correspondre à la règle qui produit la candidate ;
-- `InitialIntensity` doit être finie et strictement supérieure à 0, au maximum 100 ;
-- une instance déjà présente avec le même couple `AmbitionTypeId + InstanceKey` n'est jamais dupliquée.
-
-Le payload peut être vide uniquement si la règle concrète déclare qu'aucune donnée supplémentaire n'est nécessaire ; le moteur ne lui attribue aucune sémantique.
+- Type, InstanceKey et IntentObjective non vides ;
+- ObjectivePayload non null ;
+- le Type retourné correspond à la règle productrice ;
+- `InitialIntensity` finie dans `]0,100]` ;
+- aucune duplication du couple `AmbitionTypeId + InstanceKey`.
 
 ---
 
 # 6. IAmbitionRule
-
-Chaque Type concret doit fournir une règle injectée :
 
 ```csharp
 public interface IAmbitionRule
@@ -158,19 +135,11 @@ public interface IAmbitionRule
 }
 ```
 
-Le framework ne fournit aucune implémentation métier `IAmbitionRule` par défaut.
-
-`FindCreationCandidates` matérialise les conditions de création du Type.
-
-`Evaluate` interprète l'Objectif et calcule son Progrès.
-
-`IsIntentTreatable` interdit la production d'un faux Intent lorsqu'aucune réponse ACT réellement traitable n'est disponible.
+Aucune implémentation métier n'est fournie en production.
 
 ---
 
-# 7. AmbitionEvaluation
-
-Le résultat d'évaluation générique est :
+# 7. Évaluation
 
 ```csharp
 public sealed record AmbitionEvaluation(
@@ -178,60 +147,43 @@ public sealed record AmbitionEvaluation(
     bool ShouldAbandon);
 ```
 
-Le framework impose :
+Le Progrès doit être fini puis est Clamp dans `[0,100]`.
 
-- `Progress` fini ;
-- Clamp `[0,100]` ;
-- `ShouldAbandon` déterministe pour un même World/Objectif/Type/configuration.
+`Progress = 100` signifie accomplissement.
 
-`Progress = 100` signifie Ambition accomplie.
+`ShouldAbandon = true` marque explicitement l'Ambition comme abandonnée.
 
-`ShouldAbandon = true` marque l'Ambition comme abandonnée.
-
-Accomplissement et abandon rendent l'Ambition non candidate mais ne suppriment pas automatiquement sa trace persistante dans ce lot.
+Accomplissement et abandon rendent l'Ambition non candidate mais conservent sa trace persistante.
 
 ---
 
 # 8. AmbitionEvolutionSystem
 
-`AmbitionEvolutionSystem` reçoit la collection ordonnée des `IAmbitionRule`.
-
 Pour chaque habitant et Tick :
 
-1. demander à chaque règle ses candidates de création ;
-2. valider et ajouter les nouvelles instances non dupliquées ;
-3. évaluer chaque Ambition existante dont la règle est disponible ;
-4. mettre à jour `Progress` ;
-5. appliquer `IsAbandoned = true` lorsque la règle le demande.
+1. interroger les règles dans leur ordre d'enregistrement ;
+2. créer les candidates valides non dupliquées ;
+3. évaluer immédiatement les Ambitions disposant encore de leur règle ;
+4. mettre à jour Progrès et état d'abandon ;
+5. supprimer une Ambition dont `Intensity <= 0`, conformément à GDB-004F.
 
-Les nouvelles Ambitions sont évaluées dès le Tick de leur création afin que leur Progrès reflète immédiatement le World courant.
+Une Ambition dont la règle n'est plus enregistrée reste persistée mais n'est pas évaluée.
 
-Une Ambition persistée dont la règle n'est plus enregistrée reste présente mais n'est ni évaluée ni rendue candidate.
-
-Le System n'avance jamais le Tick lui-même.
+Le System n'avance jamais le Tick.
 
 ---
 
 # 9. Intensité
 
-`Intensity` reste bornée entre 0 et 100 et sert à l'arbitrage interne entre Ambitions.
+L'Intensité est persistée, bornée `[0,100]` et utilisée uniquement pour départager les Ambitions.
 
-Dans ENGINE-017 :
+ENGINE-017 ne définit aucune formule universelle de renforcement/affaiblissement.
 
-- la création fournit une Intensité initiale ;
-- une Intensité à 0 n'est jamais candidate ;
-- aucune formule universelle de renforcement ou d'affaiblissement n'est introduite ;
-- aucun Trait de personnalité n'est interprété par le framework.
-
-Les futures variations d'Intensité devront provenir d'une règle concrète identifiable conforme à GDB-004D/F.
-
-ENGINE-017 ne transforme donc pas un Tick ordinaire en cause silencieuse d'évolution psychologique.
+Les variations futures devront provenir d'une cause et d'une règle concrètes conformes à GDB-004D/F.
 
 ---
 
 # 10. AmbitionIntentSource
-
-`AmbitionIntentSource` implémente `IAutonomousIntentSource`.
 
 Une Ambition est candidate si :
 
@@ -248,29 +200,18 @@ Intent traitable
 → candidate
 ```
 
-L'arbitrage suit strictement GDB-004F :
+Arbitrage :
 
 1. Intensité la plus élevée ;
 2. Progrès le plus élevé ;
-3. `CreatedAt` le plus ancien.
+3. `CreatedAt` le plus ancien ;
+4. à égalité totale, ordre persistant du Component comme stabilité technique uniquement.
 
-Si plusieurs Ambitions restent totalement égales après ces trois critères, l'ordre persistant dans `AmbitionComponent.Ambitions` sert uniquement de stabilité technique.
-
-La source :
-
-- retourne au maximum un Intent ;
-- utilise `IntentObjective` ;
-- ne modifie jamais le World ;
-- n'ajoute aucune métadonnée d'Ambition à ACT `Intent` ;
-- utilise une Priorité technique neutre, l'ordre inter-familles restant porté par GDB-004A.
+La source retourne au maximum un Intent, ne mute jamais le World et n'ajoute aucune métadonnée d'Ambition à ACT `Intent`.
 
 ---
 
 # 11. Composition autonome
-
-Aucun changement de `CompositeAutonomousIntentSource` n'est requis.
-
-La composition complète devient :
 
 ```text
 NeedsIntentSource
@@ -286,7 +227,7 @@ AmbitionIntentSource
 aucun Intent
 ```
 
-Une Ambition d'Intensité élevée ne peut donc pas dépasser une famille placée plus haut.
+Aucun changement de `CompositeAutonomousIntentSource` n'est requis.
 
 ---
 
@@ -294,101 +235,127 @@ Une Ambition d'Intensité élevée ne peut donc pas dépasser une famille placé
 
 `AmbitionComponent` est ajouté à `EntitySnapshot` comme champ optionnel.
 
-Sans `AmbitionComponent`, le champ est omis du JSON afin de préserver la forme historique des sauvegardes.
+Sans Ambition, le champ est omis du JSON.
 
-Sont persistés :
+Sont persistés : Type, InstanceKey, ObjectivePayload, IntentObjective, Intensité, Progrès, abandon et Tick de création.
 
-- Type ;
-- InstanceKey ;
-- ObjectivePayload ;
-- IntentObjective ;
-- Intensité ;
-- Progrès ;
-- état d'abandon ;
-- Tick de création.
-
-Les règles `IAmbitionRule` restent des services runtime et ne sont jamais sérialisées.
+Les règles restent runtime et ne sont jamais sérialisées.
 
 ---
 
 # 13. Personnalité
 
-ENGINE-017 ne crée aucun `PersonalityComponent` et n'applique aucun mapping Trait/Ambition.
+ENGINE-017 n'introduit aucun `PersonalityComponent` ni mapping Trait/Ambition.
 
-La frontière est néanmoins compatible avec GDB-004D : une future règle concrète pourra calculer l'Intensité initiale ou une évolution explicitement autorisée à partir d'un mapping déterministe.
-
-Aucun coefficient psychologique universel n'est introduit ici.
+La structure reste compatible avec une future modulation déterministe explicitement autorisée.
 
 ---
 
-# 14. Non-objectifs
+# 14. Implémentation candidate
+
+Fichiers ajoutés :
+
+```text
+Components/AmbitionComponent.cs
+Autonomy/IAmbitionRule.cs
+Autonomy/AmbitionEvolutionSystem.cs
+Autonomy/AmbitionIntentSource.cs
+```
+
+Fichiers étendus :
+
+```text
+Persistence/WorldSnapshot.cs
+Persistence/WorldRepository.cs
+```
+
+Aucun Pattern ou Verbe ACT n'est ajouté.
+
+---
+
+# 15. Non-objectifs
 
 ENGINE-017 ne définit pas :
 
 - Type concret d'Ambition ;
-- Ambition de carrière, richesse, logement ou relation ;
 - formule universelle de Progrès ;
 - évolution universelle d'Intensité ;
 - PersonalityComponent ;
-- mapping Trait/Ambition concret ;
+- mapping Trait/Ambition ;
 - Opportunité PNJ ;
 - fairness inter-familles ;
-- nouveau Pattern ou Verbe ACT ;
-- plan multi-étapes spécifique aux Ambitions.
+- nouveau Pattern ou Verbe ACT.
 
 ---
 
-# 15. Invariants
+# 16. Invariants
 
-- Aucun Type concret n'est créé sans règle injectée.
-- Le moteur générique n'interprète jamais `ObjectivePayload`.
-- Une instance est identifiée par `AmbitionTypeId + InstanceKey`.
-- Une instance existante n'est jamais dupliquée.
-- Progrès et Intensité restent bornés entre 0 et 100.
-- Une Ambition accomplie ou abandonnée ne produit aucun Intent.
-- Une règle absente ne produit aucun faux Intent.
-- Une Ambition non traitable ne bloque pas les autres candidates.
-- L'arbitrage suit Intensité → Progrès → ancienneté.
-- Intensité ne compare que des Ambitions.
-- La source d'Intent ne mute jamais le World.
-- ACT `Intent` ne porte aucune métadonnée d'Ambition.
-- Aucun Type métier, Trait, Opportunité PNJ ou nouveau Verbe n'est inventé.
+- Aucun Type concret sans règle injectée.
+- `ObjectivePayload` reste opaque.
+- Identité = `AmbitionTypeId + InstanceKey`.
+- Pas de doublon.
+- Progrès et Intensité dans `[0,100]`.
+- Intensité 0 supprimée par l'évolution.
+- Accomplissement et abandon interdisent l'Intent.
+- Règle absente = aucun faux Intent.
+- Ambition non traitable = ignorée sans bloquer les autres.
+- Arbitrage Intensité → Progrès → ancienneté.
+- La source ne mute jamais le World.
+- Aucun Type métier, Trait, Opportunité PNJ ou nouveau Verbe inventé.
 
 ---
 
-# 16. Critère de validation
+# 17. QA candidate
 
-ENGINE-017 pourra passer Validée / Maturité 4 lorsque, avec uniquement des règles factices déterministes, le moteur démontrera :
+Deux fichiers sont ajoutés :
 
-- création d'une Ambition par règle injectée ;
-- absence de création sans règle/candidate valide ;
-- absence de doublon ;
-- persistance complète ;
-- évaluation déterministe du Progrès ;
-- accomplissement à Progrès 100 ;
-- abandon explicite ;
-- sélection Intensité → Progrès → ancienneté ;
-- absence de faux Intent si règle ou traitabilité manque ;
-- absence de mutation du World par la source ;
-- intégration dans la dernière famille de `CompositeAutonomousIntentSource` ;
-- aucun Type concret ni nouveau Verbe ACT introduit.
+```text
+Engine017AmbitionTests.cs
+→ 25 tests
 
-Base validée avant ce lot :
+Engine017AmbitionInvariantTests.cs
+→ 6 tests
+```
+
+Soit **31 nouveaux tests**.
+
+Ils couvrent notamment : persistance, omission JSON, création, évaluation immédiate, absence de doublon, règle absente, Clamp du Progrès, accomplissement, abandon, suppression à Intensité 0, sélection, traitabilité, stabilité des égalités, absence de mutation par la source, ordre du composite et intégration complète `Tick → création → Ambition → Intent → Action`.
+
+Base validée :
 
 ```text
 260 / 260
 ```
 
+Total attendu avant validation locale :
+
+```text
+291 / 291
+```
+
+---
+
+# 18. Critère de validation
+
+ENGINE-017 pourra passer Validée / Maturité 4 lorsque le build réussit, que les 260 tests historiques restent verts et que les 31 tests candidats valident le framework sans introduire de Type concret ni nouveau Verbe ACT.
+
 ---
 
 # HISTORIQUE
+
+## Version 1.1
+
+- synchronisation avec l'implémentation candidate ;
+- AmbitionComponent, règle générique, évolution, source d'Intent et persistance enregistrés ;
+- suppression à Intensité 0 alignée sur GDB-004F ;
+- 31 tests ajoutés ;
+- total attendu fixé à **291 / 291**.
 
 ## Version 1.0
 
 - création d'ENGINE-017 ;
 - premier framework générique d'Ambitions ;
-- Objectif porté par payload opaque interprété uniquement par la règle concrète ;
-- création, évaluation, accomplissement, abandon et sélection spécifiés ;
+- Objectif porté par payload opaque ;
 - évolution universelle d'Intensité explicitement différée.
 
 ---

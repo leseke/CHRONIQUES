@@ -1,6 +1,6 @@
 # ACT — Catalogue
 
-> Version : 1.13
+> Version : 1.14
 > Statut : Foundation
 > Bibliothèque : ACT
 > Dépendances : MASTER, GDB
@@ -28,12 +28,12 @@ ACT
 │   ├── PAT-001 Repos         M4
 │   ├── PAT-002 Alimentation  M4
 │   ├── PAT-003 Production    M4
-│   └── PAT-004 Transfert     M2
+│   └── PAT-004 Transfert     M4
 └── VERBS
     ├── VERB-001 Se reposer           M4
     ├── VERB-002 Manger               M4
     ├── VERB-003 Produire une denrée  M4
-    └── VERB-004 Donner une denrée    M2
+    └── VERB-004 Donner une denrée    M4
 ```
 
 ACT-003 reste retiré et son identifiant n'est pas réattribué.
@@ -67,11 +67,16 @@ VERB-003 Produire une denrée
 Validation : 201 / 201
 ```
 
----
+## Échange
 
-# Couple en cours — Circulation économique
+```text
+PAT-004 Transfert
+↓
+VERB-004 Donner une denrée
+Validation : 224 / 224
+```
 
-Autorités métier courantes :
+Autorités métier :
 
 ```text
 GDB-004A v1.2
@@ -79,17 +84,7 @@ GDB-005E v1.3
 GDB-005F v1.2
 ```
 
-Chaîne proposée :
-
-```text
-Échange
-↓
-PAT-004 Transfert v1.1 — Proposition / M2
-↓
-VERB-004 Donner une denrée v1.1 — Proposition / M2
-```
-
-Contrat :
+Contrat validé :
 
 ```text
 source P -= q
@@ -112,7 +107,7 @@ Intent moteur :
 donner_denree
 ```
 
-PAT-004 et VERB-004 ne passent pas M4 avant validation locale d'ENGINE-014.
+PATTERNS et VERBS restent ouvertes.
 
 ---
 
@@ -147,12 +142,19 @@ CODE
 
 # Historique
 
+## Version 1.14
+
+- PAT-004 — Transfert passe à **Officiel / Maturité 4** ;
+- VERB-004 — Donner une denrée passe à **Officiel / Maturité 4** ;
+- validation locale portée à **224 / 224 tests réussis** ;
+- chaîne `Échange → PAT-004 → VERB-004 → Action` confirmée ;
+- circulation autonome entre deux habitants confirmée ;
+- aucune consolidation TECH/roadmap/README déclenchée automatiquement.
+
 ## Version 1.13
 
 - PAT-004 / VERB-004 synchronisés avec GDB-005E v1.3 et GDB-005F v1.2 ;
-- invariant `stock source ≠ stock destination` propagé jusqu'à ACT ;
-- PAT-004 et VERB-004 restent Proposition / M2 ;
-- aucune consolidation transverse déclenchée.
+- invariant `stock source ≠ stock destination` propagé jusqu'à ACT.
 
 ## Version 1.12
 

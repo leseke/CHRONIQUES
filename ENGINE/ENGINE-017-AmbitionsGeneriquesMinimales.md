@@ -1,11 +1,12 @@
 # ENGINE-017 — Ambitions génériques minimales
 
-> Version : 1.1
-> Statut : Proposition
-> Maturité : 2
+> Version : 1.2
+> Statut : Validée
+> Maturité : 4
 > Bibliothèque : ENGINE
 > Dépendances : GDB-004A v1.3, GDB-004D v1.3, GDB-004F v1.2, ACT-002-H, ENGINE-010, ENGINE-016
-> Implémentation candidate : `CHRONIQUES-ENGINE`
+> Implémentation : `CHRONIQUES-ENGINE`
+> Validation : 291 / 291 tests réussis
 
 ---
 
@@ -251,7 +252,7 @@ La structure reste compatible avec une future modulation déterministe explicite
 
 ---
 
-# 14. Implémentation candidate
+# 14. Implémentation validée
 
 Fichiers ajoutés :
 
@@ -288,7 +289,7 @@ ENGINE-017 ne définit pas :
 
 ---
 
-# 16. Invariants
+# 16. Invariants validés
 
 - Aucun Type concret sans règle injectée.
 - `ObjectivePayload` reste opaque.
@@ -305,9 +306,9 @@ ENGINE-017 ne définit pas :
 
 ---
 
-# 17. QA candidate
+# 17. Validation QA
 
-Deux fichiers sont ajoutés :
+Deux fichiers ont été ajoutés :
 
 ```text
 Engine017AmbitionTests.cs
@@ -319,29 +320,44 @@ Engine017AmbitionInvariantTests.cs
 
 Soit **31 nouveaux tests**.
 
-Ils couvrent notamment : persistance, omission JSON, création, évaluation immédiate, absence de doublon, règle absente, Clamp du Progrès, accomplissement, abandon, suppression à Intensité 0, sélection, traitabilité, stabilité des égalités, absence de mutation par la source, ordre du composite et intégration complète `Tick → création → Ambition → Intent → Action`.
-
-Base validée :
+Base précédente :
 
 ```text
 260 / 260
 ```
 
-Total attendu avant validation locale :
+Validation locale confirmée :
 
 ```text
-291 / 291
+dotnet build
+→ succès
+
+dotnet test
+→ 291 / 291 tests réussis
+→ 0 échec
 ```
+
+Les 260 tests historiques restent donc verts et les 31 tests ENGINE-017 sont validés.
 
 ---
 
 # 18. Critère de validation
 
-ENGINE-017 pourra passer Validée / Maturité 4 lorsque le build réussit, que les 260 tests historiques restent verts et que les 31 tests candidats valident le framework sans introduire de Type concret ni nouveau Verbe ACT.
+Le critère est satisfait : le framework démontre création, persistance, évaluation déterministe du Progrès, accomplissement, abandon, arbitrage et production d'Intent sans introduire de Type concret ni nouveau Verbe ACT.
+
+ENGINE-017 est **Validée / Maturité 4**.
 
 ---
 
 # HISTORIQUE
+
+## Version 1.2
+
+- ENGINE-017 passe à **Validée / Maturité 4** ;
+- validation locale confirmée à **291 / 291 tests réussis** ;
+- les 260 tests historiques restent verts ;
+- création, Progrès, accomplissement, abandon, sélection et persistance confirmés ;
+- aucun Type concret, Trait, Opportunité PNJ ou nouveau Verbe ACT introduit.
 
 ## Version 1.1
 

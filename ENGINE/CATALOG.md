@@ -1,6 +1,6 @@
 # ENGINE — Catalogue
 
-> Version : 1.18
+> Version : 1.19
 > Statut : Foundation
 > Maturité : 1
 > Bibliothèque : ENGINE
@@ -34,23 +34,25 @@ ENGINE-010  Orchestration habitants autonomes        Validée / M4
 ENGINE-011  Décision autonome par besoins            Validée / M4
 ENGINE-012  Alimentation autonome minimale           Validée / M4
 ENGINE-013  Production autonome minimale             Validée / M4
-ENGINE-014  Circulation autonome minimale            Proposition / M2
+ENGINE-014  Circulation autonome minimale            Validée / M4
 ```
 
 ---
 
-# État validé avant ENGINE-014
+# Validation courante
 
 ```text
-201 / 201 tests réussis
+224 / 224 tests réussis
 ```
 
-Le moteur sait déjà relier :
+Le moteur relie maintenant :
 
 ```text
 besoins
 +
 production réelle
++
+circulation réelle entre habitants
 +
 consommation réelle
 ```
@@ -59,9 +61,9 @@ consommation réelle
 
 # ENGINE-014 — Circulation autonome minimale
 
-Statut : Proposition / Maturité 2.
+Statut : Validée / Maturité 4.
 
-Spécification courante : `ENGINE-014 v1.1`.
+Spécification : `ENGINE-014 v1.2`.
 
 Autorités métier :
 
@@ -71,14 +73,14 @@ GDB-005E v1.3
 GDB-005F v1.2
 ```
 
-Autorités ACT :
+Autorités ACT validées :
 
 ```text
 Échange
 ↓
-PAT-004 Transfert v1.1 — Proposition / M2
+PAT-004 Transfert v1.2 — Officiel / M4
 ↓
-VERB-004 Donner une denrée v1.1 — Proposition / M2
+VERB-004 Donner une denrée v1.2 — Officiel / M4
 ```
 
 Ordre autonome minimal :
@@ -108,7 +110,7 @@ IActionEffectApplicator
 World
 ```
 
-Nouvelles briques :
+Briques ajoutées :
 
 - `FoodProductComponent.ProductKindId` ;
 - `FoodTransferOpportunity` ;
@@ -121,7 +123,7 @@ Nouvelles briques :
 
 ---
 
-# Invariant de transfert
+# Invariant de transfert validé
 
 ```text
 source P -= q
@@ -154,7 +156,7 @@ Lorsqu'il est `null`, le champ est omis du JSON afin de conserver la compatibili
 
 ---
 
-# Scénario d'intégration cible
+# Scénario d'intégration validé
 
 ```text
 Tick N
@@ -174,11 +176,13 @@ stock B = 0
 Faim B ↑
 ```
 
-Le scénario doit fonctionner sans entrée joueur.
+Le scénario fonctionne sans entrée joueur.
 
 ---
 
-# Couverture QA pré-validation
+# Validation technique
+
+ENGINE-014 ajoute :
 
 ```text
 Engine014FoodTransferTests.cs
@@ -188,7 +192,7 @@ Engine014ActClassificationTests.cs
 → 1 test
 ```
 
-Nouveaux tests : **23**.
+Soit **23 nouveaux tests**.
 
 Base précédente :
 
@@ -196,23 +200,26 @@ Base précédente :
 201 / 201
 ```
 
-Total attendu :
+Validation locale confirmée :
 
 ```text
-224 / 224
-```
+dotnet build
+→ succès
 
-Aucun passage M4 ne sera enregistré avant confirmation locale.
+dotnet test
+→ 224 / 224 tests réussis
+→ 0 échec
+```
 
 ---
 
 # Frontière économique maintenue
 
-L'audit ciblé conclut :
+L'audit ciblé conclut toujours :
 
 ```text
 transfert volontaire de denrée
-→ autorisé
+→ autorisé et validé
 
 prix / monnaie / vente / troc réciproque / marché
 → bloqués
@@ -230,15 +237,23 @@ ENGINE-007 reste réservé aux ressources techniques du moteur et n'a aucun lien
 
 # Historique
 
+## Version 1.19
+
+- ENGINE-014 passe à **Validée / Maturité 4** ;
+- PAT-004 / VERB-004 passent à **Officiel / Maturité 4** ;
+- suite globale portée à **224 / 224 tests réussis** ;
+- scénario multi-habitants production → transfert → consommation confirmé ;
+- conservation, déterminisme et compatibilité JSON validés ;
+- frontière avec prix, monnaie, vente, troc réciproque et marché maintenue ;
+- aucune consolidation TECH/roadmap/README déclenchée automatiquement.
+
 ## Version 1.18
 
 - ENGINE-014 synchronisé avec GDB-005E v1.3 / GDB-005F v1.2 ;
-- PAT-004 / VERB-004 v1.1 enregistrés ;
 - invariant `stock source ≠ stock destination` propagé ;
 - compatibilité JSON de `ProductKindId` enregistrée ;
 - couverture QA fixée à 23 nouveaux tests ;
-- total attendu fixé à **224 / 224** ;
-- aucun passage M4 anticipé.
+- total attendu fixé à 224 avant validation.
 
 ## Version 1.17
 

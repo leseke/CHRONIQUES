@@ -1,6 +1,6 @@
 # VERBS — Catalogue des Verbes d'Actions
 
-> Version : 1.6
+> Version : 1.7
 > Statut : Active
 > Type : Sous-bibliothèque ACT
 > Maturité : 2
@@ -46,7 +46,8 @@ Transformation → PAT-003 Production → VERB-003
 ## VERB-004 — Donner une denrée
 
 ```text
-Proposition / M2
+Officiel / M4
+Validation : 224 / 224
 Intent : donner_denree
 Échange → PAT-004 Transfert → VERB-004
 ```
@@ -70,7 +71,7 @@ source -= q
 destination += q
 ```
 
-Source et destination doivent être deux stocks distincts du même produit.
+Source et destination sont deux stocks distincts du même produit.
 
 Le transfert ne restaure aucun besoin directement. Le destinataire peut ensuite utiliser VERB-002 — Manger si le produit devient accessible.
 
@@ -84,7 +85,7 @@ VERB-004 ne crée ni prix, monnaie, vente, troc réciproque, négociation ou eff
 VERB-001  Se reposer            Officiel / M4
 VERB-002  Manger                Officiel / M4
 VERB-003  Produire une denrée   Officiel / M4
-VERB-004  Donner une denrée     Proposition / M2
+VERB-004  Donner une denrée     Officiel / M4
 ```
 
 La sous-bibliothèque VERBS reste ouverte.
@@ -99,11 +100,17 @@ Chaque Verbe catalogué répond-il à un besoin GDB réel, spécialise-t-il exac
 
 # Historique
 
+## Version 1.7
+
+- VERB-004 passe à **Officiel / Maturité 4** ;
+- validation locale enregistrée à **224 / 224 tests réussis** ;
+- scénario production → transfert → alimentation entre habitants confirmé ;
+- VERBS reste ouverte.
+
 ## Version 1.6
 
 - VERB-004 synchronisé avec GDB-005E v1.3, GDB-005F v1.2 et PAT-004 v1.1 ;
-- invariant `stock source ≠ stock destination` enregistré ;
-- VERB-004 reste Proposition / Maturité 2 avant validation locale.
+- invariant `stock source ≠ stock destination` enregistré.
 
 ## Version 1.5
 

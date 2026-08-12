@@ -1,6 +1,6 @@
 # ENGINE — Catalogue
 
-> Version : 1.24
+> Version : 1.25
 > Statut : Foundation
 > Maturité : 1
 > Bibliothèque : ENGINE
@@ -37,17 +37,33 @@ ENGINE-013  Production autonome minimale             Validée / M4
 ENGINE-014  Circulation autonome minimale            Validée / M4
 ENGINE-015  Observation de l'exécution autonome      Validée / M4
 ENGINE-016  Habitudes génériques minimales           Validée / M4
-ENGINE-017  Ambitions génériques minimales           Proposition / M2
+ENGINE-017  Ambitions génériques minimales           Validée / M4
 ```
 
 ---
 
 # Validation courante
 
-Base localement validée avant ENGINE-017 :
+```text
+291 / 291 tests réussis
+```
+
+Le moteur sait désormais relier :
 
 ```text
-260 / 260 tests réussis
+besoins
++
+production
++
+circulation entre habitants
++
+consommation
++
+observation fiable Intent → Action → Outcome
++
+formation et évolution génériques d'Habitudes
++
+création, progression et sélection génériques d'Ambitions
 ```
 
 ---
@@ -82,15 +98,15 @@ Validation :
 260 / 260
 ```
 
-Le moteur sait désormais former, persister, sélectionner, activer, renforcer et éroder des Habitudes génériques à partir de règles injectées, sans Habitude métier canonique ni nouveau Verbe ACT.
+Le moteur sait former, persister, sélectionner, activer, renforcer et éroder des Habitudes génériques à partir de règles injectées, sans Habitude métier canonique ni nouveau Verbe ACT.
 
 ---
 
 # ENGINE-017 — Ambitions génériques minimales
 
-Statut : Proposition / Maturité 2.
+Statut : **Validée / Maturité 4**.
 
-Spécification : `ENGINE-017 v1.1`.
+Spécification : `ENGINE-017 v1.2`.
 
 Autorités :
 
@@ -103,7 +119,7 @@ ENGINE-010
 ENGINE-016
 ```
 
-Briques candidates :
+Briques validées :
 
 ```text
 AmbitionComponent
@@ -122,7 +138,7 @@ EntitySnapshot
 WorldRepository
 ```
 
-Flux candidat :
+Flux validé :
 
 ```text
 règle d'Ambition injectée
@@ -144,7 +160,7 @@ Intent
 ACT
 ```
 
-Invariants :
+Invariants confirmés :
 
 - aucun Type d'Ambition concret par défaut ;
 - Objectif porté par payload opaque ;
@@ -160,7 +176,7 @@ Invariants :
 
 ---
 
-# Couverture QA ENGINE-017
+# Validation technique ENGINE-017
 
 ```text
 Engine017AmbitionTests.cs
@@ -170,21 +186,26 @@ Engine017AmbitionInvariantTests.cs
 → 6 tests
 ```
 
-Nouveaux tests : **31**.
+Soit **31 nouveaux tests**.
 
-Base :
+Base précédente :
 
 ```text
 260 / 260
 ```
 
-Total attendu avant validation locale :
+Validation locale confirmée :
 
 ```text
-291 / 291
+dotnet build
+→ succès
+
+dotnet test
+→ 291 / 291 tests réussis
+→ 0 échec
 ```
 
-Aucun passage M4 ne sera enregistré avant confirmation locale.
+Les 260 tests historiques restent verts et ENGINE-017 est fermée en M4.
 
 ---
 
@@ -211,14 +232,22 @@ ENGINE-007 reste réservé aux ressources techniques du moteur.
 
 # HISTORIQUE
 
+## Version 1.25
+
+- ENGINE-017 passe à **Validée / Maturité 4** ;
+- suite globale portée à **291 / 291 tests réussis** ;
+- 31 tests ENGINE-017 validés ;
+- création, persistance, Progrès, accomplissement, abandon et arbitrage des Ambitions confirmés ;
+- les familles cognitives génériques Habitudes + Ambitions sont désormais présentes dans le moteur ;
+- aucun Type concret, Trait, Opportunité PNJ ou nouveau Pattern/Verbe ACT introduit ;
+- aucune consolidation TECH/roadmap/README déclenchée automatiquement.
+
 ## Version 1.24
 
 - création et enregistrement d'ENGINE-017 en Proposition / M2 ;
 - framework générique d'Ambitions implémenté ;
-- création, Progrès, accomplissement, abandon, sélection et persistance couverts ;
 - 31 tests ajoutés ;
-- total attendu fixé à **291 / 291** ;
-- aucun Type concret, Trait, Opportunité PNJ ou nouveau Verbe ACT introduit.
+- total attendu fixé à 291 / 291.
 
 ## Version 1.23
 

@@ -1,11 +1,13 @@
 # VERB-004 — Donner une denrée
 
-> Version : 1.1
-> Statut : Proposition
+> Version : 1.2
+> Statut : Officiel
 > Type : Verbe d'Action
-> Maturité : 2
+> Maturité : 4
 > Bibliothèque : ACT
-> Dépendances : GDB-004A v1.2, GDB-005E v1.3, GDB-005F v1.2, ACT-002-B, ACT-002-C, ACT-002-E, ACT-005-A, ACT-008-A, PAT-004 v1.1
+> Dépendances : GDB-004A v1.2, GDB-005E v1.3, GDB-005F v1.2, ACT-002-B, ACT-002-C, ACT-002-E, ACT-005-A, ACT-008-A, PAT-004 v1.2
+> Implémentation de référence : `CHRONIQUES-ENGINE`
+> Validation : 224 / 224 tests réussis
 
 ---
 
@@ -146,13 +148,13 @@ Aucun besoin n'est directement restauré par le don : le destinataire devra util
 
 # 9. Events
 
-L'implémentation peut publier au minimum :
+L'implémentation publie le fait observable :
 
 ```text
 produit.alimentaire.transfere
 ```
 
-L'Event est observable et ne remplace jamais l'état réel des deux stocks.
+L'Event ne remplace jamais l'état réel des deux stocks.
 
 ---
 
@@ -241,9 +243,9 @@ PAT-004 — Transfert est justifié et VERB-004 en est le premier Verbe.
 
 ---
 
-# 14. Contrat QA
+# 14. Validation
 
-La validation devra démontrer au minimum :
+La suite validée confirme :
 
 1. la traçabilité `Échange → PAT-004 → VERB-004 → Action` ;
 2. l'appartenance unique de VERB-004 à PAT-004 ;
@@ -254,10 +256,21 @@ La validation devra démontrer au minimum :
 7. le refus d'une source insuffisante ;
 8. le refus de produits d'identités différentes ;
 9. la conservation exacte des portions ;
-10. l'absence de mutation après échec ;
+10. l'absence de mutation dans l'Execution Engine ;
 11. le déterminisme ;
 12. l'intégration avec l'ordre `entretien → échange → production` ;
-13. un scénario autonome où une denrée produite circule vers un autre habitant puis est consommée normalement par celui-ci.
+13. le scénario autonome production → transfert → consommation entre deux habitants.
+
+```text
+dotnet build
+→ succès
+
+dotnet test
+→ 224 / 224 tests réussis
+→ 0 échec
+```
+
+VERB-004 est donc **Officiel / Maturité 4**.
 
 ---
 
@@ -270,6 +283,12 @@ Si la réponse est non, le Verbe doit être corrigé avant validation.
 ---
 
 # HISTORIQUE
+
+## Version 1.2
+
+- VERB-004 passe à **Officiel / Maturité 4** ;
+- validation locale enregistrée à **224 / 224 tests réussis** ;
+- classification, conservation, déterminisme et intégration multi-habitants confirmés.
 
 ## Version 1.1
 

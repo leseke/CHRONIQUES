@@ -1,11 +1,12 @@
 # ENGINE-016 — Habitudes génériques minimales
 
-> Version : 1.1
-> Statut : Proposition
-> Maturité : 2
+> Version : 1.2
+> Statut : Validée
+> Maturité : 4
 > Bibliothèque : ENGINE
 > Dépendances : GDB-004A v1.3, GDB-004D v1.3, GDB-004E v1.2, ACT-002-H, ENGINE-010, ENGINE-015
-> Implémentation candidate : `CHRONIQUES-ENGINE`
+> Implémentation : `CHRONIQUES-ENGINE`
+> Validation : 260 / 260 tests réussis
 
 ---
 
@@ -13,7 +14,7 @@
 
 Implémenter le premier framework générique d'Habitudes sans inventer une Habitude métier concrète.
 
-Le moteur doit pouvoir :
+Le moteur sait désormais :
 
 ```text
 Intent réellement exécuté dans un contexte déterministe
@@ -188,7 +189,7 @@ currentTick - observedTick < WindowTicks
 
 Les observations plus anciennes sont retirées avant comptage.
 
-Contraintes du premier lot :
+Contraintes validées du premier lot :
 
 - `RequiredRepetitions > 0` ;
 - `WindowTicks > 0` ;
@@ -382,7 +383,7 @@ ENGINE-016 n'implémente pas encore les Ambitions.
 
 ---
 
-# 14. Implémentation candidate
+# 14. Implémentation validée
 
 Fichiers ajoutés :
 
@@ -426,7 +427,7 @@ ENGINE-016 ne définit pas :
 
 ---
 
-# 16. Invariants
+# 16. Invariants validés
 
 - Aucune Habitude concrète n'est créée sans règle injectée.
 - Une règle absente ne produit aucun faux Intent.
@@ -445,9 +446,9 @@ ENGINE-016 ne définit pas :
 
 ---
 
-# 17. QA candidate
+# 17. Validation QA
 
-Deux fichiers de tests sont ajoutés :
+Deux fichiers de tests couvrent ENGINE-016 :
 
 ```text
 Engine016HabitTests.cs
@@ -484,35 +485,45 @@ Ils couvrent notamment :
 21. rejet d'une érosion croissante ;
 22. scénario complet `répétition → formation → HabitIntentSource → Action`.
 
-Base validée :
+Base précédente :
 
 ```text
 233 / 233
 ```
 
-Total attendu avant validation locale :
+Validation locale confirmée :
 
 ```text
-260 / 260
+dotnet build
+→ succès
+
+dotnet test
+→ 260 / 260 tests réussis
+→ 0 échec
 ```
+
+Les 233 tests historiques restent donc verts et les 27 tests ENGINE-016 sont validés.
 
 ---
 
 # 18. Critère de validation
 
-ENGINE-016 pourra passer Validée / Maturité 4 lorsque :
+Le critère est satisfait : le moteur démontre, avec uniquement des règles factices de test, la persistance, la formation déterministe, la sélection, l'activation, le renforcement, l'érosion et la réutilisation d'une Habitude via ACT sans introduire une Habitude métier canonique ni un nouveau Verbe.
 
-- le build réussit ;
-- les 233 tests historiques restent verts ;
-- les 27 nouveaux tests sont verts ;
-- le round-trip de persistance est confirmé ;
-- la formation et l'arbitrage sont déterministes ;
-- activation, renforcement et érosion respectent leurs frontières ;
-- le scénario complet fonctionne sans introduire une Habitude canonique ni un nouveau Verbe.
+ENGINE-016 est **Validée / Maturité 4**.
 
 ---
 
 # HISTORIQUE
+
+## Version 1.2
+
+- ENGINE-016 passe à **Validée / Maturité 4** ;
+- validation locale confirmée à **260 / 260 tests réussis** ;
+- les 233 tests historiques restent verts ;
+- 27 tests ENGINE-016 validés ;
+- persistance, formation, arbitrage, activation, renforcement, érosion et scénario bout-en-bout confirmés ;
+- aucune Habitude métier canonique ni nouveau Pattern/Verbe ACT introduits.
 
 ## Version 1.1
 

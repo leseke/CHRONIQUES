@@ -1,6 +1,6 @@
 # ENGINE — Catalogue
 
-> Version : 1.19
+> Version : 1.20
 > Statut : Foundation
 > Maturité : 1
 > Bibliothèque : ENGINE
@@ -35,233 +35,203 @@ ENGINE-011  Décision autonome par besoins            Validée / M4
 ENGINE-012  Alimentation autonome minimale           Validée / M4
 ENGINE-013  Production autonome minimale             Validée / M4
 ENGINE-014  Circulation autonome minimale            Validée / M4
+ENGINE-015  Observation de l'exécution autonome      Proposition / M2
 ```
 
 ---
 
 # Validation courante
 
+Base localement validée avant ENGINE-015 :
+
 ```text
 224 / 224 tests réussis
 ```
 
-Le moteur relie maintenant :
+Le moteur sait déjà relier besoins, production, circulation et consommation sans entrée joueur.
+
+---
+
+# Arbitrage GDB courant
+
+Depuis la synchronisation GDB-004A v1.3 :
 
 ```text
-besoins
-+
-production réelle
-+
-circulation réelle entre habitants
-+
-consommation réelle
+besoins physiologiques actionnables
+↓
+transfert volontaire exécutable
+↓
+activité productive exécutable
+↓
+Habitudes actives
+↓
+Ambitions candidates
+↓
+aucun Intent
 ```
+
+ENGINE-014 reste valide : GDB-004A v1.3 conserve intégralement ses trois premières familles et ajoute les familles cognitives après la production.
 
 ---
 
 # ENGINE-014 — Circulation autonome minimale
 
-Statut : Validée / Maturité 4.
+Statut : Validée / M4.
 
-Spécification : `ENGINE-014 v1.2`.
-
-Autorités métier :
+Validation :
 
 ```text
-GDB-004A v1.2
-GDB-005E v1.3
-GDB-005F v1.2
+224 / 224
 ```
 
-Autorités ACT validées :
+Chaîne validée :
 
 ```text
-Échange
+ressource
 ↓
-PAT-004 Transfert v1.2 — Officiel / M4
+production par A
 ↓
-VERB-004 Donner une denrée v1.2 — Officiel / M4
+stock A
+↓
+transfert volontaire A → B
+↓
+stock B
+↓
+consommation par B
 ```
 
-Ordre autonome minimal :
-
-```text
-1. entretien actionnable
-2. transfert volontaire exécutable
-3. production exécutable
-4. aucun Intent
-```
-
-Flux moteur :
-
-```text
-CompositeAutonomousIntentSource
-↓
-Intent
-↓
-CompositePlanner
-↓
-PipelineRunner inchangé
-↓
-CompositeExecutionEngine
-↓
-IActionEffectApplicator
-↓
-World
-```
-
-Briques ajoutées :
-
-- `FoodProductComponent.ProductKindId` ;
-- `FoodTransferOpportunity` ;
-- `IVoluntaryFoodTransferResolver` ;
-- `VoluntaryFoodTransferIntentSource` ;
-- `DonnerDenreeDefinition` ;
-- `FoodTransferPlanner` ;
-- `FoodTransferExecutionEngine` ;
-- `FoodTransferActionEffectApplicator`.
+La frontière commerciale reste inchangée : prix, monnaie, vente, troc réciproque et marché ne sont pas implémentés.
 
 ---
 
-# Invariant de transfert validé
+# ENGINE-015 — Observation de l'exécution autonome
+
+Statut : Proposition / Maturité 2.
+
+Spécification : `ENGINE-015 v1.0`.
+
+Autorités :
 
 ```text
-source P -= q
-destination P += q
+GDB-004A v1.3
+GDB-004E v1.2
+GDB-004F v1.2
+ACT-002-H
+ENGINE-006
+ENGINE-010 à ENGINE-014
 ```
 
-avec :
+Problème traité :
 
-- `q > 0` ;
-- donneur ≠ destinataire ;
-- stock source ≠ stock destination ;
-- identité `ProductKindId` non vide et identique ;
-- représentation alimentaire compatible ;
-- source suffisamment disponible ;
-- conservation exacte des portions ;
-- aucun besoin restauré directement ;
-- aucun prix ou paiement implicite.
+```text
+AutonomousActionSystem
+↓
+IAutonomousIntentExecutor.Execute(...)
+↓
+void
+```
 
-L'Execution Engine ne mute pas le World.
+Le contrat historique masque l'Action et son Outcome aux futurs systèmes d'apprentissage.
 
-L'applicateur revalide l'opportunité et les Cibles avant mutation puis applique le transfert avec contrôle d'overflow.
+ENGINE-015 ajoute sans casser ce contrat :
+
+- `IAutonomousIntentExecutionObserver` ;
+- `PipelineAutonomousIntentExecutor`.
+
+Flux :
+
+```text
+Intent autonome
+↓
+BeforeExecution
+↓
+PipelineRunner.Execute
+├── exception → ExecutionAborted → rethrow
+└── Action terminée
+    ↓
+    AfterExecution
+```
+
+Invariants :
+
+- `IAutonomousIntentExecutor` inchangé ;
+- `AutonomousActionSystem` inchangé ;
+- `PipelineRunner` inchangé ;
+- ACT `Intent` inchangé ;
+- contexte pré-Effects observable ;
+- Action archivée + Outcome post-Effects observables ;
+- échec métier normal observé par `AfterExecution` ;
+- exception technique observée par `ExecutionAborted` puis relancée ;
+- aucun comportement d'Habitude ou d'Ambition inventé.
 
 ---
 
-# Persistance
+# Couverture QA ENGINE-015
 
-`ProductKindId` est persisté avec `FoodProductComponent`.
+Nouveau fichier :
 
-Lorsqu'il est `null`, le champ est omis du JSON afin de conserver la compatibilité de forme avec les anciens produits.
+```text
+Engine015AutonomousExecutionObservationTests.cs
+→ 9 tests
+```
+
+Base :
+
+```text
+224 / 224
+```
+
+Total attendu avant validation locale :
+
+```text
+233 / 233
+```
+
+Aucun passage M4 ne sera enregistré avant confirmation locale.
 
 ---
 
-# Scénario d'intégration validé
+# Frontière avec les Habitudes
 
-```text
-Tick N
-A produit une denrée
-↓
-stock A = 1
+ENGINE-015 prépare GDB-004E mais ne crée pas encore :
 
-Tick N+1
-A donne la denrée à B
-↓
-stock A = 0
-stock B = 1
-↓
-B, traité ensuite, mange
-↓
-stock B = 0
-Faim B ↑
-```
+- `HabitComponent` ;
+- Déclencheur concret ;
+- Signature de formation concrète ;
+- formation ;
+- renforcement ;
+- érosion.
 
-Le scénario fonctionne sans entrée joueur.
-
----
-
-# Validation technique
-
-ENGINE-014 ajoute :
-
-```text
-Engine014FoodTransferTests.cs
-→ 22 tests
-
-Engine014ActClassificationTests.cs
-→ 1 test
-```
-
-Soit **23 nouveaux tests**.
-
-Base précédente :
-
-```text
-201 / 201
-```
-
-Validation locale confirmée :
-
-```text
-dotnet build
-→ succès
-
-dotnet test
-→ 224 / 224 tests réussis
-→ 0 échec
-```
-
----
-
-# Frontière économique maintenue
-
-L'audit ciblé conclut toujours :
-
-```text
-transfert volontaire de denrée
-→ autorisé et validé
-
-prix / monnaie / vente / troc réciproque / marché
-→ bloqués
-```
-
-ENGINE-014 n'introduit donc aucun solde monétaire, coefficient de prix, négociation ou contrepartie automatique.
+Il permet uniquement à un futur système autorisé de distinguer le contexte avant Action du résultat réel après Action.
 
 ---
 
 # ENGINE-007
 
-ENGINE-007 reste réservé aux ressources techniques du moteur et n'a aucun lien avec les stocks économiques.
+ENGINE-007 reste réservé aux ressources techniques du moteur et n'a aucun lien avec les ressources économiques ou les Habitudes.
 
 ---
 
-# Historique
+# HISTORIQUE
+
+## Version 1.20
+
+- création et enregistrement d'ENGINE-015 en Proposition / M2 ;
+- ajout de la frontière d'observation avant/après/abandon autour du pipeline autonome ;
+- 9 tests ajoutés, total attendu **233 / 233** ;
+- aucune modification des contrats historiques d'ENGINE-010 ou d'ACT ;
+- aucun passage M4 anticipé.
 
 ## Version 1.19
 
-- ENGINE-014 passe à **Validée / Maturité 4** ;
-- PAT-004 / VERB-004 passent à **Officiel / Maturité 4** ;
-- suite globale portée à **224 / 224 tests réussis** ;
-- scénario multi-habitants production → transfert → consommation confirmé ;
-- conservation, déterminisme et compatibilité JSON validés ;
-- frontière avec prix, monnaie, vente, troc réciproque et marché maintenue ;
-- aucune consolidation TECH/roadmap/README déclenchée automatiquement.
+- ENGINE-014 validée / M4 ;
+- suite portée à 224 / 224 ;
+- PAT-004 / VERB-004 validés ;
+- circulation autonome entre habitants confirmée.
 
-## Version 1.18
+## Versions 1.16 à 1.18
 
-- ENGINE-014 synchronisé avec GDB-005E v1.3 / GDB-005F v1.2 ;
-- invariant `stock source ≠ stock destination` propagé ;
-- compatibilité JSON de `ProductKindId` enregistrée ;
-- couverture QA fixée à 23 nouveaux tests ;
-- total attendu fixé à 224 avant validation.
-
-## Version 1.17
-
-- ajout du test de classification ACT ; total attendu corrigé à 224.
-
-## Version 1.16
-
-- création d'ENGINE-014 en Proposition / M2.
+- création, QA et synchronisation d'ENGINE-014.
 
 ## Version 1.15
 
@@ -270,3 +240,7 @@ ENGINE-007 reste réservé aux ressources techniques du moteur et n'a aucun lien
 ## Versions 1.0 à 1.14
 
 - construction progressive des fondations et de l'autonomie jusqu'à la production minimale.
+
+---
+
+Fin du document

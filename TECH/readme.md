@@ -1,6 +1,6 @@
 # TECH
 
-> Version : 1.6  
+> Version : 1.5  
 > Statut : Active  
 > Type : Bibliothèque  
 > Maturité : 2  
@@ -225,16 +225,12 @@ TECH-006  ✅ Cognition autonome générique
 
 # Historique
 
-## Version 1.6
+## Version 1.5
 
 - ajout de TECH-005 et TECH-006 au point de consolidation suivant ENGINE-017 ;
 - documentation des lots ENGINE-013 à ENGINE-017 jusque-là non consolidés dans TECH ;
 - validation globale de référence portée à 291 / 291 ;
 - nombre de documents numérotés porté à 6.
-
-## Version 1.5
-
-- réservée implicitement par la progression documentaire entre les consolidations ; aucun état officiel distinct n'avait été publié.
 
 ## Version 1.4
 

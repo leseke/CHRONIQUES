@@ -1,6 +1,6 @@
 # ENGINE — Catalogue
 
-> Version : 1.25
+> Version : 1.26
 > Statut : Foundation
 > Maturité : 1
 > Bibliothèque : ENGINE
@@ -11,7 +11,7 @@
 
 # Objectif
 
-Ce catalogue est la source canonique pour la bibliothèque ENGINE.
+Ce catalogue est la source canonique de la bibliothèque ENGINE.
 
 ENGINE décrit l'architecture attendue du moteur. Les règles métier restent définies dans leurs autorités amont.
 
@@ -45,30 +45,19 @@ ENGINE-017  Ambitions génériques minimales           Validée / M4
 # Validation courante
 
 ```text
-291 / 291 tests réussis
-```
+dotnet build
+→ succès
 
-Le moteur sait désormais relier :
-
-```text
-besoins
-+
-production
-+
-circulation entre habitants
-+
-consommation
-+
-observation fiable Intent → Action → Outcome
-+
-formation et évolution génériques d'Habitudes
-+
-création, progression et sélection génériques d'Ambitions
+dotnet test
+→ 291 / 291 tests réussis
+→ 0 échec
 ```
 
 ---
 
-# Arbitrage GDB courant
+# Chaîne autonome consolidée
+
+GDB-004A v1.3 fait autorité sur l'ordre courant :
 
 ```text
 besoins physiologiques actionnables
@@ -84,179 +73,173 @@ Ambitions candidates
 aucun Intent
 ```
 
-GDB-004A v1.3 reste l'autorité sur cet ordre. Force et Intensité restent internes à leurs familles.
+Le moteur possède désormais les briques correspondant à chacune de ces familles sans score universel inter-familles.
 
 ---
 
-# ENGINE-016 — Habitudes génériques minimales
+# Bloc économique matériel
 
-Statut : Validée / M4.
-
-Validation :
+## ENGINE-013 — Production autonome minimale
 
 ```text
-260 / 260
+ressource réelle
+↓
+ProductionOperation
+↓
+produire_denree
+↓
+stock alimentaire
++
+provenance
 ```
 
-Le moteur sait former, persister, sélectionner, activer, renforcer et éroder des Habitudes génériques à partir de règles injectées, sans Habitude métier canonique ni nouveau Verbe ACT.
+Validation initiale : `201 / 201`.
+
+## ENGINE-014 — Circulation autonome minimale
+
+```text
+stock A
+↓
+donner_denree
+↓
+stock B
+↓
+manger
+```
+
+Validation initiale : `224 / 224`.
+
+Documentation TECH consolidée :
+
+```text
+TECH-005 — Production et circulation autonomes
+```
 
 ---
 
-# ENGINE-017 — Ambitions génériques minimales
+# Bloc cognitif générique
 
-Statut : **Validée / Maturité 4**.
-
-Spécification : `ENGINE-017 v1.2`.
-
-Autorités :
+## ENGINE-015 — Observation de l'exécution autonome
 
 ```text
-GDB-004A v1.3
-GDB-004D v1.3
-GDB-004F v1.2
-ACT-002-H
-ENGINE-010
-ENGINE-016
-```
-
-Briques validées :
-
-```text
-AmbitionComponent
-AmbitionState
-AmbitionCreationCandidate
-AmbitionEvaluation
-IAmbitionRule
-AmbitionEvolutionSystem
-AmbitionIntentSource
-```
-
-Persistance étendue :
-
-```text
-EntitySnapshot
-WorldRepository
-```
-
-Flux validé :
-
-```text
-règle d'Ambition injectée
-↓
-création déterministe
-↓
-Ambition persistante
-↓
-évaluation du Progrès
-↓
-Ambition candidate
-↓
-Intensité → Progrès → ancienneté
-↓
-AmbitionIntentSource
-↓
 Intent
 ↓
-ACT
+BeforeExecution
+↓
+Action / Outcome
+↓
+AfterExecution ou ExecutionAborted
 ```
 
-Invariants confirmés :
+Validation initiale : `233 / 233`.
 
-- aucun Type d'Ambition concret par défaut ;
-- Objectif porté par payload opaque ;
-- identité technique `AmbitionTypeId + InstanceKey` ;
-- aucune duplication ;
-- Progrès et Intensité bornés `[0,100]` ;
-- Intensité 0 supprimée par l'évolution ;
-- accomplissement et abandon non candidats ;
-- règle absente ou Intent non traitable : aucun faux Intent ;
-- sélection Intensité → Progrès → ancienneté ;
-- source d'Intent sans mutation du World ;
-- aucun PersonalityComponent, Opportunité PNJ, nouveau Pattern ou Verbe ACT.
+## ENGINE-016 — Habitudes génériques minimales
+
+Le moteur sait former, persister, sélectionner, activer, renforcer et éroder des Habitudes à partir de règles injectées, sans Habitude métier canonique.
+
+Validation initiale : `260 / 260`.
+
+## ENGINE-017 — Ambitions génériques minimales
+
+Le moteur sait créer, persister, évaluer, accomplir/abandonner et sélectionner des Ambitions à partir de Types injectés, sans Type métier canonique.
+
+Validation initiale : `291 / 291`.
+
+Documentation TECH consolidée :
+
+```text
+TECH-006 — Cognition autonome générique
+```
 
 ---
 
-# Validation technique ENGINE-017
+# Persistance étendue
+
+Le World persiste maintenant notamment :
 
 ```text
-Engine017AmbitionTests.cs
-→ 25 tests
-
-Engine017AmbitionInvariantTests.cs
-→ 6 tests
+FoodProductComponent
+ResourceStockComponent
+ProductionProvenanceComponent
+HabitComponent
+AmbitionComponent
 ```
 
-Soit **31 nouveaux tests**.
+Les resolvers, rules, policies et registres runtime restent hors sauvegarde.
 
-Base précédente :
+---
+
+# ACT concret validé
 
 ```text
-260 / 260
+Entretien → PAT-001 Repos → VERB-001 Se reposer
+Entretien → PAT-002 Alimentation → VERB-002 Manger
+Transformation → PAT-003 Production → VERB-003 Produire une denrée
+Échange → PAT-004 Transfert → VERB-004 Donner une denrée
 ```
 
-Validation locale confirmée :
+ENGINE-015/016/017 n'ajoutent aucun Pattern ou Verbe : Habitudes et Ambitions produisent des Intents dirigés vers les Actions déjà traitables.
+
+---
+
+# Point de consolidation
+
+Le jalon ENGINE-013 à ENGINE-017 est consolidé par :
 
 ```text
-dotnet build
-→ succès
-
-dotnet test
-→ 291 / 291 tests réussis
-→ 0 échec
+TECH-005
+TECH-006
+AUDIT/AUDIT-MONDE-VIVANT-AUTONOMIE-Consolidation.md
 ```
 
-Les 260 tests historiques restent verts et ENGINE-017 est fermée en M4.
+Le contrôle confirme la concordance GDB → ACT → ENGINE → code → tests → TECH.
 
 ---
 
 # Frontières restantes
 
-Le moteur ne fournit encore :
+Ne sont pas encore implémentés comme capacités génériques validées :
 
-- aucun Type concret d'Ambition ;
-- aucun PersonalityComponent ;
-- aucun mapping Trait/Ambition concret ;
-- aucune formule universelle d'évolution de l'Intensité ;
-- aucune Opportunité PNJ générique ;
-- aucune fairness inter-familles.
+- `PersonalityComponent` et évolution des Traits ;
+- mappings Trait/Habitude et Trait/Ambition ;
+- Habitudes narratives concrètes ;
+- Types d'Ambitions concrets ;
+- prix, monnaie, vente et marché ;
+- Mémoire du Monde opérationnelle ;
+- événements mondiaux autonomes complets ;
+- fairness inter-familles ;
+- autonomie crédible sur plusieurs générations achevée.
 
-Les frontières commerciales de prix, monnaie, vente, troc réciproque et marché restent également inchangées.
-
----
-
-# ENGINE-007
-
-ENGINE-007 reste réservé aux ressources techniques du moteur.
+ENGINE-007 reste réservé au Resource Manager technique et demeure non créé.
 
 ---
 
-# HISTORIQUE
+# Historique
+
+## Version 1.26
+
+- consolidation documentaire du jalon ENGINE-013 à ENGINE-017 ;
+- enregistrement de TECH-005 et TECH-006 ;
+- audit de jalon autonomie productive et cognitive ajouté ;
+- validation courante confirmée à 291 / 291 ;
+- prochaine frontière cognitive identifiée : personnalité générique, après audit de GDB-004D.
 
 ## Version 1.25
 
-- ENGINE-017 passe à **Validée / Maturité 4** ;
-- suite globale portée à **291 / 291 tests réussis** ;
-- 31 tests ENGINE-017 validés ;
-- création, persistance, Progrès, accomplissement, abandon et arbitrage des Ambitions confirmés ;
-- les familles cognitives génériques Habitudes + Ambitions sont désormais présentes dans le moteur ;
-- aucun Type concret, Trait, Opportunité PNJ ou nouveau Pattern/Verbe ACT introduit ;
-- aucune consolidation TECH/roadmap/README déclenchée automatiquement.
+- ENGINE-017 validée / M4 à 291 / 291 ;
+- Habitudes + Ambitions génériques présentes dans le moteur.
 
 ## Version 1.24
 
-- création et enregistrement d'ENGINE-017 en Proposition / M2 ;
-- framework générique d'Ambitions implémenté ;
-- 31 tests ajoutés ;
-- total attendu fixé à 291 / 291.
+- ENGINE-017 ouverte en Proposition / M2.
 
 ## Version 1.23
 
-- ENGINE-016 validée / M4 à 260 / 260 ;
-- framework générique d'Habitudes fermé.
+- ENGINE-016 validée / M4 à 260 / 260.
 
 ## Version 1.22
 
-- création d'ENGINE-016.
+- ENGINE-016 ouverte.
 
 ## Version 1.21
 
@@ -264,7 +247,7 @@ ENGINE-007 reste réservé aux ressources techniques du moteur.
 
 ## Version 1.20
 
-- création d'ENGINE-015.
+- ENGINE-015 ouverte.
 
 ## Versions 1.0 à 1.19
 

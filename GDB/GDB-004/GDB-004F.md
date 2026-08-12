@@ -1,221 +1,260 @@
-GDB-004F --- Les Ambitions
+# GDB-004F --- Les Ambitions
 
-Version : 1.1
-Statut : Officiel
-Type : Population du Monde
-Maturité : 2
-Bibliothèque : GDB
-⸻
+> Version : 1.2
+> Statut : Officiel
+> Type : Population du Monde
+> Maturité : 2
+> Bibliothèque : GDB
 
+---
 
-OBJECTIF
+# OBJECTIF
 
-Définir les principes qui gouvernent les ambitions des habitants de
-Chroniques, avec une précision suffisante pour être implémentées sans
-interprétation (MASTER-007, Maturité 2).
+Définir un modèle d'Ambitions implémentable sans que le moteur générique invente la création d'un objectif, son évaluation ou sa progression.
 
-Les ambitions donnent une direction de vie durable aux habitants et
-expliquent une grande partie de leurs décisions à long terme.
-⸻
-PRINCIPE
+---
 
-Chaque habitant poursuit des ambitions qui lui sont propres.
+# PRINCIPE
 
-Elles peuvent être modestes ou très importantes.
+Une Ambition est une direction de vie durable : un état futur désiré qui peut orienter des décisions sur plusieurs Ticks.
 
-Aucune ambition n'est universelle.
-⸻
-DÉFINITION
+Elle n'est ni un besoin urgent ni une Habitude contextuelle.
 
-Une Ambition est une direction de vie relativement durable : un état
-futur désiré que l'habitant cherche à atteindre sur plusieurs Ticks,
-voire plusieurs générations. Elle ne décrit pas un comportement
-contextuel immédiat (c'est le rôle des Habitudes, GDB-004E) ni un
-besoin urgent (GDB-004B), mais une aspiration qui oriente les décisions
-lorsque les besoins urgents et les Habitudes ne dictent pas de réponse
-immédiate.
+Une Ambition produit au maximum un Intent et ne matérialise jamais directement l'état futur recherché.
 
-FRONTIÈRE AVEC GDB-004E (HABITUDES) : une Habitude est un comportement
-acquis par répétition, contextuel et à déclencheur immédiat. Une Ambition
-est une aspiration durable, sans déclencheur contextuel strict. Une
-Habitude peut avoir été formée en réponse à une Ambition, mais elle ne
-la représente pas. GDB-004E reste l'autorité sur les comportements
-routiniers ; ce document sur les directions de vie.
+---
 
-FRONTIÈRE AVEC GDB-004B (BESOINS) : un Besoin est un état courant qui
-déclenche un Intent urgent lorsqu'il est sous-satisfait. Une Ambition
-est un désir de progression qui génère des Intents même lorsque les
-besoins sont satisfaits. GDB-004B reste l'autorité sur les besoins
-physiologiques urgents.
-⸻
-MODÈLE
+# MODÈLE
 
-Chaque Ambition d'un habitant possède cinq attributs :
+Chaque Ambition possède :
 
-- **Objectif.** L'état futur désiré, exprimé de façon identifiable dans
-  le World : « posséder un logement », « atteindre le Niveau 80 en
-  cuisine », « établir une relation de Force > 70 avec l'habitant X »,
-  « accumuler N portions d'un produit ». L'objectif doit pouvoir être
-  évalué comme atteint ou non à chaque Tick --- c'est ce qui permet à
-  l'Ambition de produire un Intent orienté plutôt qu'un comportement
-  vague.
+- **Type d'Ambition** : identifie la règle concrète qui définit sa création, son évaluateur d'objectif et son calcul de Progrès ;
+- **Objectif** : données concrètes décrivant l'état futur désiré ;
+- **Intensité** : valeur continue bornée de 0 à 100 ;
+- **Progrès** : valeur continue bornée de 0 à 100 ;
+- **Objectif d'Intent** : objectif soumis à ACT lorsqu'elle est sélectionnée ;
+- **Tick de création**.
 
-- **Intensité.** Valeur continue bornée entre 0 et 100. Elle exprime
-  la force du désir : à Intensité élevée, l'Ambition produit un Intent
-  même lorsque l'objectif est encore très loin ; à Intensité basse,
-  elle ne se manifeste que si aucune autre source d'Intent n'est
-  exécutable. L'Intensité n'est pas la priorité de l'Ambition dans la
-  chaîne GDB-004A --- les besoins urgents restent toujours prioritaires
-  --- mais son poids interne parmi les Ambitions concurrentes.
+Le moteur générique ne déduit jamais le Type d'Ambition à partir d'un texte libre.
 
-- **Progrès.** Valeur continue bornée entre 0 et 100, représentant la
-  distance parcourue vers l'objectif. 0 = début, 100 = objectif atteint.
-  Le Progrès est mis à jour à chaque Tick où l'état du World est
-  évalué contre l'objectif. Il n'est jamais calculé par l'Ambition
-  elle-même --- c'est le System responsable des Ambitions qui lit l'état
-  du World et met à jour le Progrès.
+---
 
-- **Intent produit.** L'objectif que l'Ambition soumet au pipeline ACT
-  si elle est activée. Conforme au contrat Intent ordinaire : acteur,
-  objectif, priorité. L'Ambition ne produit jamais directement une
-  Action Instance [réf: ACT-002].
+# RÈGLE CONCRÈTE D'AMBITION
 
-- **Tick de création.** Le Tick auquel l'Ambition est née. Sert au
-  tie-break déterministe entre Ambitions de même Intensité.
-⸻
-ORIGINE DES AMBITIONS
+Chaque Type d'Ambition autorisé doit fournir une règle déterministe contenant au minimum :
 
-Les ambitions naissent de l'interaction entre :
+1. les conditions de création de ce type d'Ambition ;
+2. la structure de ses données d'Objectif ;
+3. un évaluateur capable de déterminer si l'objectif est atteint ;
+4. une fonction déterministe produisant le Progrès `0..100` à partir du World et de l'Objectif ;
+5. l'Objectif d'Intent que cette Ambition peut produire ;
+6. les conditions qui rendent cet Intent actuellement traitable.
 
-- la personnalité [réf: GDB-004D] ;
-- les besoins [réf: GDB-004B] ;
-- les expériences vécues ;
-- la culture [réf: GDB-009D, GDB-009E] ;
-- les opportunités [réf: GDB-002E] ;
-- les relations [réf: GDB-004C].
+Exemples conceptuels possibles : logement, niveau de Compétence, relation ou stock de produit. **Ces exemples ne constituent pas à eux seuls des Types implémentables.** Leur règle concrète doit exister avant ENGINE.
 
-Une Ambition n'est jamais imposée par le moteur. Elle émerge de l'état
-du World et de l'histoire de l'habitant. Le moteur peut créer une
-Ambition lorsqu'une combinaison de conditions la rend plausible, mais
-la règle de déclenchement de création appartient aux documents qui
-spécifient chaque type d'Ambition concret --- pas à ce document.
-⸻
-ÉVOLUTION
-
-**Renforcement.** Un événement significatif [réf: GDB-002B] cohérent
-avec l'Ambition peut augmenter son Intensité. Un succès partiel vers
-l'objectif renforce sans saturer.
-
-**Affaiblissement.** Un événement significatif contraire (échec majeur,
-perte d'un prérequis, changement de vie) peut diminuer l'Intensité.
-Si l'Intensité atteint 0, l'Ambition disparaît.
-
-**Accomplissement.** Lorsque le Progrès atteint 100, l'Ambition est
-considérée comme accomplie et disparaît. Sa disparition peut déclencher
-la naissance d'une nouvelle Ambition plus élevée (progression vers un
-objectif supérieur) ou simplement laisser de l'espace à d'autres
-Ambitions. Ce comportement n'est pas automatique --- il dépend de
-règles spécifiques à chaque type d'Ambition.
-
-**Abandon.** L'habitant peut abandonner une Ambition si les conditions
-de sa vie la rendent durablement inatteignable. L'abandon est un
-événement identifiable, jamais une dérive silencieuse (invariant partagé
-avec GDB-004D et GDB-004E).
-
-L'Intensité reste toujours bornée entre 0 et 100 (Clamp).
-⸻
-ARBITRAGE AVEC LES AUTRES SOURCES D'INTENT
-
-Une Ambition est une source d'Intent parmi d'autres, placée après les
-besoins urgents, les opportunités économiques et les Habitudes dans la
-chaîne définie par GDB-004A :
-
+```text
+Type concret absent
+→ Ambition non créable par le moteur générique
 ```
-besoins physiologiques urgents (GDB-004B)
+
+---
+
+# PROGRÈS
+
+`Progrès = 0` représente le début de la progression et `Progrès = 100` l'objectif atteint.
+
+Le System compétent évalue le Progrès en lisant le World via la règle du Type d'Ambition.
+
+Il est interdit au moteur générique d'inventer une formule universelle de distance entre l'état actuel et un objectif quelconque.
+
+À World, Objectif, Type et configuration identiques, le même Progrès doit être produit.
+
+---
+
+# CRÉATION
+
+Une Ambition n'est jamais créée simplement parce qu'un objectif paraît plausible.
+
+Sa création exige les conditions déterministes définies par son Type concret.
+
+Les données suivantes peuvent être lues par un Type lorsqu'une autorité applicable le prévoit :
+
+- personnalité ;
+- besoins ;
+- expériences et événements du World ;
+- culture ;
+- relations ;
+- autres données explicitement autorisées.
+
+**GDB-002E reste l'autorité sur les Opportunités offertes au joueur et n'est pas réutilisé silencieusement comme source de création d'Ambitions PNJ.**
+
+Une future notion d'Opportunité PNJ devra disposer de sa propre autorité.
+
+---
+
+# CANDIDATURE
+
+Une Ambition est candidate si :
+
+```text
+Ambition existante
++
+Intensité > 0
++
+Progrès < 100
++
+objectif non abandonné
++
+Objectif d'Intent actuellement traitable
+→ candidate
+```
+
+Une Ambition non exécutable ne produit aucun faux Intent et ne bloque pas les autres Ambitions candidates.
+
+---
+
+# ARBITRAGE INTERNE
+
+Lorsque plusieurs Ambitions sont candidates :
+
+1. Intensité la plus élevée ;
+2. en cas d'égalité, Progrès le plus élevé ;
+3. en cas de nouvelle égalité, Tick de création le plus bas.
+
+Cet ordre est une règle propre aux Ambitions. Il n'est pas dérivé de l'urgence des besoins et ne constitue pas un score transversal.
+
+L'Intensité compare uniquement des Ambitions candidates entre elles.
+
+---
+
+# PLACE DANS L'ARBITRAGE GÉNÉRAL
+
+Conformément à GDB-004A :
+
+```text
+besoins physiologiques actionnables
 ↓
-transfert volontaire exécutable (GDB-004A)
+transfert volontaire exécutable
 ↓
-activité productive exécutable (GDB-004A)
+activité productive exécutable
 ↓
-Habitudes actives (GDB-004E)
+Habitudes actives
 ↓
-Ambitions
+Ambitions candidates
 ↓
 aucun Intent
 ```
 
-Lorsque plusieurs Ambitions sont simultanément candidates, la priorité
-suit :
+Une Ambition d'Intensité élevée ne dépasse pas une famille placée plus haut dans la version courante.
 
-1. Intensité la plus élevée.
-2. En cas d'égalité d'Intensité : Progrès le plus avancé (l'Ambition
-   la plus proche de son objectif est traitée en premier --- cohérent
-   avec GDB-004B : « satisfaction plus basse → urgence plus forte »,
-   traduit ici en « objectif plus proche → traitement prioritaire »).
-3. En cas d'égalité d'Intensité et de Progrès : Ambition créée au Tick
-   le plus bas (la plus ancienne).
+Aucune fairness inter-familles n'est implicite.
 
-Ce tie-break est entièrement déterministe.
-⸻
-DIVERSITÉ
+---
 
-Deux habitants ayant vécu des expériences proches peuvent poursuivre des
-ambitions totalement différentes, car la personnalité module l'origine
-et l'Intensité des Ambitions de façon individuelle.
+# PERSONNALITÉ
 
-Cette diversité contribue à rendre le monde crédible.
-⸻
-IMPACT
+Conformément à GDB-004D, un Trait peut modifier l'Intensité d'une Ambition uniquement lorsqu'un mapping concret Trait/Ambition le prévoit.
 
-Les ambitions influencent :
+La personnalité ne crée pas automatiquement une Ambition et ne choisit pas directement son Intent.
 
-- les choix quotidiens ;
-- les relations ;
-- les métiers ;
-- les déplacements ;
-- les projets personnels ;
-- les histoires émergentes.
-⸻
-PARAMÈTRES D'IMPLÉMENTATION
+---
 
-Les valeurs suivantes ne sont pas fixées par ce document : Intensité
-initiale d'une nouvelle Ambition, montant de renforcement ou
-d'affaiblissement par événement significatif, seuil d'inatteignabilité
-déclenchant un abandon. Même posture que GDB-004C, GDB-004E : le modèle
-est fixé, les constantes restent des paramètres d'équilibrage.
-⸻
-RÈGLES DE CONCEPTION
+# FRONTIÈRE AVEC LES BESOINS
 
-Toute mécanique liée aux ambitions devra :
+Un besoin décrit un état courant et son urgence interne est définie par GDB-004B.
 
-1. respecter l'identité de chaque habitant ;
-2. évoluer avec son histoire ;
-3. influencer plusieurs systèmes ;
-4. rester cohérente avec les autres principes de la Game Design Bible ;
-5. favoriser les histoires émergentes.
-⸻
-CRITÈRE DE VALIDATION
+Une Ambition décrit un état futur désiré. Elle ne modifie pas implicitement la satisfaction ou l'urgence d'un besoin.
 
-Cette mécanique permet-elle aux habitants d'avoir de véritables
-objectifs de vie plutôt que des comportements préprogrammés ?
+---
 
-Si la réponse est non, elle devra être repensée.
-⸻
+# FRONTIÈRE AVEC LES HABITUDES
+
+Une Habitude est un comportement contextuel acquis ; une Ambition est une direction durable.
+
+Des Actions répétées pour poursuivre une Ambition peuvent participer à la formation d'une Habitude conformément à GDB-004E, sans fusionner les deux données.
+
+---
+
+# ÉVOLUTION
+
+## Renforcement
+
+Un événement ou résultat identifiable peut augmenter l'Intensité lorsqu'une règle applicable le prévoit.
+
+## Affaiblissement
+
+Un événement identifiable peut diminuer l'Intensité. À Intensité 0, l'Ambition disparaît.
+
+## Accomplissement
+
+À Progrès 100, l'Ambition est accomplie et cesse d'être candidate.
+
+La création d'une Ambition suivante n'est jamais automatique sans règle concrète.
+
+## Abandon
+
+Une Ambition peut être abandonnée lorsqu'une règle concrète identifie que ses conditions d'abandon sont remplies.
+
+L'abandon est un fait identifiable ; aucune disparition silencieuse n'est autorisée.
+
+---
+
+# PARAMÈTRES D'IMPLÉMENTATION
+
+Restent paramétrables :
+
+- Intensité initiale ;
+- gains/pertes d'Intensité ;
+- conditions d'abandon ;
+- mappings Trait/Ambition ;
+- paramètres propres aux évaluateurs de chaque Type d'Ambition.
+
+Les Types concrets et leurs règles doivent être documentés avant leur implémentation.
+
+---
+
+# INVARIANTS
+
+- Une Ambition possède un Type concret, un Objectif, une Intensité, un Progrès, un Objectif d'Intent et un Tick de création.
+- Aucun Type d'Ambition n'est inventé par le moteur générique.
+- Chaque Type fournit un évaluateur d'objectif/progrès déterministe.
+- Intensité et Progrès restent bornés entre 0 et 100.
+- Intensité départage uniquement les Ambitions.
+- L'ordre entre familles appartient à GDB-004A.
+- Une Ambition non exécutable ne produit aucun faux Intent.
+- GDB-002E n'est pas réutilisé comme source PNJ.
+- Une personnalité ne crée pas automatiquement d'Ambition.
+- Accomplissement et abandon sont des états identifiables.
+
+---
+
+# CRITÈRE DE VALIDATION
+
+Le système peut-il créer, évaluer, faire progresser et sélectionner une Ambition à partir d'un Type concret déterministe, sans que le moteur générique invente une formule de progression, une Opportunité PNJ ou un score transversal ?
+
+Si la réponse est non, il doit être repensé.
+
+---
+
+# HISTORIQUE
+
+## Version 1.2
+
+- synchronisation avec GDB-004A v1.3, GDB-004B v1.3, GDB-004D v1.3 et GDB-004E v1.2 ;
+- ajout du Type d'Ambition et de l'évaluateur objectif/progrès déterministe ;
+- interdiction d'une formule générique implicite de Progrès ;
+- Intensité limitée à l'arbitrage interne entre Ambitions ;
+- suppression de la dépendance normative à GDB-002E pour les PNJ ;
+- exigence d'un Objectif d'Intent actuellement traitable.
+
+## Version 1.1
+
+- passage en Maturité 2 ; modèle Objectif/Intensité/Progrès/Intent/Tick et arbitrage interne.
+
+## Version 1.0
+
+- création du document.
+
+---
+
 Fin du document
-
-Statut : Validé -- Référence officielle.
-⸻
-HISTORIQUE
-
-Version 1.1 : passage en Maturité 2. Ajout du MODÈLE (cinq attributs :
-Objectif évaluable dans le World, Intensité 0-100, Progrès 0-100,
-Intent produit conforme ACT, Tick de création), des règles d'ÉVOLUTION
-(renforcement, affaiblissement, accomplissement, abandon --- jamais de
-dérive silencieuse), d'ARBITRAGE (place des Ambitions en fin de chaîne
-GDB-004A, tie-break déterministe Intensité → Progrès → ancienneté), et
-des frontières explicites avec GDB-004E (Habitudes) et GDB-004B
-(Besoins). Section PARAMÈTRES D'IMPLÉMENTATION ajoutée. En-tête mis en
-conformité avec MASTER-004 (Maturité et Bibliothèque absents de la
-v1.0).
-
-Version 1.0 : création du document.

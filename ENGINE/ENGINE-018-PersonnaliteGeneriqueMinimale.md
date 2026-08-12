@@ -1,11 +1,12 @@
 # ENGINE-018 — Personnalité générique minimale
 
-> Version : 1.1
-> Statut : Proposition
-> Maturité : 2
+> Version : 1.2
+> Statut : Validée
+> Maturité : 4
 > Bibliothèque : ENGINE
 > Dépendances : GDB-004A v1.3, GDB-004D v1.3, ENGINE-003, ENGINE-004, ENGINE-016, ENGINE-017
-> Implémentation candidate : `CHRONIQUES-ENGINE`
+> Implémentation : `CHRONIQUES-ENGINE`
+> Validation : 330 / 330 tests réussis
 
 ---
 
@@ -270,7 +271,7 @@ Ces extensions exigent leurs propres règles concrètes et restent hors du lot.
 
 ---
 
-# 12. Implémentation candidate
+# 12. Implémentation validée
 
 Fichiers ajoutés :
 
@@ -313,7 +314,7 @@ Aucun Pattern, Verbe ou Intent supplémentaire n'est créé.
 
 ---
 
-# 14. QA candidate
+# 14. QA validée
 
 ```text
 Engine018PersonalityTests.cs
@@ -346,23 +347,28 @@ Ils couvrent notamment :
 - déterminisme ;
 - rejet des règles, paramètres, états et Inflexions invalides.
 
-Base validée :
+Base précédente :
 
 ```text
 291 / 291
 ```
 
-Total attendu avant validation locale :
+Validation locale confirmée :
 
 ```text
-330 / 330
+dotnet build
+→ succès
+
+dotnet test
+→ 330 / 330 tests réussis
+→ 0 échec
 ```
 
 ---
 
 # 15. Critère de validation
 
-ENGINE-018 pourra passer Validée / Maturité 4 lorsque :
+Les critères sont satisfaits :
 
 - le build réussit ;
 - les 291 tests historiques restent verts ;
@@ -371,9 +377,19 @@ ENGINE-018 pourra passer Validée / Maturité 4 lorsque :
 - formation, stabilisation et Inflexions sont déterministes ;
 - aucune règle de Trait métier ni mapping cognitif n'est introduit.
 
+ENGINE-018 est donc **Validée / Maturité 4**.
+
 ---
 
 # HISTORIQUE
+
+## Version 1.2
+
+- ENGINE-018 passe à **Validée / Maturité 4** ;
+- validation locale enregistrée à **330 / 330 tests réussis** ;
+- les 291 tests historiques restent verts ;
+- persistance, formation, stabilisation, Inflexions légères/profondes et causalité idempotente confirmées ;
+- aucun Trait concret, mapping Trait/Habitude, mapping Trait/Ambition ou nouveau Verbe ACT introduit.
 
 ## Version 1.1
 

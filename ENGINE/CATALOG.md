@@ -1,6 +1,6 @@
 # ENGINE — Catalogue
 
-> Version : 1.20
+> Version : 1.21
 > Statut : Foundation
 > Maturité : 1
 > Bibliothèque : ENGINE
@@ -35,26 +35,36 @@ ENGINE-011  Décision autonome par besoins            Validée / M4
 ENGINE-012  Alimentation autonome minimale           Validée / M4
 ENGINE-013  Production autonome minimale             Validée / M4
 ENGINE-014  Circulation autonome minimale            Validée / M4
-ENGINE-015  Observation de l'exécution autonome      Proposition / M2
+ENGINE-015  Observation de l'exécution autonome      Validée / M4
 ```
 
 ---
 
 # Validation courante
 
-Base localement validée avant ENGINE-015 :
-
 ```text
-224 / 224 tests réussis
+233 / 233 tests réussis
 ```
 
-Le moteur sait déjà relier besoins, production, circulation et consommation sans entrée joueur.
+Le moteur sait désormais relier :
+
+```text
+besoins
++
+production
++
+circulation entre habitants
++
+consommation
++
+observation fiable Intent → Action → Outcome
+```
 
 ---
 
 # Arbitrage GDB courant
 
-Depuis la synchronisation GDB-004A v1.3 :
+Depuis GDB-004A v1.3 :
 
 ```text
 besoins physiologiques actionnables
@@ -70,7 +80,7 @@ Ambitions candidates
 aucun Intent
 ```
 
-ENGINE-014 reste valide : GDB-004A v1.3 conserve intégralement ses trois premières familles et ajoute les familles cognitives après la production.
+Force et Intensité restent des priorités internes à leurs familles respectives ; aucun score universel inter-familles n'est défini.
 
 ---
 
@@ -106,9 +116,9 @@ La frontière commerciale reste inchangée : prix, monnaie, vente, troc récipro
 
 # ENGINE-015 — Observation de l'exécution autonome
 
-Statut : Proposition / Maturité 2.
+Statut : **Validée / Maturité 4**.
 
-Spécification : `ENGINE-015 v1.0`.
+Spécification : `ENGINE-015 v1.2`.
 
 Autorités :
 
@@ -138,7 +148,7 @@ ENGINE-015 ajoute sans casser ce contrat :
 - `IAutonomousIntentExecutionObserver` ;
 - `PipelineAutonomousIntentExecutor`.
 
-Flux :
+Flux validé :
 
 ```text
 Intent autonome
@@ -152,7 +162,7 @@ PipelineRunner.Execute
     AfterExecution
 ```
 
-Invariants :
+Invariants confirmés :
 
 - `IAutonomousIntentExecutor` inchangé ;
 - `AutonomousActionSystem` inchangé ;
@@ -162,32 +172,38 @@ Invariants :
 - Action archivée + Outcome post-Effects observables ;
 - échec métier normal observé par `AfterExecution` ;
 - exception technique observée par `ExecutionAborted` puis relancée ;
+- ordre des observateurs déterministe ;
 - aucun comportement d'Habitude ou d'Ambition inventé.
 
 ---
 
-# Couverture QA ENGINE-015
+# Validation technique ENGINE-015
 
-Nouveau fichier :
+Nouveau fichier de tests :
 
 ```text
 Engine015AutonomousExecutionObservationTests.cs
 → 9 tests
 ```
 
-Base :
+Base précédente :
 
 ```text
 224 / 224
 ```
 
-Total attendu avant validation locale :
+Validation locale confirmée :
 
 ```text
-233 / 233
+dotnet build
+→ succès
+
+dotnet test
+→ 233 / 233 tests réussis
+→ 0 échec
 ```
 
-Aucun passage M4 ne sera enregistré avant confirmation locale.
+ENGINE-015 est donc fermée en M4.
 
 ---
 
@@ -202,7 +218,15 @@ ENGINE-015 prépare GDB-004E mais ne crée pas encore :
 - renforcement ;
 - érosion.
 
-Il permet uniquement à un futur système autorisé de distinguer le contexte avant Action du résultat réel après Action.
+Il fournit uniquement la frontière technique permettant à un futur système autorisé de distinguer le contexte avant Action du résultat réel après Action.
+
+---
+
+# Frontière avec les Ambitions
+
+Aucun `AmbitionComponent`, Type concret d'Ambition, évaluateur de Progrès ou Intent d'Ambition n'est introduit par ENGINE-015.
+
+GDB-004F reste l'autorité sur ces futurs contrats.
 
 ---
 
@@ -214,13 +238,21 @@ ENGINE-007 reste réservé aux ressources techniques du moteur et n'a aucun lien
 
 # HISTORIQUE
 
+## Version 1.21
+
+- ENGINE-015 passe à **Validée / Maturité 4** ;
+- suite globale portée à **233 / 233 tests réussis** ;
+- observation pré/post exécution autonome validée ;
+- compatibilité des contrats historiques confirmée ;
+- aucune Habitude ou Ambition concrète créée ;
+- aucune consolidation TECH/roadmap/README déclenchée automatiquement.
+
 ## Version 1.20
 
 - création et enregistrement d'ENGINE-015 en Proposition / M2 ;
 - ajout de la frontière d'observation avant/après/abandon autour du pipeline autonome ;
 - 9 tests ajoutés, total attendu **233 / 233** ;
-- aucune modification des contrats historiques d'ENGINE-010 ou d'ACT ;
-- aucun passage M4 anticipé.
+- aucune modification des contrats historiques d'ENGINE-010 ou d'ACT.
 
 ## Version 1.19
 

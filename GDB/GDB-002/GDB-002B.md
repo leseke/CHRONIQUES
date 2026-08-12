@@ -1,6 +1,6 @@
 # GDB-002B --- La Mémoire du Monde
 
-> Version : 1.2
+> Version : 1.3
 > Statut : Officiel
 > Type : Fondations du Gameplay
 > Maturité : 2
@@ -85,11 +85,16 @@ Chaque élément de Mémoire du Monde possède au minimum :
 - **Sujet / données de mémoire** : payload persistant interprété uniquement par sa règle ;
 - **Sources identifiables** : références aux faits de simulation ayant justifié sa création ou ses évolutions ;
 - **Génération de création** ;
-- **Dernière génération évaluée**.
+- **Dernière génération évaluée** ;
+- **état actif / oublié** ;
+- **compteurs générationnels nécessaires au palier courant** ;
+- **historique traçable des transitions de palier**.
 
 Le moteur générique ne déduit jamais le Type depuis un texte libre ou un Event.
 
 Les données de sujet peuvent être opaques pour ENGINE tant qu'elles restent persistables et déterministes.
+
+Un élément oublié cesse d'appartenir à la Mémoire du Monde active. Une trace technique persistante peut être conservée afin de préserver l'auditabilité ; cette trace ne doit plus influencer les règles comme un souvenir actif.
 
 ---
 
@@ -115,13 +120,13 @@ règle concrète absente
 
 Une même identité stable ne peut pas être créée deux fois.
 
-Le palier initial d'un nouvel élément est **Anecdote**.
+Le palier initial d'un nouvel élément est **Anecdote** et son état initial est **actif**.
 
 ---
 
 # PALIERS
 
-Les quatre paliers restent :
+Les quatre paliers sont :
 
 ```text
 Anecdote
@@ -137,6 +142,33 @@ Un élément ne progresse ou ne régresse que d'un palier à la fois lors d'une 
 
 Aucun saut direct `Anecdote → Légende`, `Souvenir → Tradition` ou équivalent n'est autorisé.
 
+Une transition de palier et un oubli sont appliqués au maximum une fois par élément et par génération évaluée.
+
+---
+
+# PREUVES GÉNÉRATIONNELLES
+
+Pour un élément actif, sa règle concrète peut fournir les preuves déterministes suivantes pour la génération évaluée :
+
+- **liaison ou transmission qualifiante** ;
+- **référence qualifiante** ;
+- **influence régionale qualifiante** ;
+- **contradiction qualifiante d'ampleur au moins égale** ;
+- **pratique qualifiante actuellement existante**.
+
+Chaque preuve positive doit être accompagnée d'au moins une référence de source stable.
+
+Le moteur générique ne déduit jamais ces preuves d'une similarité de texte, d'un nombre d'Events ou d'un score implicite.
+
+Des combinaisons incompatibles doivent être rejetées par le contrat de règle plutôt que départagées arbitrairement par ENGINE. En particulier, pour une même Légende et une même génération :
+
+```text
+pratique qualifiante
++
+contradiction qualifiante
+→ combinaison invalide
+```
+
 ---
 
 # ANECDOTE
@@ -145,14 +177,17 @@ Portée conceptuelle : un individu ou un petit groupe.
 
 Une Anecdote constitue la première trace narrative retenue.
 
-À l'évaluation de la génération suivante :
+Lors de la première évaluation d'une génération strictement postérieure à sa génération de création :
 
-- elle devient **Souvenir** si sa règle concrète fournit une preuve déterministe de liaison à au moins un autre fait mémorisé **ou** de transmission qualifiante ;
-- sinon elle disparaît.
+```text
+liaison ou transmission qualifiante ?
+├── oui → Souvenir
+└── non → oublié
+```
 
-Le moteur générique ne décide jamais lui-même que deux événements « se ressemblent » ou sont « reliés ».
+Le moteur générique ne décide jamais lui-même que deux événements sont reliés.
 
-La relation doit être produite explicitement par la règle compétente à partir d'identifiants réels.
+Lors du passage à Souvenir, les compteurs de référence et d'absence sont initialisés à zéro.
 
 ---
 
@@ -160,14 +195,26 @@ La relation doit être produite explicitement par la règle compétente à parti
 
 Portée conceptuelle : une famille ou une communauté locale.
 
-Un Souvenir peut devenir **Légende** si sa règle concrète établit l'un des faits suivants :
+Un Souvenir possède deux compteurs techniques :
 
-- il reste effectivement référencé pendant deux générations évaluées ;
-- il influence un fait qualifié d'ampleur régionale par une autorité concrète.
+- `générations référencées consécutives` ;
+- `générations sans référence consécutives`.
 
-Un Souvenir s'efface après deux générations évaluées consécutives sans nouvelle référence ni transmission qualifiante.
+À chaque nouvelle génération évaluée :
 
-ENGINE compte les évaluations générationnelles ; il ne qualifie pas lui-même une référence, une transmission ou une influence régionale.
+1. si une **influence régionale qualifiante** existe, le Souvenir devient immédiatement **Légende** ;
+2. sinon, si une **référence qualifiante** ou une **transmission qualifiante** existe :
+   - le compteur sans référence revient à `0` ;
+   - le compteur référencé augmente de `1` ;
+   - à `2`, le Souvenir devient **Légende** ;
+3. sinon :
+   - le compteur référencé revient à `0` ;
+   - le compteur sans référence augmente de `1` ;
+   - à `2`, le Souvenir devient **oublié**.
+
+Le passage à Légende remet à zéro les compteurs propres au palier Souvenir.
+
+ENGINE compte les générations ; il ne qualifie jamais lui-même une référence, une transmission ou une influence régionale.
 
 ---
 
@@ -175,15 +222,23 @@ ENGINE compte les évaluations générationnelles ; il ne qualifie pas lui-même
 
 Portée conceptuelle : une région ou plusieurs communautés.
 
-Une Légende ne s'efface pas spontanément par simple passage du temps.
+À chaque nouvelle génération évaluée :
 
-Elle peut :
+```text
+pratique qualifiante existante ?
+├── oui → Tradition
+└── non
+    ↓
+contradiction qualifiante d'ampleur au moins égale ?
+├── oui → Souvenir
+└── non → reste Légende
+```
 
-- rester Légende ;
-- devenir Tradition si une règle concrète établit qu'elle a donné naissance à une pratique qualifiante répétée ;
-- être révisée ou déclassée uniquement si une règle concrète identifie un fait contradictoire d'ampleur au moins égale.
+Une Légende ne s'efface donc jamais spontanément par simple passage du temps.
 
-La notion d'ampleur comparable appartient à la règle concrète concernée ; ENGINE ne calcule aucun score universel d'importance.
+Une contradiction ne supprime pas directement l'élément : elle provoque une régression d'un seul palier vers Souvenir.
+
+Une règle ne peut pas déclarer simultanément pratique qualifiante et contradiction qualifiante pour la même évaluation.
 
 ---
 
@@ -191,13 +246,17 @@ La notion d'ampleur comparable appartient à la règle concrète concernée ; EN
 
 Portée conceptuelle : une culture ou civilisation.
 
-Une Tradition correspond à une Légende ayant produit une pratique durable explicitement identifiable : rite, fête, coutume, institution ou autre pratique autorisée.
+À chaque nouvelle génération évaluée :
 
-Elle demeure Tradition tant que la règle concrète confirme l'existence de cette pratique.
+```text
+pratique qualifiante toujours existante ?
+├── oui → reste Tradition
+└── non → Légende
+```
 
-Si la pratique cesse d'exister, l'élément peut régresser d'un seul palier vers Légende lors d'une évaluation générationnelle.
+Une Tradition ne disparaît jamais directement.
 
-La suppression immédiate d'une Tradition sans passage par Légende n'est pas autorisée.
+Si elle régresse vers Légende, les règles du palier Légende ne s'appliquent qu'à partir d'une génération ultérieure : une seule transition de palier est autorisée par évaluation.
 
 ---
 
@@ -205,18 +264,17 @@ La suppression immédiate d'une Tradition sans passage par Légende n'est pas au
 
 GDB-002B ne définit pas la durée biologique d'une génération et ne l'infère pas à partir d'un nombre fixe de Ticks.
 
-Une **Génération de mémoire** est identifiée par un marqueur ordonné et stable fourni par l'autorité de continuité générationnelle compétente.
+Une **Génération de mémoire** est identifiée par un marqueur entier ordonné, stable et non négatif fourni par l'autorité/runtime de continuité générationnelle compétente.
 
 Contraintes :
 
 - le marqueur ne peut pas reculer ;
 - un même élément n'est évalué qu'une fois pour un même marqueur ;
-- les règles d'évolution s'appliquent uniquement lorsque le marqueur passe à une génération ultérieure ;
+- les règles d'évolution s'appliquent uniquement lorsque le marqueur est strictement supérieur à la dernière génération évaluée ;
+- si plusieurs générations ont été sautées entre deux exécutions, elles doivent être évaluées **une par une dans l'ordre**, sans condenser plusieurs générations en une seule transition ;
 - le moteur ne transforme jamais arbitrairement `N Ticks = 1 génération`.
 
 Tant qu'aucune autorité/runtime ne fournit un marqueur de génération suivant, les éléments de Mémoire restent persistés sans évolution de palier liée au passage générationnel.
-
-Cette règle permet un premier stockage de Mémoire avant l'intégration complète de toutes les transitions générationnelles.
 
 ---
 
@@ -226,21 +284,20 @@ Chaque Type de mémoire implémentable doit fournir une règle déterministe cap
 
 1. de proposer les nouvelles candidates ;
 2. d'interpréter son payload ;
-3. d'identifier les faits de liaison ou transmission applicables ;
-4. d'identifier les références qualifiantes ;
-5. d'identifier une éventuelle influence régionale ;
-6. d'identifier une contradiction qualifiante ;
-7. d'identifier l'existence ou la disparition d'une pratique pour les Traditions.
+3. de produire les preuves générationnelles applicables ;
+4. d'associer des sources stables à chaque preuve positive.
 
-Une règle peut retourner qu'aucun de ces faits n'est applicable.
+Une règle peut retourner qu'aucune preuve positive n'est applicable.
 
 ENGINE applique alors uniquement les conséquences de palier définies par le présent document.
+
+La règle ne choisit pas directement le prochain palier : le prochain palier est déterminé par GDB-002B à partir du palier courant, des compteurs et des preuves qualifiées.
 
 ---
 
 # SOURCES ET TRAÇABILITÉ
 
-Toute création, promotion, régression, révision ou suppression doit être explicable à partir :
+Toute création, promotion, régression ou oubli doit être explicable à partir :
 
 ```text
 élément concerné
@@ -249,12 +306,14 @@ règle concrète
 +
 génération évaluée
 +
-sources / preuves identifiables
+preuves positives et leurs sources
++
+compteurs avant / après lorsque nécessaires
++
+transition obtenue
 ```
 
-Une transition sans cause identifiable est interdite, sauf la disparition prévue d'une Anecdote ou d'un Souvenir après absence qualifiée de références pendant les fenêtres définies.
-
-Même dans ces cas, l'absence est constatée lors d'une évaluation générationnelle explicite.
+Pour l'oubli provoqué par absence de preuve, l'historique doit au minimum tracer la génération évaluée et les compteurs ayant atteint leur seuil.
 
 ---
 
@@ -264,7 +323,8 @@ Même dans ces cas, l'absence est constatée lors d'une évaluation génération
 
 - la même candidate est ou non produite ;
 - les mêmes preuves sont identifiées ;
-- la même transition de palier est obtenue.
+- les mêmes compteurs sont obtenus ;
+- la même transition de palier ou d'oubli est obtenue.
 
 Aucun bruit aléatoire implicite n'est requis.
 
@@ -317,14 +377,20 @@ Toute mécanique liée à la Mémoire du Monde doit :
 - La Mémoire du Monde est distincte de la mémoire de simulation.
 - Un Event ne devient jamais automatiquement un souvenir.
 - Tout élément possède une identité stable, un Type, un palier, des données, des sources et des marqueurs générationnels.
-- Tout nouvel élément commence comme Anecdote.
+- Tout nouvel élément commence comme Anecdote active.
 - Aucun palier n'est sauté.
+- Une seule transition de palier est appliquée par élément et par génération.
 - La significativité est définie par une règle concrète, jamais par ENGINE générique.
 - La liaison entre faits est explicite et déterministe.
 - Une génération n'est jamais déduite d'un nombre arbitraire de Ticks.
+- Les générations sautées sont rejouées une par une.
 - Un élément n'est évalué qu'une fois par génération.
-- Les transitions de palier sont déterministes et traçables.
-- Une Tradition régresse vers Légende avant toute disparition éventuelle.
+- Une Anecdote non reliée/transmise à la génération suivante devient oubliée.
+- Un Souvenir exige deux générations référencées consécutives pour devenir Légende hors influence régionale directe.
+- Un Souvenir devient oublié après deux générations consécutives sans référence/transmission.
+- Une Légende contradite régresse vers Souvenir ; elle ne disparaît pas directement.
+- Une Tradition sans pratique régresse vers Légende ; elle ne disparaît pas directement.
+- Un élément oublié n'agit plus comme mémoire active mais peut conserver une trace technique persistante.
 
 ---
 
@@ -338,15 +404,23 @@ Si la réponse est non, il doit être repensé.
 
 # HISTORIQUE
 
+## Version 1.3
+
+- transitions générationnelles rendues totalement déterministes ;
+- compteurs consécutifs du palier Souvenir explicités ;
+- ordre exact des transitions Anecdote/Souvenir/Légende/Tradition fixé ;
+- contradiction de Légende définie comme régression vers Souvenir ;
+- Tradition sans pratique définie comme régression vers Légende ;
+- oubli représenté comme sortie de la mémoire active avec conservation technique possible ;
+- générations sautées évaluées une par une ;
+- preuves positives associées à des sources stables ;
+- combinaisons de preuves incompatibles interdites.
+
 ## Version 1.2
 
-- correction de l'ambiguïté du « seuil de significativité » : qualification déléguée aux Types/règles concrètes ;
-- identité stable, Type, payload, sources et marqueurs générationnels explicités ;
-- liaison entre événements rendue explicite et déterministe ;
-- définition d'une évaluation générationnelle sans conversion implicite Tick → génération ;
-- règles de promotion/régression précisées sans saut de palier ;
-- frontière avec GDB-002C/D explicitée ;
-- conservation des quatre paliers Anecdote → Souvenir → Légende → Tradition.
+- significativité, liaison entre faits et génération rendues explicites et déléguées aux règles concrètes ;
+- identité stable, Type, payload, sources et marqueurs générationnels ajoutés ;
+- frontières avec GDB-002C/D explicitées.
 
 ## Version 1.1
 

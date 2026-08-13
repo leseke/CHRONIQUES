@@ -1,6 +1,6 @@
 # ENGINE — Catalogue
 
-> Version : 1.29
+> Version : 1.30
 > Statut : Foundation
 > Maturité : 1
 > Bibliothèque : ENGINE
@@ -39,21 +39,19 @@ ENGINE-015  Observation de l'exécution autonome      Validée / M4
 ENGINE-016  Habitudes génériques minimales           Validée / M4
 ENGINE-017  Ambitions génériques minimales           Validée / M4
 ENGINE-018  Personnalité générique minimale          Validée / M4
-ENGINE-019  Mémoire du Monde minimale                Proposition / M2
+ENGINE-019  Mémoire du Monde minimale                Validée / M4
 ```
 
 ---
 
 # Validation courante
 
-Base localement validée avant ENGINE-019 :
-
 ```text
 dotnet build
 → succès
 
 dotnet test
-→ 330 / 330 tests réussis
+→ 370 / 370 tests réussis
 → 0 échec
 ```
 
@@ -111,15 +109,15 @@ ENGINE-018 — Personnalité générique minimale
 → 330 / 330 à validation
 ```
 
-`ENGINE-018` ajoute Traits, Poids de référence, stabilisation, Inflexions et causalité persistante sans mapping cognitif concret.
+La cognition générique possède désormais observation, Habitudes, Ambitions et Personnalité sans comportement narratif concret imposé.
 
 ---
 
 # ENGINE-019 — Mémoire du Monde minimale
 
-Statut : Proposition / Maturité 2.
+Statut : **Validée / Maturité 4**.
 
-Spécification : `ENGINE-019 v1.1`.
+Spécification : `ENGINE-019 v1.2`.
 
 Autorité principale :
 
@@ -134,7 +132,7 @@ AUDIT/AUDIT-MEMOIRE-DU-MONDE-Implementabilite.md
 → Clos / M4
 ```
 
-Briques candidates :
+Briques validées :
 
 ```text
 WorldMemoryComponent
@@ -147,7 +145,7 @@ IWorldMemoryGenerationResolver
 WorldMemoryEvolutionSystem
 ```
 
-Architecture candidate :
+Architecture validée :
 
 ```text
 fait qualifié par une règle concrète
@@ -161,7 +159,7 @@ preuves générationnelles injectées
 Souvenir / Légende / Tradition / oublié
 ```
 
-Invariants :
+Invariants confirmés :
 
 - `World` reste sans donnée métier de mémoire ;
 - aucun Event n'est mémorisé automatiquement ;
@@ -176,7 +174,7 @@ Invariants :
 - aucune durée `N Ticks = génération` inventée ;
 - aucun Type concret de mémoire fourni par défaut.
 
-Persistance candidate :
+Persistance validée :
 
 ```text
 EntitySnapshot.WorldMemory
@@ -197,25 +195,28 @@ Engine019WorldMemoryInvariantTests.cs
 
 Nouveaux tests : **40**.
 
-Base :
+Base précédente :
 
 ```text
 330 / 330
 ```
 
-Total attendu avant validation locale :
+Validation locale confirmée :
 
 ```text
-370 / 370
-```
+dotnet build
+→ succès
 
-Aucun passage M4 ne sera enregistré avant confirmation locale.
+dotnet test
+→ 370 / 370 tests réussis
+→ 0 échec
+```
 
 ---
 
 # Persistance étendue
 
-Le World persiste maintenant ou, pour ENGINE-019, candidate à persister :
+Le World persiste maintenant notamment :
 
 ```text
 FoodProductComponent
@@ -268,45 +269,38 @@ ENGINE-007 reste réservé au Resource Manager technique et demeure non créé.
 
 # Historique
 
+## Version 1.30
+
+- ENGINE-019 passe à **Validée / Maturité 4** ;
+- suite globale portée à **370 / 370 tests réussis** ;
+- 40 tests ENGINE-019 validés ;
+- création, persistance, quatre paliers, oubli et replay générationnel confirmés ;
+- aucun Type concret de mémoire ni durée arbitraire de génération introduits ;
+- aucune consolidation TECH/roadmap/README déclenchée automatiquement avant décision de jalon.
+
 ## Version 1.29
 
 - audit d'implémentabilité de GDB-002B/C/D réalisé ;
-- GDB-002B porté à v1.3 pour rendre significativité, preuves, générations et transitions déterministes ;
-- création et enregistrement d'ENGINE-019 en Proposition / M2 ;
-- framework générique de Mémoire du Monde implémenté en candidate ;
-- persistance `WorldMemoryComponent` ajoutée ;
+- GDB-002B porté à v1.3 ;
+- création d'ENGINE-019 en Proposition / M2 ;
 - 40 tests candidats ajoutés ;
-- total attendu fixé à **370 / 370** ;
-- aucun Type concret de mémoire ni durée arbitraire de génération introduits.
+- total attendu fixé à 370 / 370.
 
 ## Version 1.28
 
-- ENGINE-018 passe à Validée / Maturité 4 ;
-- suite globale portée à 330 / 330 tests réussis ;
-- 39 tests ENGINE-018 validés.
+- ENGINE-018 validée / M4 à 330 / 330.
 
 ## Version 1.27
 
-- création et enregistrement d'ENGINE-018 en Proposition / M2.
+- création d'ENGINE-018.
 
 ## Version 1.26
 
-- consolidation documentaire du jalon ENGINE-013 à ENGINE-017 ;
-- enregistrement de TECH-005 et TECH-006 ;
-- audit de jalon autonomie productive et cognitive ajouté ;
-- validation courante confirmée à 291 / 291.
+- consolidation documentaire du jalon ENGINE-013 à ENGINE-017.
 
-## Version 1.25
+## Versions 1.0 à 1.25
 
-- ENGINE-017 validée / M4 à 291 / 291.
-
-## Versions 1.20 à 1.24
-
-- construction et validation progressive de l'observation autonome, des Habitudes et des Ambitions génériques.
-
-## Versions 1.0 à 1.19
-
-- construction progressive des fondations et de l'autonomie jusqu'à la circulation économique minimale.
+- construction progressive des fondations, de l'autonomie, de l'économie matérielle et de la cognition générique.
 
 ---
 

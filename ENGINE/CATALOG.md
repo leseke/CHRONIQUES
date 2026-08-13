@@ -1,6 +1,6 @@
 # ENGINE — Catalogue
 
-> Version : 1.31
+> Version : 1.32
 > Statut : Foundation
 > Maturité : 1
 > Bibliothèque : ENGINE
@@ -28,24 +28,32 @@ ENGINE-016  Habitudes génériques                     Validée / M4
 ENGINE-017  Ambitions génériques                     Validée / M4
 ENGINE-018  Personnalité générique                   Validée / M4
 ENGINE-019  Mémoire du Monde                         Validée / M4
-ENGINE-020  Continuité générationnelle               Proposition / M2
+ENGINE-020  Continuité générationnelle               Validée / M4
 ```
 
 ## Validation courante
 
 ```text
-Base validée : 370 / 370
-ENGINE-020 : +10 tests candidats
-Total attendu : 380 / 380
+dotnet test
+→ 380 / 380 tests réussis
+→ 0 échec
 ```
 
-## ENGINE-020
+## Bloc mémoire et générations
 
-Spécification : `ENGINE/ENGINE020.md`.
+```text
+ENGINE-019
+→ Mémoire du Monde générique
+→ 370 / 370 à validation
 
-Autorités : `GDB-008D v1.1`, `GDB-008G v1.2`, `GDB-004J v1.2`, `GDB-002B v1.3`.
+ENGINE-020
+→ continuité générationnelle explicite
+→ 380 / 380 à validation
+```
 
-Briques candidates :
+Autorités principales : `GDB-002B v1.3`, `GDB-008D v1.1`, `GDB-008G v1.2`, `GDB-004J v1.2`.
+
+Briques validées ENGINE-020 :
 
 ```text
 GenerationContinuityComponent
@@ -55,13 +63,11 @@ GenerationContinuitySynchronizer
 LineageWorldMemoryGenerationResolver
 ```
 
-Principe : une continuité identifiée possède son propre index. Un changement de membre actif n'est accepté que s'il existe un `heritage.transmission` correspondant au Tick courant. L'index avance alors exactement de `+1`. Aucun compteur global du World ni conversion Tick-vers-génération n'est introduit.
+Principe validé : une continuité identifiée possède son propre index. Un changement de membre n'est accepté qu'avec un `heritage.transmission` correspondant. L'index progresse exactement de `+1`. Aucun compteur global du World ni conversion Tick-vers-génération n'est introduit.
 
-Persistance candidate : `EntitySnapshot.GenerationContinuity` + `WorldRepository`.
+Persistance validée : `EntitySnapshot.GenerationContinuity` + `WorldRepository`.
 
-QA candidate : `Engine020Tests.cs` — 10 tests couvrant création, erreurs de configuration, coexistence, avancement, idempotence, synchronisation, resolver et round-trip.
-
-Aucun passage M4 avant validation locale.
+QA ENGINE-020 : `Engine020Tests.cs` — 10 tests.
 
 ## État des blocs
 
@@ -69,13 +75,12 @@ Aucun passage M4 avant validation locale.
 ENGINE-013/014 → économie matérielle → TECH-005
 ENGINE-015/016/017 → cognition autonome → TECH-006
 ENGINE-018 → personnalité → 330/330
-ENGINE-019 → Mémoire du Monde → 370/370
-ENGINE-020 → continuité générationnelle → 380/380 attendu
+ENGINE-019/020 → mémoire + continuité générationnelle → 380/380
 ```
 
 ## Frontières restantes
 
-- démonstration multi-générations complète ;
+- démonstration multi-générations complète de bout en bout ;
 - Type concret de Mémoire ;
 - événements mondiaux autonomes complets ;
 - mappings Trait/Habitude et Trait/Ambition ;
@@ -85,9 +90,15 @@ ENGINE-020 → continuité générationnelle → 380/380 attendu
 
 ## Historique
 
+### Version 1.32
+
+- ENGINE-020 passe à **Validée / Maturité 4** ;
+- suite globale portée à **380 / 380 tests réussis** ;
+- continuité de lignée persistante et resolver générationnel validés ;
+- ENGINE-019 + ENGINE-020 constituent désormais un bloc cohérent Mémoire/Générations.
+
 ### Version 1.31
 
-- GDB-008D et GDB-008G rendus déterministes pour la continuité de lignée ;
 - ENGINE-020 ouvert en Proposition / M2 ;
 - 10 tests candidats ;
 - total attendu 380 / 380.

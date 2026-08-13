@@ -1,6 +1,6 @@
-# Chroniques — Feuille de Route V2.7
+# Chroniques — Feuille de Route V2.8
 
-> Version : 2.7
+> Version : 2.8
 > Statut : Officiel
 > Type : Roadmap
 > Maturité : 2
@@ -10,519 +10,182 @@
 
 # Vision
 
-Chroniques est un moteur de simulation narratif sur lequel un jeu est construit.
+Chroniques est un moteur de simulation narratif construit selon une approche Documentation First.
 
-Le développement suit une approche **Documentation First** : les règles et architectures structurantes sont reliées à leurs autorités avant implémentation, sauf documentation ENGINE explicitement rétroactive d'un code historique.
-
-Conformément à MASTER-006 v1.1 :
+Chaîne d'autorité :
 
 ```text
-validation courante
-≠
-consolidation documentaire
+MASTER → CORE → GDB → ACT → ENGINE → CHRONIQUES-ENGINE → Tests → TECH
 ```
 
-La V2.7 correspond à un nouveau point de consolidation significatif de **v0.4 — Le monde vivant**.
+MASTER-006 distingue validation courante et consolidation documentaire. La V2.8 correspond à la consolidation du bloc **cognition durable + Mémoire du Monde + continuité générationnelle**.
 
 ---
 
-# Ce qui change par rapport à V2.6
-
-V2.6 s'arrêtait à l'autonomie physiologique minimale à `178 / 178`.
-
-Depuis, Chroniques a obtenu deux nouveaux blocs cohérents.
-
-## Substrat économique matériel
-
-```text
-ENGINE-013 — Production autonome minimale
-ENGINE-014 — Circulation autonome minimale
-```
-
-Capacité :
-
-```text
-ressource réelle
-↓
-production autonome
-↓
-stock A
-↓
-transfert volontaire A → B
-↓
-stock B
-↓
-consommation
-```
-
-Nouvelles chaînes ACT validées :
-
-```text
-Transformation
-↓
-PAT-003 Production
-↓
-VERB-003 Produire une denrée
-```
-
-```text
-Échange
-↓
-PAT-004 Transfert
-↓
-VERB-004 Donner une denrée
-```
-
-## Substrat cognitif générique
-
-```text
-ENGINE-015 — Observation de l'exécution autonome
-ENGINE-016 — Habitudes génériques minimales
-ENGINE-017 — Ambitions génériques minimales
-```
-
-Capacité :
-
-```text
-Intent / Action / Outcome observables
-↓
-formation et évolution d'Habitudes
-↓
-création et progression d'Ambitions
-↓
-Intents cognitifs
-↓
-ACT
-```
-
-Validation globale :
+# État validé
 
 ```text
 dotnet build
 → succès
 
 dotnet test
-→ 291 / 291 tests réussis
+→ 380 / 380 tests réussis
 → 0 échec
 ```
 
-Consolidation :
+## Lots v0.4 validés
 
 ```text
+ENGINE-010                 orchestration autonome
+ENGINE-011 / 012           besoins autonomes
+ENGINE-013 / 014           production + circulation
+ENGINE-015 / 016 / 017     observation + Habitudes + Ambitions
+ENGINE-018                 Personnalité générique
+ENGINE-019                 Mémoire du Monde générique
+ENGINE-020                 continuité générationnelle explicite
+```
+
+Consolidations :
+
+```text
+TECH-003 / 004
 TECH-005 — Production et circulation autonomes
 TECH-006 — Cognition autonome générique
-AUDIT/AUDIT-MONDE-VIVANT-AUTONOMIE-Consolidation.md
+TECH-007 — Cognition durable, Mémoire et continuité générationnelle
 ```
 
 ---
 
-# Principes de développement
+# Capacités actuelles
 
-## Documentation First
-
-```text
-MASTER
-↓
-CORE
-↓
-GDB
-↓
-ACT
-↓
-ENGINE
-↓
-CHRONIQUES-ENGINE
-↓
-Tests
-↓
-TECH
-```
-
-Aucune couche aval ne doit contredire une autorité amont applicable.
-
-## Déterminisme
-
-À état, seed, configuration et ordre identiques, la simulation produit le même résultat observable.
-
-## Composition
-
-Les nouvelles capacités s'intègrent par Components, Systems, resolvers, rules, planners, execution engines et applicateurs injectés plutôt que par un contrôleur métier central.
-
-## Frontières explicites
-
-Un framework générique ne transforme jamais un exemple documentaire en comportement canonique.
-
----
-
-# Architecture moteur actuelle
+Le moteur sait désormais faire coexister :
 
 ```text
-World
-│
-├── Kernel
-├── World.Events
-├── Scheduler
-├── Systems
-├── Persistence
-├── Action Pipeline
-├── Session / LifeSession
-└── Autonomy
-    ├── besoins
-    ├── transfert volontaire
-    ├── production
-    ├── observation d'exécution
-    ├── Habitudes génériques
-    └── Ambitions génériques
-```
-
-Ordre autonome courant, défini par GDB-004A v1.3 :
-
-```text
-besoins physiologiques
-↓
-transfert volontaire
-↓
-production
-↓
+habitants autonomes
++
+production et transfert matériels
++
 Habitudes
-↓
++
 Ambitions
-↓
-aucun Intent
++
+Personnalité persistante
++
+Mémoire narrative du monde
++
+continuité de lignée persistante
 ```
 
-Aucun score universel inter-familles n'est introduit.
-
----
-
-# Feuille de route par versions
-
-# v0.1 — Le noyau
-
-```text
-Entity / Component / State / Value
-Relation / World / Tick / Lifecycle
-RNG déterministe / première sérialisation
-```
-
-Statut architectural : ✅
-
----
-
-# v0.2 — Infrastructure de simulation
-
-```text
-World.Events
-Scheduler
-Systems
-Persistence
-Besoins
-Vieillissement
-Cycle de vie
-```
-
-Statut architectural : ✅
-
----
-
-# v0.3 — Une vie entière
-
-```text
-ENGINE-006 Action Pipeline            ✅
-ENGINE-008 Population                  ✅
-ENGINE-009 LifeSession                 ✅
-Mort → héritier → continuité           ✅
-```
-
-Validation de référence du jalon : `134 / 134`.
-
-TECH : `TECH-001`, `TECH-002`.
+La Mémoire du Monde peut évoluer selon le marqueur générationnel d'une continuité identifiée, sans compteur global du World et sans conversion arbitraire Tick → génération.
 
 ---
 
 # v0.4 — Le monde vivant
 
-Objectif : donner au monde une existence indépendante de l'intervention permanente du joueur.
+Objectif de phase : faire évoluer le monde de manière crédible sans intervention permanente du joueur.
 
-Cible de phase :
+## Capacités validées
 
-- habitants autonomes ;
-- économie qui évolue ;
-- événements du monde ;
-- Mémoire du Monde ;
-- évolution crédible sur plusieurs générations.
+- autonomie physiologique ;
+- production et circulation matérielles ;
+- cognition générique ;
+- Personnalité générique ;
+- Mémoire du Monde générique ;
+- continuité générationnelle explicite.
 
-## Lot 1 — Orchestration autonome
+## Capacités encore manquantes ou incomplètes
 
-```text
-ENGINE-010
-→ AutonomousActionSystem
-→ 146 / 146 à validation
-→ TECH-003
-```
-
-Statut : ✅ Validé
-
-## Lot 2 — Besoins autonomes
-
-```text
-ENGINE-011 / ENGINE-012
-→ repos + alimentation
-→ 178 / 178 à consolidation
-→ TECH-004
-```
-
-Statut : ✅ Validé et consolidé
-
-## Lot 3 — Production et circulation
-
-```text
-ENGINE-013
-→ production réelle
-→ 201 / 201
-
-ENGINE-014
-→ transfert volontaire entre habitants
-→ 224 / 224
-```
-
-Capacité de référence :
-
-```text
-A produit
-↓
-A donne à B
-↓
-B consomme
-```
-
-TECH : `TECH-005`.
-
-Statut : ✅ Validé et consolidé
-
-## Lot 4 — Cognition autonome générique
-
-```text
-ENGINE-015
-→ observation d'exécution
-→ 233 / 233
-
-ENGINE-016
-→ Habitudes génériques
-→ 260 / 260
-
-ENGINE-017
-→ Ambitions génériques
-→ 291 / 291
-```
-
-TECH : `TECH-006`.
-
-Statut : ✅ Validé et consolidé
-
----
-
-# Ce que v0.4 sait désormais faire
-
-```text
-habitant autonome
-↓
-répondre à un besoin
-ou
-transférer une ressource
-ou
-produire
-ou
-agir selon une Habitude
-ou
-poursuivre une Ambition
-↓
-Intent
-↓
-Action Pipeline
-↓
-World
-```
-
-Le World conserve également l'état matériel et cognitif minimal nécessaire : stocks, provenance, Habitudes et Ambitions.
-
----
-
-# Ce que v0.4 ne sait pas encore faire complètement
-
-- personnalité générique opérationnelle ;
-- mapping Trait/Habitude ;
-- mapping Trait/Ambition ;
-- Habitudes narratives canoniques ;
-- Types d'Ambitions canoniques ;
-- économie commerciale : monnaie, prix, vente, marché ;
-- professions/carrières complètes ;
-- Mémoire du Monde opérationnelle ;
+- démonstration multi-générations complète de bout en bout ;
 - événements mondiaux autonomes complets ;
 - interactions sociales autonomes suffisamment riches ;
-- crédibilité multi-générations démontrée de bout en bout.
-
----
-
-# Prochaine frontière immédiate
-
-Le bloc cognitif possède Habitudes et Ambitions, tandis que GDB-004D définit déjà un modèle générique de Personnalité suffisamment précis pour être audité côté ENGINE.
-
-Prochaine opération recommandée :
-
-```text
-AUDIT GDB-004D
-↓
-contrat ENGINE Personality
-↓
-PersonalityComponent
-+
-évolution des Traits
-+
-frontières de modulation explicites
-```
-
-Aucun mapping Trait/Habitude ou Trait/Ambition ne devra être inventé sans règle concrète.
-
----
-
-# Frontière économique parallèle
-
-Le substrat matériel existe, mais l'économie commerciale reste bloquée tant que GDB-019 ne définit pas suffisamment :
-
-```text
-prix
-monnaie
-marchés
-échanges commerciaux
-formules déterministes applicables
-```
-
-ENGINE ne doit pas inventer ces mécanismes.
+- Types concrets de Mémoire ;
+- comportements cognitifs narratifs concrets ;
+- économie commerciale complète ;
+- mappings Trait/Habitude et Trait/Ambition.
 
 ---
 
 # Critère de sortie v0.4
 
-Le monde évolue de façon crédible pendant plusieurs générations sans intervention permanente du joueur.
-
-À `291 / 291`, Chroniques possède désormais :
-
 ```text
-autonomie physiologique
-+
-substrat économique matériel
-+
-substrat cognitif générique
+Le monde évolue de façon crédible pendant plusieurs générations
+sans intervention permanente du joueur.
 ```
 
-Ce résultat est majeur mais ne satisfait pas encore le critère multi-générations complet.
+À 380 / 380, les briques nécessaires à une vraie continuité historique existent désormais, mais la démonstration intégrée sur plusieurs générations n'est pas encore réalisée.
 
-v0.4 reste ouverte.
-
----
-
-# v0.5 — La profondeur
-
-Après v0.4, approfondissements possibles selon autorités :
-
-- économie avancée ;
-- métiers ;
-- médecine ;
-- justice ;
-- crime ;
-- politique ;
-- religion ;
-- combat ;
-- patrimoine avancé.
-
-Critère : des parcours radicalement différents produisent des histoires profondément différentes.
+v0.4 reste donc **ouverte**.
 
 ---
 
-# v0.6 — Les outils
+# Prochaine frontière immédiate
 
-- éditeur de contenu ;
-- debugger de simulation ;
-- inspection du World ;
-- diagnostics déterministes ;
-- outils de production.
-
----
-
-# v1.0 — Première alpha
-
-- boucle complète ;
-- sauvegarde versionnée ;
-- équilibrage ;
-- interface aboutie ;
-- direction artistique ;
-- stabilité ;
-- diagnostics suffisants.
-
----
-
-# Workflow
+Construire une démonstration déterministe de bout en bout :
 
 ```text
-GDB / ACT
+Génération 0
 ↓
-ENGINE
+actions autonomes
 ↓
-Implémentation
+faits qualifiés / Mémoire
 ↓
-Build
+mort + héritage
 ↓
-Tests
+continuité GenerationIndex +1
 ↓
-Validation courante
+Génération 1
 ↓
-point de consolidation significatif
+Mémoire réévaluée
 ↓
-TECH / AUDIT / catalogues / roadmap / README concernés
+nouvelle vie autonome
+↓
+seconde transmission
+↓
+Génération 2
 ```
+
+Cette démonstration doit réutiliser les Systems et contrats existants plutôt qu'introduire une nouvelle règle métier artificielle.
+
+---
+
+# Frontières parallèles
+
+L'économie commerciale reste bloquée tant que les autorités correspondantes ne définissent pas suffisamment monnaie, prix, vente et marché.
+
+Les mappings psychologiques concrets restent également bloqués tant qu'un Trait et un comportement concret n'ont pas été canonisés ensemble.
+
+---
+
+# Versions suivantes
+
+## v0.5 — La profondeur
+
+Économie avancée, métiers, médecine, justice, crime, politique, religion, combat et patrimoine avancé selon autorités.
+
+## v0.6 — Les outils
+
+Éditeur de contenu, debugger de simulation, inspection du World et diagnostics déterministes.
+
+## v1.0 — Première alpha
+
+Boucle complète, sauvegarde versionnée, équilibrage, interface, stabilité et diagnostics suffisants.
 
 ---
 
 # Historique
 
+## Version 2.8
+
+- ENGINE-018 à ENGINE-020 consolidés ;
+- validation portée à 380 / 380 ;
+- TECH-007 et audit Mémoire + Générations ajoutés ;
+- Mémoire du Monde reliée à une continuité générationnelle explicite ;
+- prochaine frontière fixée à la démonstration multi-générations intégrée.
+
 ## Version 2.7
 
-- ENGINE-013 à ENGINE-017 enregistrés comme bloc consolidé ;
-- production et circulation autonomes documentées par TECH-005 ;
-- observation, Habitudes et Ambitions documentées par TECH-006 ;
-- validation globale portée à 291 / 291 ;
-- audit de jalon autonomie productive et cognitive créé ;
-- prochaine frontière immédiate fixée à l'audit de la Personnalité générique ;
-- économie commerciale et critère multi-générations maintenus ouverts.
+- production/circulation et cognition autonome consolidées à 291 / 291.
 
-## Version 2.6
+---
 
-- ENGINE-011/012 consolidées à 178 / 178 ;
-- TECH-004 créé ;
-- autonomie par besoins validée ;
-- frontière suivante orientée vers production/économie.
-
-## Version 2.5
-
-- ENGINE-010 validée à 146 / 146 ; TECH-003 créé.
-
-## Version 2.4
-
-- ENGINE-009 validée à 134 / 134 ; TECH-002 créé.
-
-## Version 2.3
-
-- ENGINE-008 validée ; cible v0.3 clarifiée.
-
-## Version 2.2
-
-- introduction de la bibliothèque ENGINE et du workflow Documentation → Code → Tests → TECH.
-
-## Version 2.1
-
-- ordre des phases aligné sur MASTER-005.
-
-## Version 2.0
-
-- remplacement de la V1 et intégration des décisions architecturales initiales.
+Fin du document

@@ -1,11 +1,12 @@
 # ENGINE-019 — Mémoire du Monde minimale
 
-> Version : 1.1
-> Statut : Proposition
-> Maturité : 2
+> Version : 1.2
+> Statut : Validée
+> Maturité : 4
 > Bibliothèque : ENGINE
 > Dépendances : GDB-002B v1.3, GDB-002C, GDB-002D, ENGINE-003, ENGINE-004, ENGINE-005, ENGINE-009
-> Implémentation candidate : `CHRONIQUES-ENGINE`
+> Implémentation : `CHRONIQUES-ENGINE`
+> Validation : 370 / 370 tests réussis
 
 ---
 
@@ -31,7 +32,7 @@ Souvenir / Légende / Tradition / oublié
 
 ---
 
-# 2. Représentation
+# 2. Représentation validée
 
 Chaque élément de Mémoire du Monde est une `Entity` neutre portant `WorldMemoryComponent`.
 
@@ -85,7 +86,7 @@ public sealed record WorldMemoryCreationCandidate(
     IReadOnlyList<string> SourceRefs);
 ```
 
-Contraintes : Type/clé non vides, payload non null, Type conforme à la règle productrice, au moins une source stable non vide, pas de source dupliquée, pas de duplication d'identité existante même oubliée.
+Contraintes validées : Type/clé non vides, payload non null, Type conforme à la règle productrice, au moins une source stable non vide, pas de source dupliquée, pas de duplication d'identité existante même oubliée.
 
 Aucun Event n'est transformé automatiquement en souvenir.
 
@@ -129,7 +130,7 @@ public sealed record WorldMemoryGenerationEvidence(
 
 Toute preuve positive exige au moins une source stable.
 
-Les combinaisons impossibles pour le palier courant sont rejetées. Une Légende ne peut notamment recevoir simultanément pratique qualifiante et contradiction qualifiante.
+Les combinaisons impossibles pour le palier courant sont rejetées.
 
 ---
 
@@ -152,7 +153,7 @@ Les générations manquantes sont évaluées une par une.
 
 # 8. WorldMemoryEvolutionSystem
 
-Le System :
+Le System validé :
 
 1. résout la génération ;
 2. valide les mémoires persistées ;
@@ -169,7 +170,7 @@ Le System :
 
 ---
 
-# 9. Transitions
+# 9. Transitions validées
 
 ```text
 Anecdote
@@ -203,11 +204,11 @@ pratique toujours présente ?
 └── non → Legend
 ```
 
-Une seule transition de palier par génération.
+Une seule transition de palier est possible par génération.
 
 ---
 
-# 10. Traces
+# 10. Traces et oubli
 
 ```csharp
 public sealed record WorldMemoryTransitionTrace(
@@ -218,60 +219,21 @@ public sealed record WorldMemoryTransitionTrace(
     IReadOnlyList<string> EvidenceSourceRefs);
 ```
 
-Un oubli conserve le même palier dans la trace et passe `BecameForgotten = true`.
+Une mémoire oubliée reste persistée comme trace technique, n'est plus évaluée et ne peut pas être recréée implicitement avec la même identité.
 
-Les générations sans changement de palier ne créent pas de trace de transition.
+Aucune API générale de suppression d'Entity n'a été ajoutée au Kernel.
 
 ---
 
 # 11. Persistance
 
-`WorldMemoryComponent` est ajouté à `EntitySnapshot` comme champ optionnel et restauré par `WorldRepository`.
+`WorldMemoryComponent` est pris en charge par `EntitySnapshot` et `WorldRepository`.
 
-Sans mémoire sur une Entity, le champ est omis du JSON.
-
-Les règles et le resolver de génération restent runtime.
+La sauvegarde/recharge conserve identité, payload, palier, oubli, sources, marqueurs générationnels, compteurs et traces.
 
 ---
 
-# 12. Oubli
-
-Une mémoire oubliée conserve sa trace technique mais :
-
-```text
-IsForgotten = true
-→ plus d'évaluation
-→ plus de participation comme mémoire active
-→ même identité non recréable
-```
-
-Aucune API générale de suppression d'Entity n'est ajoutée au Kernel.
-
----
-
-# 13. Implémentation candidate
-
-Fichiers ajoutés :
-
-```text
-Components/WorldMemoryComponent.cs
-Autonomy/IWorldMemoryRule.cs
-Autonomy/IWorldMemoryGenerationResolver.cs
-Autonomy/WorldMemoryEvolutionSystem.cs
-```
-
-Fichiers étendus :
-
-```text
-Persistence/WorldSnapshot.cs
-Persistence/WorldRepository.cs
-```
-
-Aucun Pattern, Verbe ou Intent supplémentaire n'est créé.
-
----
-
-# 14. Frontières
+# 12. Frontières maintenues
 
 ENGINE-019 ne définit pas :
 
@@ -286,7 +248,7 @@ ENGINE-019 ne définit pas :
 
 ---
 
-# 15. QA candidate
+# 13. QA validée
 
 ```text
 Engine019WorldMemoryTests.cs
@@ -298,37 +260,46 @@ Engine019WorldMemoryInvariantTests.cs
 
 Soit **40 nouveaux tests**.
 
-Ils couvrent : création, déduplication, persistance, omission JSON, tous les changements de palier, oubli, compteurs consécutifs, influence régionale, contradiction, pratique, replay de générations sautées, règle absente, fusion des sources, Scheduler, absence d'Event implicite et rejet des états/preuves invalides.
-
-Base validée avant ce lot :
+Validation locale finale :
 
 ```text
-330 / 330
+dotnet build
+→ succès
+
+dotnet test
+→ 370 / 370 tests réussis
+→ 0 échec
 ```
 
-Total attendu :
-
-```text
-370 / 370
-```
+Les 330 tests historiques restent verts.
 
 ---
 
-# 16. Critère de validation
+# 14. Critères de validation
 
-ENGINE-019 pourra passer Validée / Maturité 4 lorsque :
+Les critères sont satisfaits :
 
-- le build réussit ;
-- les 330 tests historiques restent verts ;
-- les 40 tests ENGINE-019 sont verts ;
+- build réussi ;
+- suite historique intacte ;
+- 40 tests ENGINE-019 verts ;
+- création, déduplication et persistance confirmées ;
 - les quatre paliers et l'oubli sont démontrés ;
-- la persistance est confirmée ;
 - les générations sautées sont rejouées séquentiellement ;
-- aucune règle concrète de mémoire ni génération arbitraire n'est introduite.
+- aucune règle concrète de mémoire ni durée arbitraire de génération n'est introduite.
+
+ENGINE-019 est donc **Validée / Maturité 4**.
 
 ---
 
 # Historique
+
+## Version 1.2
+
+- ENGINE-019 passe à **Validée / Maturité 4** ;
+- validation locale enregistrée à **370 / 370 tests réussis** ;
+- 40 tests ENGINE-019 confirmés ;
+- persistance, paliers, compteurs, oubli et replay générationnel validés ;
+- frontières avec Types concrets, génération universelle et événements dynamiques maintenues.
 
 ## Version 1.1
 
@@ -336,7 +307,7 @@ ENGINE-019 pourra passer Validée / Maturité 4 lorsque :
 - `WorldMemoryComponent`, règles, génération et System ajoutés ;
 - persistance intégrée ;
 - 40 tests candidats ajoutés ;
-- total attendu fixé à **370 / 370**.
+- total attendu fixé à 370 / 370.
 
 ## Version 1.0
 
@@ -344,3 +315,7 @@ ENGINE-019 pourra passer Validée / Maturité 4 lorsque :
 - représentation mémoire par Entity + Component ;
 - règles et génération injectées ;
 - paliers et compteurs GDB-002B v1.3 spécifiés.
+
+---
+
+Fin du document

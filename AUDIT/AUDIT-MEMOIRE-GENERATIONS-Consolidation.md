@@ -1,6 +1,6 @@
 # AUDIT — Consolidation Cognition durable, Mémoire et Générations
 
-> Version : 1.0
+> Version : 1.1
 > Statut : Clos
 > Maturité : 4
 > Bibliothèque : AUDIT
@@ -53,6 +53,18 @@ substrat historique multi-générations
 ```
 
 Ce jalon constitue un point de consolidation significatif au sens de MASTER-006.
+
+## Documents de consolidation
+
+```text
+TECH-007                                      ✅
+ENGINE/CATALOG.md v1.33                       ✅
+PROD/FeuilleDeRoute.md V2.8                   ✅
+README racine CHRONIQUES                      dette de synchronisation
+README CHRONIQUES-ENGINE                      dette de synchronisation
+```
+
+Les README ne sont pas des autorités supérieures à ENGINE/TECH/PROD. Jusqu'à leur synchronisation, l'état canonique courant est celui des documents validés ci-dessus à **380 / 380**.
 
 ## Limite restante
 
